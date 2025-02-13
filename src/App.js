@@ -97,6 +97,8 @@ import AccessDeniedPage from "./pages/AccessDeniedPage";
 import MaintenancePage from "./pages/MaintenancePage";
 import BlankPagePage from "./pages/BlankPagePage";
 
+// console.log(process.env.REACT_APP_API_URL)
+
 function App() {
   return (
     <BrowserRouter>
