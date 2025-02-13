@@ -9,6 +9,8 @@ import UserReward from "./pages/Users/userReward";
 import AddMember from "./pages/Users/addMember";
 import ForgotPassword from "./pages/Authentication/forgotPassword";
 
+// console.log(process.env.REACT_APP_API_URL)
+
 function App() {
   return (
     <BrowserRouter>
