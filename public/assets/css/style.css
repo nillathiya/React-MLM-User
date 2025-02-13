@@ -15585,7 +15585,10 @@ td.fc-header-center {
 .sidebar-menu li.dropdown.open .sidebar-submenu {
   display: block;
 }
-
+.mainroute {
+  background-color: #007bff !important; /* Example styling */
+  color: white !important;
+}
 .sidebar-menu li > a.active-page {
   background-color: var(--brand);
   color: #fff;
@@ -15656,6 +15659,7 @@ td.fc-header-center {
   background-color: var(--button-secondary);
   color: var(--text-primary-light);
 }
+
 
 .sidebar-menu .sidebar-submenu li a {
   padding: 0.4375rem 0.75rem;

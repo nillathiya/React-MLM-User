@@ -1,0 +1,12 @@
+.withdrwal_approved{
+    background-color: #2dce89!important; 
+}
+.withdrwal_pending{
+    background-color: #11cdef!important;
+}
+.withdrwal_rejected{
+    background-color: #f5365c!important;
+}
+.border-light-2{
+    border-color: rgba(255, 255, 255, 0.26) !important;
+}

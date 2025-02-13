@@ -179,7 +179,7 @@ const QuickTransfer = () => {
                   className='btn btn-primary-600 flex-shrink-0 d-flex align-items-center gap-2 px-32'
                   type='submit'
                 >
-                  Send <i className='ri-send-plane-fill' />{" "}
+                  Send <i className='ri-send-plane-fill' />
                 </button>
               </div>
             </div>
