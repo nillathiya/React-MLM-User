@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
 import menuItems from "../constants/menu";
-
+import { useAccount, useDisconnect, useEnsName } from "wagmi";
+import { ICON } from "../constants/icons";
+import Profile from "./profile";
 const MasterLayout = ({ children }) => {
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
+  const { isConnected, address, connector } = useAccount();
+  const { data, error, status } = useEnsName({ address });
+  const { disconnect } = useDisconnect();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const resetActiveLinks = () => {
@@ -98,6 +106,15 @@ const MasterLayout = ({ children }) => {
 
   let mobileMenuControl = () => {
     setMobileMenu(!mobileMenu);
+  };
+
+  const handleDisconnectWallet = () => {
+    disconnect();
+    navigate("/");
+  };
+
+  const handleChild = (status) => {
+    setIsWalletConnected(status);
   };
 
   return (
@@ -771,10 +788,16 @@ const MasterLayout = ({ children }) => {
                       className="w-40-px h-40-px object-fit-cover rounded-circle"
                     />
                   </button>
-                  <div className="dropdown-menu to-top dropdown-menu-sm">
+                  <div className="dropdown-menu to-top dropdown-menu-sm   gap-2">
+                    <div className="mb-3">
+                      <Profile handleChild={handleChild} />
+                    </div>
                     <div className="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                       <div>
                         <h6 className="text-lg text-primary-light fw-semibold mb-2">
+                          {/* {isWalletConnected && (
+                            <p>Your wallet is connected!</p>
+                          )} */}
                           Shaidul Islam
                         </h6>
                         <span className="text-secondary-light fw-medium text-sm">
@@ -834,6 +857,20 @@ const MasterLayout = ({ children }) => {
                           Log Out
                         </Link>
                       </li>
+                      {isConnected && (
+                        <>
+                          <button
+                            onClick={handleDisconnectWallet}
+                            className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
+                          >
+                            <Icon
+                              icon={ICON.LOGOUT_WALLET}
+                              className="icon text-xl"
+                            />
+                            Disconnect Wallet
+                          </button>
+                        </>
+                      )}
                     </ul>
                   </div>
                 </div>

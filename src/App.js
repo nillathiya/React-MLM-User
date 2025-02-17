@@ -13,7 +13,7 @@ import ForgotPassword from "./pages/Authentication/forgotPassword";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <RouteScrollToTop />
       <Routes>
         <Route path='/dashboard' element={<Dashboard />} />
