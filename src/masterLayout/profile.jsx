@@ -6,12 +6,10 @@ import { ICON } from "../constants/icons";
 
 const Profile = ({ handleChild }) => {
   const { address, connector, isConnected } = useAccount();
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
   const { data: ensName } = useEnsName({ address });
+  const { data: ensAvatar } = useEnsAvatar({ name: ensName });
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect();
-  const { disconnect } = useDisconnect();
-
   const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
@@ -37,11 +35,25 @@ const Profile = ({ handleChild }) => {
     <div className="profile-container py-4">
       {isConnected ? (
         <div className="flex flex-col items-center">
-          <img
-            src={ensAvatar || "/assets/images/default-avatar.png"}
-            alt="ENS Avatar"
-            className="w-20 h-20 rounded-full border-2 border-gray-300"
-          />
+          {ensAvatar ? (
+            <>
+              <img
+                src={ensAvatar || "/assets/images/default-avatar.png"}
+                alt="ENS Avatar"
+                className="w-20 h-20 rounded-full border-2 border-gray-300"
+              />
+            </>
+          ) : (
+            <>
+              <Icon
+                icon={ICON.DEFAULT_USER}
+                width="24"
+                height="24"
+                className="w-16 h-16 rounded-full border-2 border-gray-300 text-[#31358e]"
+              />
+            </>
+          )}
+
           <div className="mt-2 text-lg font-semibold text-primary-800">
             {ensName
               ? `${ensName} (${truncateAddress(address)})`
@@ -58,12 +70,6 @@ const Profile = ({ handleChild }) => {
               <span className="ml-2 text-green-500 text-sm">Copied!</span>
             )}
           </div>
-          <button
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-            onClick={disconnect}
-          >
-            Disconnect
-          </button>
         </div>
       ) : (
         <div className="flex flex-col items-center">

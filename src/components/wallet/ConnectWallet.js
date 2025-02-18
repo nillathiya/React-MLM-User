@@ -43,15 +43,17 @@ const ConnectWallet = ({ setConnectWalletModal }) => {
         if (status === 'success' && address) {
             console.log("Wallet connected:", address);
             dispatch(setWalletAddress(address));
+            setConnectWalletModal(false);
 
             // If the connected wallet is on the wrong network, try to switch networks
             if (chainId !== currentNetwork.CHAIN_ID) {
                 console.log("Switching network to: ", currentNetwork.CHAIN_ID);
                 handleSwitchNetwork();
-            } else {
-                setConnectWalletModal(false);
-                navigate('/dashboard');
             }
+            //  else {
+            //     setConnectWalletModal(false);
+            //     navigate('/dashboard');
+            // }
         }
     }, [status, address, chainId, currentNetwork.CHAIN_ID, dispatch, navigate, setConnectWalletModal]);
 
