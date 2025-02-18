@@ -8,6 +8,7 @@ import AllUsers from "./pages/Users/allUsers";
 import UserReward from "./pages/Users/userReward";
 import AddMember from "./pages/Users/addMember";
 import ForgotPassword from "./pages/Authentication/forgotPassword";
+import { Toaster } from "react-hot-toast";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -25,6 +26,7 @@ function App() {
         <Route path='/signup' element={<SignUp />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
       </Routes>
+      <Toaster/>
     </BrowserRouter>
   );
 }

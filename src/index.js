@@ -13,6 +13,8 @@ import store from "./store/store";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { config } from "./config/wagmiConfig"
 import { WagmiConfig } from "wagmi"
+import { Toaster } from "react-hot-toast";
+
 
 const queryClient = new QueryClient();
 

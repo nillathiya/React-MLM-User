@@ -11,11 +11,10 @@ const customStorage = {
 
 // Set up wagmi config
 export const config = createConfig({
-  headless: true,
   chains: [bsc, bscTestnet],
   connectors: [metaMask(), walletConnect({
     isNewChainsStale: true,
-    projectId: '3fcc6bba6f1de962d911bb5b5c3dba68',
+    projectId: '5f40cd78a0004e3dbe19bd078e6d520a',
     showQrModal: true,
   }),],
   storage: customStorage,
