@@ -5,27 +5,6 @@ const menuItems = [
     path: "/dashboard",
   },
   {
-    title: "Users",
-    icon: "mdi:account-group-outline",
-    submenu: [
-      {
-        title: "All Users",
-        path: "/Users/alluser",
-        icon: "mdi:account-multiple-outline",
-      },
-      {
-        title: "User Reward",
-        path: "/Users/userReward",
-        icon: "mdi:gift-outline",
-      },
-      {
-        title: "Add Member",
-        path: "/Users/addmember",
-        icon: "mdi:account-plus-outline",
-      },
-    ],
-  },
-  {
     title: "My Genelogy",
     icon: "mdi:family-tree",
     submenu: [
@@ -38,19 +17,6 @@ const menuItems = [
         title: "Generation",
         path: "/genology/generation",
         icon: "mdi:timeline-clock-outline",
-      },
-    ],
-  },
-  {
-    title: "Authentication",
-    icon: "mdi:lock-outline",
-    submenu: [
-      { title: "Sign In", path: "/", icon: "mdi:login" },
-      { title: "Sign Up", path: "/signup", icon: "mdi:account-plus-outline" },
-      {
-        title: "Forgot Password",
-        path: "/forgotPassword",
-        icon: "mdi:lock-reset",
       },
     ],
   },

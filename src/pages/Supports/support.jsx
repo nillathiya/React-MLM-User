@@ -1,14 +1,12 @@
 import React from 'react'
 import MasterLayout from '../../masterLayout/MasterLayout'
 
-const Orders = () => {
+const Support = () => {
   return (
     <MasterLayout>
-      <div>
-        orders
-      </div>
+        support
     </MasterLayout>
   )
 }
 
-export default Orders
+export default Support
