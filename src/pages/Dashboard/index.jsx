@@ -41,7 +41,7 @@ const Dashboard = () => {
                   <div className="flex justify-center mt-10">
                     <button
                       onClick={() => setConnectWalletModal(true)}
-                      className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition focus:outline-none w-full text-base text-center"
+                      className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition focus:outline-none w-full text-center"
                     >
                       Connect Wallet
                     </button>
