@@ -15,58 +15,32 @@ import AddFundArb from "./pages/Fund/addFundArb";
 import TranseferFund from "./pages/Fund/transeferFund";
 import FundConvertHistory from "./pages/Fund/fundConvertHistory";
 import FundConvert from "./pages/Fund/fundConvert";
-import FundTranseferHistory from "./pages/Fund/fundTranseferHistory";
-import DailyStack from "./pages/IncomeReports/dailyStack";
-import StackSponsor from "./pages/IncomeReports/stackSponsor";
-import TeamPerformance from "./pages/IncomeReports/teamPerformance";
-import Rewards from "./pages/IncomeReports/rewards";
-import TeamDevelopment from "./pages/IncomeReports/teamDevelopment";
-import Withdrawal from "./pages/Withdrawal/withdrawal";
-import WithdrawalReports from "./pages/Withdrawal/withdrawalReport";
-import ArbWithdrawal from "./pages/Withdrawal/arbWithdrawal";
+import { Toaster } from "react-hot-toast";
+
+// console.log(process.env.REACT_APP_API_URL)
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <RouteScrollToTop />
       <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/genology/direct" element={<Direct />} />
-        <Route path="/genology/generation" element={<Generation />} />
-        <Route path="/fund/addfund" element={<AddFund />} />
-        <Route path="/fund/addfundarb" element={<AddFundArb />} />
-        <Route path="/fund/transfer-fund" element={<TranseferFund />} />
-        <Route
-          path="/fund/fund-transfer-history"
-          element={<FundTranseferHistory />}
-        />
-        <Route path="/fund/fund-convert" element={<FundConvert />} />
-        <Route
-          path="/fund/fund-convert-history"
-          element={<FundConvertHistory />}
-        />
-        <Route path="/withdrawal" element={<Withdrawal />} />
-        <Route path="/withdrawal/arb-withdrawal" element={<ArbWithdrawal />} />
-        <Route
-          path="/withdrawal/withdrawal-report"
-          element={<WithdrawalReports />}
-        />
-        <Route path="/income/daily-stake-reward" element={<DailyStack />} />
-        <Route path="/income/stack-sponsor-reward" element={<StackSponsor />} />
-        <Route
-          path="/income/team-performance-reward"
-          element={<TeamPerformance />}
-        />
-        <Route path="/income/reward" element={<Rewards />} />
-        <Route
-          path="/income/team-development-reward"
-          element={<TeamDevelopment />}
-        />
-        <Route path="*" element={<ErrorPage />} />
-        <Route path="/" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/Users/alluser' element={<AllUsers />} />
+        <Route path='/Users/userReward' element={<UserReward />} />
+        <Route path='/Users/addmember' element={<AddMember />} />
+        <Route path='/genology/direct' element={<Direct />} />
+        <Route path='/fund/addfundarb' element={<AddFund />} />
+        <Route path='/fund/transfer-fund' element={<AddFundArb />} />
+        <Route path='/fund/transfer-fund' element={<TranseferFund />} />
+        <Route path='/fund/fund-transfer-history' element={<FundConvertHistory />} />
+        <Route path='/fund/fund-convert' element={<FundConvert />} />
+        <Route path='/fund/fund-convert-history' element={<FundConvertHistory />} />
+        <Route path='*' element={<ErrorPage />} />
+        <Route path='/' element={<SignIn />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/forgotPassword' element={<ForgotPassword />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }
