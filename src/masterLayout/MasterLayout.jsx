@@ -110,7 +110,6 @@ const MasterLayout = ({ children }) => {
 
   const handleDisconnectWallet = () => {
     disconnect();
-    navigate("/");
   };
 
   const handleChild = (status) => {

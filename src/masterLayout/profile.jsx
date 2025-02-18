@@ -8,8 +8,6 @@ const Profile = ({ handleChild }) => {
   const { address, connector, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: ensName });
-  const { connect, connectors, error, isLoading, pendingConnector } =
-    useConnect();
   const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
@@ -22,7 +20,7 @@ const Profile = ({ handleChild }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(address).then(() => {
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Reset copied state after 2 seconds
+      setTimeout(() => setIsCopied(false), 2000);
     });
   };
 
@@ -74,17 +72,6 @@ const Profile = ({ handleChild }) => {
       ) : (
         <div className="flex flex-col items-center">
           <p className="text-gray-500">No wallet connected</p>
-          {connectors?.map((connector, index) => (
-            <button
-              key={connector.id}
-              onClick={() => connect({ connector })}
-              className="mt-3 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
-              {isLoading && pendingConnector?.id === connector.id
-                ? "Connecting..."
-                : connector.name}
-            </button>
-          ))}
           {/* {error && <div className="text-red-500 mt-2">{error.message}</div>} */}
         </div>
       )}
