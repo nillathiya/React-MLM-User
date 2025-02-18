@@ -16,9 +16,9 @@ const UserActivityCard = () => {
                 </span>
                 <div>
                   <span className="fw-medium text-secondary-light text-md">
-                    Total Users
+                    My Package
                   </span>
-                  <h6 className="fw-semibold mt-2">12</h6>
+                  <h6 className="fw-semibold mt-2">$ 0</h6>
                 </div>
               </div>
             </div>
@@ -38,9 +38,9 @@ const UserActivityCard = () => {
                 </span>
                 <div>
                   <span className="fw-medium text-secondary-light text-md">
-                    Active
+                    Daily Stake Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">12</h6>
+                  <h6 className="fw-semibold mt-2">$ 0</h6>
                 </div>
               </div>
             </div>
@@ -60,9 +60,9 @@ const UserActivityCard = () => {
                 </span>
                 <div>
                   <span className="fw-medium text-secondary-light text-md">
-                    Total Investment
+                    Stake Sponsor Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">22250</h6>
+                  <h6 className="fw-semibold mt-2">$ 440</h6>
                 </div>
               </div>
             </div>
@@ -82,9 +82,9 @@ const UserActivityCard = () => {
                 </span>
                 <div>
                   <span className="fw-medium text-secondary-light text-md">
-                    Total Income
+                    Team Performance Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">2709.3826</h6>
+                  <h6 className="fw-semibold mt-2">$ 153.23</h6>
                 </div>
               </div>
             </div>
@@ -104,9 +104,31 @@ const UserActivityCard = () => {
                 </span>
                 <div>
                   <span className="fw-medium text-secondary-light text-md">
-                    Income Charge
+                    Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">0</h6>
+                  <h6 className="fw-semibold mt-2">$ 0</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-xxl-3 col-sm-6">
+        <div className="card p-3 shadow-2 radius-8 h-100 gradient-deep-two-3 border border-white">
+          <div className="card-body p-0">
+            <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+              <div className="d-flex align-items-center gap-10">
+                <span className="mb-0 w-48-px h-48-px bg-success-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                  <img
+                    src="assets/images/home-eleven/icons/home-eleven-icon4.svg"
+                    alt=""
+                  />
+                </span>
+                <div>
+                  <span className="fw-medium text-secondary-light text-md">
+                    Team Development Reward
+                  </span>
+                  <h6 className="fw-semibold mt-2">$ 85</h6>
                 </div>
               </div>
             </div>

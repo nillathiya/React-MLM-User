@@ -13062,7 +13062,7 @@ select option {
   background-color: var(--primary-600);
   border-radius: 100px;
   left: -1px;
-  top: 24px;
+  top: 10px;
   box-shadow: 2px 1px 7px 0px rgba(29, 128, 252, 0.6);
 }
 
@@ -15568,6 +15568,7 @@ td.fc-header-center {
 .sidebar-menu li.dropdown.dropdown-open > a {
   background-color: var(--brand);
   color: #fff;
+  margin-top: 1px;
 }
 
 .sidebar-menu li.dropdown.open > a:hover,
