@@ -15,12 +15,13 @@ import AddFundArb from "./pages/Fund/addFundArb";
 import TranseferFund from "./pages/Fund/transeferFund";
 import FundConvertHistory from "./pages/Fund/fundConvertHistory";
 import FundConvert from "./pages/Fund/fundConvert";
+import { Toaster } from "react-hot-toast";
 
 // console.log(process.env.REACT_APP_API_URL)
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <RouteScrollToTop />
       <Routes>
         <Route path='/dashboard' element={<Dashboard />} />
@@ -39,6 +40,7 @@ function App() {
         <Route path='/signup' element={<SignUp />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
       </Routes>
+      <Toaster/>
     </BrowserRouter>
   );
 }
