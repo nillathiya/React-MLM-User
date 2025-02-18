@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
-import { FaSitemap } from "react-icons/fa"; // Import the FaSitemap icon
+import { FaSitemap } from "react-icons/fa"; 
 import { Link } from "react-router-dom";
 import MasterLayout from "../../masterLayout/MasterLayout";
+import Breadcrumb from "../../components/Breadcrumb";
 import Skeleton from "../../helper/Skeleton/Skeleton";
-import "./genology.css";
+import "./fund.css";
 
-const Generation = () => {
+const FundTranseferHistory = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,9 +48,9 @@ const Generation = () => {
       };
     }
   }, [loading]);
-
   return (
     <MasterLayout>
+      <Breadcrumb title="Fund Transfer History"></Breadcrumb>
       <div className="card basic-data-table">
         <div className="card-header">
           <h5 className="card-title mb-0">company ( arbstake )</h5>
@@ -63,12 +64,12 @@ const Generation = () => {
             <thead>
               <tr>
                 <th scope="col">S.L</th>
-                <th scope="col">Action</th>
-                <th scope="col">Name</th>
-                <th scope="col">UserName</th>
-                <th scope="col">Join Date</th>
-                <th scope="col">Status</th>
-                <th scope="col">Level</th>
+                <th scope="col">Tx user</th>
+                <th scope="col">Tx Type</th>
+                <th scope="col">Credit/Debit</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Remark</th>
+                <th scope="col">Date&Time</th>
                 <th scope="col">Sponsor ID(Name)</th>
               </tr>
             </thead>
@@ -138,4 +139,4 @@ const Generation = () => {
   );
 };
 
-export default Generation;
+export default FundTranseferHistory;

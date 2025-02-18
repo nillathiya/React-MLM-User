@@ -5,27 +5,6 @@ const menuItems = [
     path: "/dashboard",
   },
   {
-    title: "Users",
-    icon: "mdi:account-group-outline",
-    submenu: [
-      {
-        title: "All Users",
-        path: "/Users/alluser",
-        icon: "mdi:account-multiple-outline",
-      },
-      {
-        title: "User Reward",
-        path: "/Users/userReward",
-        icon: "mdi:gift-outline",
-      },
-      {
-        title: "Add Member",
-        path: "/Users/addmember",
-        icon: "mdi:account-plus-outline",
-      },
-    ],
-  },
-  {
     title: "My Genelogy",
     icon: "mdi:family-tree",
     submenu: [
@@ -98,7 +77,7 @@ const menuItems = [
       },
       {
         title: "Withdrawal Report",
-        path: "/Users/withdrawal-report",
+        path: "/withdrawal/withdrawal-report",
         icon: "mdi:clipboard-list-outline",
       },
     ],
@@ -125,23 +104,23 @@ const menuItems = [
     submenu: [
       {
         title: "Daily Stake Reward",
-        path: "/income/stake-reward",
+        path: "/income/daily-stake-reward",
         icon: "mdi:chart-bar",
       },
       {
         title: "Stake Sponsor Reward",
-        path: "/income/sponsor-reward",
+        path: "/income/stack-sponsor-reward",
         icon: "mdi:gift-outline",
       },
       {
         title: "Team Performance Reward",
-        path: "/income/performance-reward",
+        path: "/income/team-performance-reward",
         icon: "mdi:account-group-outline",
       },
       { title: "Reward", path: "/income/reward", icon: "mdi:medal-outline" },
       {
         title: "Team Development Reward",
-        path: "/income/development-reward",
+        path: "/income/team-development-reward",
         icon: "mdi:account-group",
       },
     ],
