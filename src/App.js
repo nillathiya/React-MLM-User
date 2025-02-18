@@ -28,19 +28,19 @@ function App() {
         <Route path='/Users/alluser' element={<AllUsers />} />
         <Route path='/Users/userReward' element={<UserReward />} />
         <Route path='/Users/addmember' element={<AddMember />} />
-        <Route path='/genology/direct' element={<Direct/>}/>
-        <Route path='/fund/addfundarb' element={<AddFund/>}/>
-        <Route path='/fund/transfer-fund' element={<AddFundArb/>}/>
-        <Route path='/fund/transfer-fund' element={<TranseferFund/>}/>
-        <Route path='/fund/fund-transfer-history' element={<FundConvertHistory/>}/>
-        <Route path='/fund/fund-convert' element={<FundConvert/>}/>
-        <Route path='/fund/fund-convert-history' element={<FundConvertHistory/>}/>
+        <Route path='/genology/direct' element={<Direct />} />
+        <Route path='/fund/addfundarb' element={<AddFund />} />
+        <Route path='/fund/transfer-fund' element={<AddFundArb />} />
+        <Route path='/fund/transfer-fund' element={<TranseferFund />} />
+        <Route path='/fund/fund-transfer-history' element={<FundConvertHistory />} />
+        <Route path='/fund/fund-convert' element={<FundConvert />} />
+        <Route path='/fund/fund-convert-history' element={<FundConvertHistory />} />
         <Route path='*' element={<ErrorPage />} />
         <Route path='/' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
       </Routes>
-      <Toaster/>
+      <Toaster />
     </BrowserRouter>
   );
 }
