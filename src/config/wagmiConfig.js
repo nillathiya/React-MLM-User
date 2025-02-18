@@ -14,7 +14,7 @@ export const config = createConfig({
   chains: [bsc, bscTestnet],
   connectors: [metaMask(), walletConnect({
     isNewChainsStale: true,
-    projectId: '5f40cd78a0004e3dbe19bd078e6d520a',
+    projectId: '571f5e3e8ec5570d84fb07c48fc4fdb3',
     showQrModal: true,
   }),],
   storage: customStorage,

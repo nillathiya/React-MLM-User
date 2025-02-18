@@ -155,7 +155,7 @@ const Dashboard = () => {
                             type="text"
                             value={referralLink}
                             readOnly
-                            className="copy-input"
+                            className="dark:text-red-600 copy-input"
                           />
                           <button className="copy-btn" onClick={handleCopy}>
                             Copy Link
@@ -178,7 +178,7 @@ const Dashboard = () => {
                           Quick Transfer
                         </h6>
                       </div>
-                    </div>
+                    </div> 
                     <div className="card-body p-0">
                       <div className="p-20">
                         <div className="position-relative z-1 py-32 text-center px-3">
