@@ -19,8 +19,14 @@ const FundConvert = () => {
             <option value="USDT(BEP20)">Select Wallet</option>
             <option value="USDT(BEP20)">Fund Wallet</option>
           </select>
-          <label>Enter Amount</label>
-          <input type="number" placeholder="Enter Ammount" />
+          <div>
+            <label>Enter Amount</label>
+            <input
+              type="number"
+              placeholder="Enter Ammount"
+              className="select-field"
+            />
+          </div>
 
           <button className="connect-wallet-btn">Convert</button>
         </form>
