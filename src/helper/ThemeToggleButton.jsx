@@ -20,6 +20,11 @@ const ThemeToggleButton = () => {
         setTheme(newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeOnHtmlEl(newTheme);
+        if(newTheme==="dark"){
+            document.documentElement.classList.add("dark");
+        }else{
+            document.documentElement.classList.remove("dark");
+        }
     };
 
     return (

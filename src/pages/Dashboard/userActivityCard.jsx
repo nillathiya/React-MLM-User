@@ -15,7 +15,7 @@ const UserActivityCard = () => {
                   />
                 </span>
                 <div>
-                  <span className="fw-medium text-secondary-light text-md">
+                  <span className="fw-medium text-secondary-light text-md ">
                     My Package
                   </span>
                   <h6 className="fw-semibold mt-2">$ 0</h6>
