@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
-import { FaSitemap } from "react-icons/fa"; 
+import { FaSitemap } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
-import Skeleton from "../../helper/Skeleton/Skeleton ";
-import "./fund.css";
+import Skeleton from "../../helper/Skeleton/Skeleton";
+import "./incomeReports.css";
 
-const FundTranseferHistory = () => {
+const StackSponsor = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,20 +17,40 @@ const FundTranseferHistory = () => {
       setUsers([
         {
           id: "526534",
-          name: "Kathryn Murphy",
-          date: "25 Jan 2024",
-          status: "Active",
-          label: "Level2",
-          sponcer: "ARB513209 ()",
+          user: "company (arbstake)",
+          From: "( ARB513209 )",
+          amount: "4.5",
+          charges: "0.5",
+          remark: "Receive direct income of amount 5 from (ARB513209) from level 1",
+          date: "2025-02-06 15:25:07",
         },
         {
-          id: "696589",
-          name: "Annette Black",
+          id: "526535",
+          user: "company (arbstake)",
+          From: "( ARB016289 )",
+          amount: "135",
+          charges: "15",
+          remark: "Receive direct income of amount 150 from (ARB016289) from level 1",
           date: "25 Jan 2024",
-          status: "Active",
-          label: "Level3",
-          sponcer: "ARB543690 ()",
         },
+        {
+            id: "526535",
+            user: "company (arbstake)",
+            From: "( ARB143260 )",
+            amount: "252",
+            charges: "28",
+            remark: "Receive direct income of amount 280 from (ARB143260) from level 1",
+            date: "2025-02-06 16:25:08",
+          },
+          {
+            id: "526535",
+            user: "company (arbstake)",
+            From: "( ARB945187 )",
+            amount: "4.5",
+            charges: "0.5",
+            remark: "Receive direct income of amount 5 from (ARB945187) from level 1",
+            date: "2025-02-06 18:00:36",
+          },
       ]);
       setLoading(false);
     }, 2000);
@@ -51,10 +71,17 @@ const FundTranseferHistory = () => {
   return (
     <MasterLayout>
       <Breadcrumb title="Fund Transfer History"></Breadcrumb>
-      <div className="card basic-data-table">
-        <div className="card-header">
-          <h5 className="card-title mb-0">company ( arbstake )</h5>
+      <div className="daily_income mb-5">
+        <div className="daily_total_income">
+          <h6 className="text-white">Total Income</h6>
+          <p className="text-white">396.0000</p>
         </div>
+        <div className="daily_payable_income">
+          <h6 className="text-white">Payable Income</h6>
+          <p className="text-white">352.0000</p>
+        </div>
+      </div>
+      <div className="card basic-data-table">
         <div className="card-body">
           <table
             className="table bordered-table mb-0"
@@ -64,13 +91,12 @@ const FundTranseferHistory = () => {
             <thead>
               <tr>
                 <th scope="col">S.L</th>
-                <th scope="col">Tx user</th>
-                <th scope="col">Tx Type</th>
-                <th scope="col">Credit/Debit</th>
-                <th scope="col">Balance</th>
+                <th scope="col">User</th>
+                <th scope="col">From</th>
+                <th scope="col">Amount ($)</th>
+                <th scope="col">Charges ($)</th>
                 <th scope="col">Remark</th>
-                <th scope="col">Date&Time</th>
-                <th scope="col">Sponsor ID(Name)</th>
+                <th scope="col">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -109,25 +135,12 @@ const FundTranseferHistory = () => {
                 users.map((user, index) => (
                   <tr key={user.id}>
                     <td>{index + 1}</td>
-                    <td>
-                      <a href="#" className="text-primary-600">
-                        <FaSitemap />
-                      </a>
-                    </td>
-                    <td>{user.name}</td>
-                    <td>
-                      <Link to="#" className="text-primary-600">
-                        #{user.id}
-                      </Link>
-                    </td>
+                    <td>{user.user}</td>
+                    <td>{user.From}</td>
+                    <td>{user.amount}</td>
+                    <td>{user.charges}</td>
+                    <td>{user.remark}</td>
                     <td>{user.date}</td>
-                    <td>
-                      <span className="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">
-                        {user.status}
-                      </span>
-                    </td>
-                    <td>{user.sponcer}</td>
-                    <td>{user.label}</td>
                   </tr>
                 ))
               )}
@@ -139,4 +152,4 @@ const FundTranseferHistory = () => {
   );
 };
 
-export default FundTranseferHistory;
+export default StackSponsor;

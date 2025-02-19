@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
-import { FaSitemap } from "react-icons/fa"; 
-import { Link } from "react-router-dom";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
-import Skeleton from "../../helper/Skeleton/Skeleton ";
-import "./fund.css";
+import Skeleton from "../../helper/Skeleton/Skeleton";
 
-const FundTranseferHistory = () => {
+const WithdrawalReports = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,20 +13,22 @@ const FundTranseferHistory = () => {
     setTimeout(() => {
       setUsers([
         {
-          id: "526534",
-          name: "Kathryn Murphy",
+          amount: "8525272757",
+          tds: "Kathryn Murphy",
+          acharges:"485000",
+          pammount: "58000",
+          status:"active",
+          reason: "ARB",
           date: "25 Jan 2024",
-          status: "Active",
-          label: "Level2",
-          sponcer: "ARB513209 ()",
         },
         {
-          id: "696589",
-          name: "Annette Black",
+          amount: "89272277",
+          tds: "fvfvgfrd",
+          acharges:"48500",
+          pammount: "58009990",
+          status:"active",
+          reason: "ARB",
           date: "25 Jan 2024",
-          status: "Active",
-          label: "Level3",
-          sponcer: "ARB543690 ()",
         },
       ]);
       setLoading(false);
@@ -50,11 +49,31 @@ const FundTranseferHistory = () => {
   }, [loading]);
   return (
     <MasterLayout>
-      <Breadcrumb title="Fund Transfer History"></Breadcrumb>
-      <div className="card basic-data-table">
-        <div className="card-header">
-          <h5 className="card-title mb-0">company ( arbstake )</h5>
+      <Breadcrumb title="Withdrawal-report"></Breadcrumb>
+      <div className="radius-16 mt-5 withdrawal_report">
+        <div className=" p-0">
+          <div className="p-20">
+            <button className="export_btn">Export to Excel</button>
+            <div className="position-relative z-1 py-32 text-center px-3 withdrwal_detail">
+              <div className="d-flex justify-content-between">
+                <h6 className="text-white">Total Withdrawal</h6>
+                <p className="text-white">$ 0</p>
+              </div>
+              <hr className="text-white" />
+              <div className="d-flex justify-content-between">
+                <h6 className="text-white">Paid Withdrawal</h6>
+                <p className="text-white">$ 0</p>
+              </div>
+              <hr className="text-white" />
+              <div className="d-flex justify-content-between">
+                <h6 className="text-white">Reject Withdrawal</h6>
+                <p className="text-white">$ 0</p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div className="card basic-data-table mt-5">
         <div className="card-body">
           <table
             className="table bordered-table mb-0"
@@ -64,13 +83,13 @@ const FundTranseferHistory = () => {
             <thead>
               <tr>
                 <th scope="col">S.L</th>
-                <th scope="col">Tx user</th>
-                <th scope="col">Tx Type</th>
-                <th scope="col">Credit/Debit</th>
-                <th scope="col">Balance</th>
-                <th scope="col">Remark</th>
-                <th scope="col">Date&Time</th>
-                <th scope="col">Sponsor ID(Name)</th>
+                <th scope="col">Amount ($)</th>
+                <th scope="col">TDS(5%)</th>
+                <th scope="col">Admin charges @ ($)</th>
+                <th scope="col">Payable Amount ($)</th>
+                <th scope="col">Status</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -109,25 +128,13 @@ const FundTranseferHistory = () => {
                 users.map((user, index) => (
                   <tr key={user.id}>
                     <td>{index + 1}</td>
-                    <td>
-                      <a href="#" className="text-primary-600">
-                        <FaSitemap />
-                      </a>
-                    </td>
-                    <td>{user.name}</td>
-                    <td>
-                      <Link to="#" className="text-primary-600">
-                        #{user.id}
-                      </Link>
-                    </td>
+                    <td>{user.amount}</td>
+                    <td>{user.tds}</td>
+                    <td>{user.acharges}</td>
+                    <td>{user.pammount}</td>
+                    <td>{user.status}</td>
+                    <td>{user.reason}</td>
                     <td>{user.date}</td>
-                    <td>
-                      <span className="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">
-                        {user.status}
-                      </span>
-                    </td>
-                    <td>{user.sponcer}</td>
-                    <td>{user.label}</td>
                   </tr>
                 ))
               )}
@@ -139,4 +146,4 @@ const FundTranseferHistory = () => {
   );
 };
 
-export default FundTranseferHistory;
+export default WithdrawalReports;

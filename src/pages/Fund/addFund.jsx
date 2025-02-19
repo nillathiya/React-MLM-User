@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import MasterLayout from "../../masterLayout/MasterLayout";
+import Breadcrumb from "../../components/Breadcrumb";
+import './fund.css'
 import {
   useAccount,
   useWriteContract,
@@ -32,7 +35,9 @@ const AddFund = () => {
   console.log("data", hash);
 
   return (
-    <div className="p-4">
+    <>
+        <MasterLayout>
+     <div className="p-4">
       <h2 className="text-xl font-semibold mb-4">Send USDT</h2>
       <input
         type="text"
@@ -72,6 +77,19 @@ const AddFund = () => {
         <p className="text-red-500">Error: {writeError?.message}</p>
       )} */}
     </div>
+    
+    <div className="add_fund_sec">
+        <form className="fund-form">
+          <input type="text" placeholder="Enter Amount in USDT" className="input-field"/>
+          <select name="fund-option" className="select-field">
+            <option value="USDT(BEP20)">USDT (BEP20)</option>
+          </select>
+          <button className="connect-wallet-btn">Connect Wallet</button>
+        </form>
+      </div>
+      </MasterLayout>
+    </>
+   
   );
 };
 

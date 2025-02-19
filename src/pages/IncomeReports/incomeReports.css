@@ -1,0 +1,13 @@
+.daily_income{
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 25px;
+    height: 80px;
+    border-radius: 10px;
+    background-color: rgb(82, 45, 124);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+.daily_total_income, .daily_payable_income{
+    text-align: center;
+}

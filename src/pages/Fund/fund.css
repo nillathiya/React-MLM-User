@@ -1,0 +1,88 @@
+/* Main Section Styling */
+.add_fund_sec {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f4f0f8 0%, #e6eaf1 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+
+  }
+  
+  /* Form Container Styling */
+  .fund-form {
+    height: auto;
+    position: absolute;
+    top: 25%;
+    padding: 30px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, rgb(213, 221, 255) 0%, rgba(169,184,255,1) 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+  }
+  
+  /* Input and Select Fields Styling */
+  .input-field,
+  .select-field {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #747474;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  /* Button Styling */
+  .connect-wallet-btn {
+    width: 30%;
+    padding: 12px;
+    text-align: center;
+    background-color: #0041b1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .connect-wallet-btn:hover {
+    background-color: #6a11cb;
+  }
+  
+  /* transfer fund section */
+  .fund_wallet_show{
+    margin-bottom: 10px;
+  }
+  
+  /* Responsiveness */
+  @media (max-width: 768px) {
+    .fund-form {
+      padding: 20px;
+    }
+  
+    .input-field,
+    .select-field,
+    .connect-wallet-btn {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .fund-form {
+      max-width: 100%;
+      padding: 15px;
+    }
+  
+    .input-field,
+    .select-field,
+    .connect-wallet-btn {
+      font-size: 12px;
+    }
+  }
+  
