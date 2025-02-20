@@ -6,7 +6,7 @@ import "./withdrawal.css";
 const Withdrawal = () => {
   return (
     <MasterLayout>
-      <Breadcrumb title="Fund Transfer History"></Breadcrumb>
+      <Breadcrumb PageHeading="Withrdawal" title="Fund Transfer History"></Breadcrumb>
       <div className="withdrwal_main">
         <div className=" radius-16">
           <div className=" p-0">
@@ -69,7 +69,7 @@ const Withdrawal = () => {
             </div>
             <div className="p-0">
               <form>
-                <label className="text-white">PAYOUT AMOUNT *</label> <br />
+                <label className="text-white">PAYOUT AMOUNT *</label>
                 <input type="number" className="payout_ammount_input" />
                 <br />
                 <button className="withdrwal_btn">submit</button>

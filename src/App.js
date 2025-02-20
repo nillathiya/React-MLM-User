@@ -35,6 +35,8 @@ import { useSelector, shallowEqual } from "react-redux";
 import { useAccount } from "wagmi";
 import { selectIsLoggedIn } from "./feature/auth/authSlice";
 import Loader from "./components/common/Loader";
+import ChatProfileLayer from "./pages/Supports/ChatProfileLayer";
+
 // console.log(process.env.REACT_APP_API_URL)
 
 const ProtectedDashboardRoute = ({ children }) => {
@@ -119,6 +121,8 @@ function App() {
         <Route path='/report' element={<ProtectedDashboardRoute><Report /></ProtectedDashboardRoute>} />
         <Route path='/news-events' element={<ProtectedDashboardRoute><NewsAndEvents /></ProtectedDashboardRoute>} />
         <Route path='/support' element={<ProtectedDashboardRoute><Support /></ProtectedDashboardRoute>} />
+        <Route path='/chat-profile' element={<ChatProfileLayer />}/>
+
       </Routes>
       <Toaster />
     </BrowserRouter>

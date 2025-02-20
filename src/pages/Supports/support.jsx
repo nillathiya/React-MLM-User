@@ -1,10 +1,16 @@
 import React from 'react'
 import MasterLayout from '../../masterLayout/MasterLayout'
 
+import ChatMessageLayer from '../Supports/ChatMessageLayer'
+import ChatMessagePage from '../ChatMessagePage'
+import Breadcrumb from '../../components/Breadcrumb'
+
+
 const Support = () => {
   return (
     <MasterLayout>
-        support
+      <Breadcrumb PageHeading="Chart" title="Chat Message" />
+        <ChatMessageLayer/>
     </MasterLayout>
   )
 }

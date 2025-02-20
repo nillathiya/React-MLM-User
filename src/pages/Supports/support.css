@@ -1,0 +1,69 @@
+.create_new_ticket_section {
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    margin: auto;
+}
+
+.create_filter_ticket h3 {
+    font-size: 35px !important;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.create_input_section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.create_input_section form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.create_input_section input,
+.create_input_section textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    background: #f9f9f9;
+}
+
+.create_input_section input:focus,
+.create_input_section textarea:focus {
+    border-color: #4A90E2;
+    outline: none;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+}
+
+.create_input_section textarea {
+    min-height: 40px;
+    resize: none;
+}
+
+.createButton {
+    background: #4A90E2;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.createButton:hover {
+    background: #357ABD;
+}

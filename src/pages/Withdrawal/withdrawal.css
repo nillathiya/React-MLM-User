@@ -59,19 +59,25 @@
     background-color: rgb(82, 45, 124);
 }
 .withdrwal_detail{
-    background-color: rgb(46, 5, 94);
+    background-color:  rgb(224, 201, 250);
     padding: 10px;
+    color: black;
     border-radius: 10px;
+    font-weight: 600;
+    font-family: sans-serif;
 }
 .export_btn{
+    width: 150px;
     border: none;
     border: 1px solid gray;
-    background-color: rgb(224, 201, 250);
+    background-color: rgb(46, 5, 94);
     font-weight: bold;
     padding: 5px;
+    color: white;
+    text-align: center;
     margin-bottom: 5px;
     border-radius: 10px;
-    margin-left: 82%;
+    margin-left: 77%;
 }
 
 @media (max-width: 480px) {
