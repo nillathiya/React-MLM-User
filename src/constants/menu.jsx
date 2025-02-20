@@ -26,11 +26,6 @@ const menuItems = [
     submenu: [
       { title: "Add Fund", path: "/fund/addfund", icon: "mdi:cash-plus" },
       {
-        title: "Add Fund Arbitrum",
-        path: "/fund/addfundarb",
-        icon: "mdi:currency-eth",
-      },
-      {
         title: "Transfer Fund",
         path: "/fund/transfer-fund",
         icon: "mdi:bank-transfer",

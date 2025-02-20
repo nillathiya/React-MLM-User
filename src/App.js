@@ -11,7 +11,6 @@ import ForgotPassword from "./pages/Authentication/forgotPassword";
 import Direct from "./pages/Genelogy/direct";
 import Generation from "./pages/Genelogy/generation";
 import AddFund from "./pages/Fund/addFund";
-import AddFundArb from "./pages/Fund/addFundArb";
 import TranseferFund from "./pages/Fund/transeferFund";
 import FundConvertHistory from "./pages/Fund/fundConvertHistory";
 import FundConvert from "./pages/Fund/fundConvert";
@@ -91,7 +90,6 @@ function App() {
 
         <Route path='/fund'>
           <Route path='addfund' element={<ProtectedDashboardRoute><AddFund /></ProtectedDashboardRoute>} />
-          <Route path='addfundarb' element={<ProtectedDashboardRoute><AddFundArb /></ProtectedDashboardRoute>} />
           <Route path='transfer-fund' element={<ProtectedDashboardRoute><TranseferFund /></ProtectedDashboardRoute>} />
           <Route path='fund-transfer-history' element={<ProtectedDashboardRoute><FundConvertHistory /></ProtectedDashboardRoute>} />
           <Route path='fund-convert' element={<ProtectedDashboardRoute><FundConvert /></ProtectedDashboardRoute>} />
