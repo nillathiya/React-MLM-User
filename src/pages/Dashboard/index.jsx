@@ -97,7 +97,7 @@ const Dashboard = () => {
             <div className="card radius-16">
               <div className="card-header">
                 <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                  <h6 className="mb-2 fw-bold text-lg mb-0">Referral link</h6>
+                  <h6 className="mb-2 fw-bold text-lg">Referral link</h6>
                 </div>
               </div>
               <div className="card-body p-0">
@@ -129,7 +129,7 @@ const Dashboard = () => {
             <div className="card radius-16 mt-5">
               <div className="card-header">
                 <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                  <h6 className="mb-2 fw-bold text-lg mb-0">Quick Transfer</h6>
+                  <h6 className="mb-2 fw-bold text-lg">Quick Transfer</h6>
                 </div>
               </div>
               <div className="card-body p-0">
