@@ -44,6 +44,7 @@ const ConnectWallet = ({ setConnectWalletModal }) => {
             console.log("Wallet connected:", address);
             dispatch(setWalletAddress(address));
             setConnectWalletModal(false);
+            // navigate('/dashboard');
 
             // If the connected wallet is on the wrong network, try to switch networks
             if (chainId !== currentNetwork.CHAIN_ID) {

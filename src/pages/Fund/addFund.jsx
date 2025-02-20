@@ -1,9 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
-import { FaRegCreditCard } from "react-icons/fa";
-import { FaWallet } from "react-icons/fa";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { FaDollarSign } from "react-icons/fa";
 import "./fund.css";
 import {
@@ -14,126 +11,210 @@ import {
 import { parseUnits } from "viem";
 import { abi } from "../../ABI/usdtAbi";
 import { toast } from "react-hot-toast";
+import { COMPANY } from "../../constants/company";
+import { useDispatch } from "react-redux";
+import { verifyTransactionAsync } from "../../feature/transaction/transactionSlice";
 
-const USDT_ADDRESS = "0x7B5E2af1a89a1a23D8031077a24A2454D81b3fbd";
+// Token Data
+const tokens = [
+  {
+    category: "Stablecoins",
+    items: [
+      {
+        name: "USDT",
+        icon: "https://cryptologos.cc/logos/tether-usdt-logo.svg?v=026",
+        balance: "10.00",
+      },
+      {
+        name: "USDC",
+        icon: "https://images.vexels.com/media/users/3/135829/isolated/svg/1a857d341d8b6dd31426d6a62a8d9054.svg",
+        balance: "5.00",
+      },
+    ],
+  },
+];
 
 const AddFund = () => {
-  const [selectedToken, setSelectedToken] = useState("USDC");
-  const { address } = useAccount();
-  console.log("address: " + address);
-  const [recipient, setRecipient] = useState("");
-  // const [amount, setAmount] = useState("");
+  const dispatch = useDispatch();
+  const [selectedToken, setSelectedToken] = useState("token");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [amountInput, setAmountInput] = useState("");
+  const { address } = useAccount();
 
-  const {
-    writeContract,
-    data: hash,
-    status,
-    variables,
-    writeContractAsync,
-  } = useWriteContract();
-
-  const amount = 1 * 10 ** 18;
+  const { writeContractAsync, data: txHash, isLoading } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
-  console.log("data", hash);
+    useWaitForTransactionReceipt({ hash: txHash });
+
+  // Handle Amount Input
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setAmountInput(value);
+    } else {
+      toast.error("Invalid amount. Only numbers are allowed.");
+      setAmountInput("");
+    }
+  };
+
+  // Handle Fund Transfer
+  const handleFundTransfer = async () => {
+    if (selectedToken !== "USDT") {
+      toast.error("Please select USDT to proceed.");
+      return;
+    }
+
+    if (!amountInput || isNaN(amountInput) || parseFloat(amountInput) <= 0) {
+      toast.error("Enter a valid amount.");
+      return;
+    }
+
+    try {
+      const tx = await writeContractAsync({
+        abi,
+        address: COMPANY.USDT_ADDRESS,
+        functionName: "transfer",
+        args: [COMPANY.WALLET_ADDRESS, parseUnits(amountInput, 18)],
+      });
+
+      console.log("Transaction Sent:", tx);
+    } catch (error) {
+      console.error("Transaction Failed:", error);
+      toast.error("Transaction failed. Try again.");
+    }
+  };
+
+  // Handle Transaction Status & Verification
+  useEffect(() => {
+    const verifyTransaction = async () => {
+      if (isConfirmed) {
+        toast.success("Transaction confirmed!");
+
+        // Show loading toast and store its ID
+        const loadingToastId = toast.loading("Please wait for verification...");
+
+        try {
+          const formData = {
+            txHash: txHash,
+            userAddress: address,
+            amount: amountInput,
+          };
+
+          const result = await dispatch(
+            verifyTransactionAsync(formData)
+          ).unwrap();
+          console.log("Verification Result:", result);
+
+          // Remove the loading toast
+          toast.dismiss(loadingToastId);
+
+          if (result.status == "success") {
+            toast.success("USDT added successfully!");
+          } else {
+            toast.error("Transaction verification failed.");
+          }
+        } catch (error) {
+          console.error("Verification Error:", error);
+          toast.dismiss(loadingToastId);
+          toast.error("Verification failed. Please try again.");
+        } finally {
+          toast.dismiss(loadingToastId);
+        }
+      }
+    };
+
+    verifyTransaction();
+  }, [isConfirmed, txHash, address, amountInput, dispatch]);
 
   return (
-    <>
-      <MasterLayout>
-        <div className="p-4">
-          <h2 className="text-xl font-semibold mb-4">Send USDT</h2>
-          <input
-            type="text"
-            placeholder="Recipient Address"
-            className="border p-2 rounded w-full mb-2"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-          />
-          {/* <input
-        type="text"
-        placeholder="Amount"
-        className="border p-2 rounded w-full mb-2"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      /> */}
-          <button
-            className="bg-blue-500 text-white p-2 rounded"
-            onClick={() =>
-              writeContractAsync({
-                abi,
-                address: USDT_ADDRESS,
-                functionName: "transfer",
-                args: ["0x3Ca63F13dfDC749Cc5565c4Ab9b00657e1b4f379", amount],
-              })
-            }
-            // disabled={isLoading}
-          >
-            {/* {isLoading ? "Sending..." : "Send USDT"} */}
-            send USDT
-          </button>
-          {hash && <div>Transaction Hash: {hash}</div>}
-          {isConfirming && <div>Waiting for confirmation...</div>}
-          {isConfirmed && <div>Transaction confirmed.</div>}
-
-          {/* {isSuccess && <p>Transaction Hash: {data?.hash}</p>}
-      {writeError && (
-        <p className="text-red-500">Error: {writeError?.message}</p>
-      )} */}
-        </div>
-
-        <div className="payment-container">
-          <select className="payment-dropdown">
-            <option>Direct Payment</option>
-            <option>Bank Transfer</option>
-          </select>
-
-          <div className="payment-box">
-            <label>User Name or Wallet Address</label>
-            <input
-              type="text"
-              placeholder="Enter username or wallet"
-              className="input-field"
-            />
-
-            <div className="amount-section">
-              <div className="amount-input">
-                <label>Amount</label>
-                <input
-                  type="text"
-                  placeholder="0.00"
-                  className="input-field"
-                  value={amountInput}
-                  onChange={(e) => setAmountInput(e.target.value)}
-                />
-              </div>
-
-              <div className="token-select">
-                <label className="d-flex justify-content-between">
-                  Token <span className="balance">Balance: 0.00</span>
-                </label>
-                <div className="token-dropdown">
-                  <FaDollarSign className="token-icon" />
-                  <select
-                    value={selectedToken}
-                    onChange={(e) => setSelectedToken(e.target.value)}
-                  >
-                    <option value="token">Token Select</option>
-                    <option value="USDT">USDT</option>
-                  </select>
-                </div>
-              </div>
+    <MasterLayout>
+      <Breadcrumb title="Fund Transfer" />
+      <div className="flex justify-center items-center mt-5">
+        <div className="payment-box">
+          <div className="amount-section">
+            {/* Amount Input */}
+            <div className="amount-input">
+              <label>Amount</label>
+              <input
+                type="text"
+                placeholder="0.00"
+                className="input-field"
+                value={amountInput}
+                onChange={handleAmountChange}
+              />
             </div>
 
-            <button className={`submit-btn ${amountInput ? "active-btn" : ""}`}>
-              Enter Detail
-            </button>
+            {/* Token Dropdown */}
+            <div className="token-select relative">
+              <label className="d-flex justify-between mb-2">
+                Token{" "}
+                <span className="balance">
+                  Balance:{" "}
+                  {tokens
+                    .flatMap((g) => g.items)
+                    .find((t) => t.name === selectedToken)?.balance || "0.00"}
+                </span>
+              </label>
+
+              <div
+                className="token-dropdown flex items-center border border-gray-300 rounded-md p-2 cursor-pointer bg-white"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <FaDollarSign className="token-icon text-gray-500 mr-2" />
+                <span>
+                  {selectedToken === "token" ? "Select Token" : selectedToken}
+                </span>
+              </div>
+
+              {/* Dropdown List */}
+              {isDropdownOpen && (
+                <ul className="absolute bg-white w-full max-h-52 overflow-y-auto rounded shadow-md z-10 border mt-1">
+                  {tokens.map((group) => (
+                    <div key={group.category}>
+                      <li className="px-3 py-1 text-gray-600 text-sm font-semibold bg-gray-100">
+                        {group.category}
+                      </li>
+                      {group.items.map((token) => (
+                        <li
+                          key={token.name}
+                          className="flex items-center cursor-pointer hover:bg-gray-200 p-2 w-full"
+                          onClick={() => {
+                            setSelectedToken(token.name);
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                          <div className="flex items-center justify-between w-full">
+                            <div className="flex items-center">
+                              <img
+                                src={token.icon}
+                                alt={token.name}
+                                className="w-6 h-6 rounded-full bg-white object-cover mr-2"
+                              />
+                              <span>{token.name}</span>
+                            </div>
+                            <span className="font-medium text-gray-500">
+                              {token.balance}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </div>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
+
+          {/* Send Button */}
+          <button
+            className={`submit-btn ${amountInput ? "active-btn" : ""}`}
+            disabled={isLoading}
+            onClick={handleFundTransfer}
+          >
+            {isLoading ? "Sending..." : "Send USDT"}
+          </button>
         </div>
-      </MasterLayout>
-    </>
+      </div>
+    </MasterLayout>
   );
 };
 

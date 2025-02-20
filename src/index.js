@@ -9,7 +9,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
-import store from "./store/store";
+import {store} from "./store/store";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { config } from "./config/wagmiConfig"
 import { WagmiConfig } from "wagmi"

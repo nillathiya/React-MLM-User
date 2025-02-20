@@ -6,7 +6,10 @@ import menuItems from "../constants/menu";
 import { useAccount, useDisconnect, useEnsName } from "wagmi";
 import { ICON } from "../constants/icons";
 import Profile from "./profile";
+import { useDispatch } from "react-redux";
+import { clearUserExists, clearUser } from "../feature/auth/authSlice";
 const MasterLayout = ({ children }) => {
+  const dispatch = useDispatch();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
 
   let [sidebarActive, seSidebarActive] = useState(false);
@@ -108,10 +111,21 @@ const MasterLayout = ({ children }) => {
     setMobileMenu(!mobileMenu);
   };
 
-  const handleDisconnectWallet = () => {
-    disconnect();
+  const handleDisconnectWallet = async () => {
+    await disconnect();
+    await dispatch(clearUser());
+    await dispatch(clearUserExists());
+    navigate("/");
+    window.location.reload();
   };
 
+  const handleLogout = async () => {
+    // await disconnect();
+    await dispatch(clearUser());
+    await dispatch(clearUserExists());
+    await navigate("/");
+    window.location.reload();
+  };
   const handleChild = (status) => {
     setIsWalletConnected(status);
   };
@@ -848,13 +862,13 @@ const MasterLayout = ({ children }) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <button
                           className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
-                          to="#"
+                          onClick={handleLogout}
                         >
                           <Icon icon="lucide:power" className="icon text-xl" />{" "}
                           Log Out
-                        </Link>
+                        </button>
                       </li>
                       {isConnected && (
                         <>

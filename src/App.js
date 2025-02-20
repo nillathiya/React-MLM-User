@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import RouteScrollToTop from "./helper/RouteScrollToTop";
 import ErrorPage from "./pages/ErrorPage";
 import Dashboard from "./pages/Dashboard";
@@ -31,48 +31,98 @@ import RoyalityAndRewards from "./pages/RoyalityRewards/royalityAndRewards";
 import Report from "./pages/Reports/report";
 import NewsAndEvents from "./pages/News&Event/newsAndEvents";
 import Support from "./pages/Supports/support";
-
+import { useSelector, shallowEqual } from "react-redux";
+import { useAccount } from "wagmi";
+import { selectIsLoggedIn } from "./feature/auth/authSlice";
+import Loader from "./components/common/Loader";
 // console.log(process.env.REACT_APP_API_URL)
+
+const ProtectedDashboardRoute = ({ children }) => {
+  const { isConnected, isConnecting } = useAccount();
+  const { isLoggedIn, loading } = useSelector(state => state.auth, shallowEqual);
+
+  // ✅ Show loader only when authentication is in progress
+  if (isConnected === null) {
+    return <Loader loader="ClipLoader" color="blue" size={50} fullPage />;
+  }
+
+  return isLoggedIn && isConnected ? children : <Navigate to="/" />;
+};
+
+const ProtectedHomeRoute = ({ children }) => {
+  const { isConnected, isConnecting } = useAccount();
+  const { isLoggedIn, loading } = useSelector(state => state.auth, shallowEqual);
+
+  if (isConnected === null) {
+    return <Loader loader="ClipLoader" color="blue" size={50} fullPage />;
+  }
+
+  return isLoggedIn && isConnected ? <Navigate to="/dashboard" /> : children;
+};
+
 
 function App() {
   return (
     <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <RouteScrollToTop />
       <Routes>
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/Users/alluser' element={<AllUsers />} />
-        <Route path='/Users/userReward' element={<UserReward />} />
-        <Route path='/Users/addmember' element={<AddMember />} />
-        <Route path='/genology/direct' element={<Direct />} />
-        <Route path='/genology/generation' element={<Generation />} />
-        <Route path='/fund/addfund' element={<AddFund />} />
-        <Route path='/fund/addfundarb' element={<AddFundArb />} />
-        <Route path='/fund/transfer-fund' element={<TranseferFund />} />
-        <Route path='/fund/fund-transfer-history' element={<FundConvertHistory />} />
-        <Route path='/fund/fund-convert' element={<FundConvert />} />
-        <Route path='/fund/fund-convert-history' element={<FundConvertHistory />} />
-        <Route path='/withdrawal' element={<Withdrawal />}/>
-        <Route path='/withdrawal/arb-withdrawal' element={<ArbWithdrawal />}/>
-        <Route path='/Users/withdrawal-report' element={<WithdrawalReports />}/>
-        <Route path='/income/stake-reward' element={<DailyStack />}/>
-        <Route path='/income/sponsor-reward' element={<StackSponsor />}/>
-        <Route path='/income/reward' element={<Rewards />}/>
-        <Route path='/income/performance-reward' element={<TeamPerformance />}/>
-        <Route path='/income/development-reward' element={<TeamDevelopment />}/>
-        <Route path='/upgrade/member-topup' element={<MemberTopup />}/>
-        <Route path='/upgrade/upgrade-account' element={<UpgradeAccount />}/>
-        <Route path='/orders' element={<Orders />}/>
-        <Route path='/royalty-rewards' element={<RoyalityAndRewards />}/>
-        <Route path='/report' element={<Report />}/>
-        <Route path='/news-events' element={<NewsAndEvents />}/>
-        <Route path='/support' element={<Support />}/>
-        <Route path='*' element={<ErrorPage />} />
-        <Route path='/' element={<SignIn />} />
+        {/* Public Routes */}
+        <Route path='/' element={<ProtectedHomeRoute><SignIn /></ProtectedHomeRoute>} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
+        <Route path='*' element={<ErrorPage />} />
+
+        {/* Protected Routes */}
+        <Route path="/dashboard" element={<ProtectedDashboardRoute><Dashboard /></ProtectedDashboardRoute>} />
+
+        <Route path='/Users'>
+          <Route path='alluser' element={<ProtectedDashboardRoute><AllUsers /></ProtectedDashboardRoute>} />
+          <Route path='userReward' element={<ProtectedDashboardRoute><UserReward /></ProtectedDashboardRoute>} />
+          <Route path='addmember' element={<ProtectedDashboardRoute><AddMember /></ProtectedDashboardRoute>} />
+          <Route path='withdrawal-report' element={<ProtectedDashboardRoute><WithdrawalReports /></ProtectedDashboardRoute>} />
+        </Route>
+
+        <Route path='/genology'>
+          <Route path='direct' element={<ProtectedDashboardRoute><Direct /></ProtectedDashboardRoute>} />
+          <Route path='generation' element={<ProtectedDashboardRoute><Generation /></ProtectedDashboardRoute>} />
+        </Route>
+
+        <Route path='/fund'>
+          <Route path='addfund' element={<ProtectedDashboardRoute><AddFund /></ProtectedDashboardRoute>} />
+          <Route path='addfundarb' element={<ProtectedDashboardRoute><AddFundArb /></ProtectedDashboardRoute>} />
+          <Route path='transfer-fund' element={<ProtectedDashboardRoute><TranseferFund /></ProtectedDashboardRoute>} />
+          <Route path='fund-transfer-history' element={<ProtectedDashboardRoute><FundConvertHistory /></ProtectedDashboardRoute>} />
+          <Route path='fund-convert' element={<ProtectedDashboardRoute><FundConvert /></ProtectedDashboardRoute>} />
+          <Route path='fund-convert-history' element={<ProtectedDashboardRoute><FundConvertHistory /></ProtectedDashboardRoute>} />
+        </Route>
+
+        <Route path='/withdrawal'>
+          <Route path='' element={<ProtectedDashboardRoute><Withdrawal /></ProtectedDashboardRoute>} />
+          <Route path='arb-withdrawal' element={<ProtectedDashboardRoute><ArbWithdrawal /></ProtectedDashboardRoute>} />
+        </Route>
+
+        <Route path='/income'>
+          <Route path='stake-reward' element={<ProtectedDashboardRoute><DailyStack /></ProtectedDashboardRoute>} />
+          <Route path='sponsor-reward' element={<ProtectedDashboardRoute><StackSponsor /></ProtectedDashboardRoute>} />
+          <Route path='reward' element={<ProtectedDashboardRoute><Rewards /></ProtectedDashboardRoute>} />
+          <Route path='performance-reward' element={<ProtectedDashboardRoute><TeamPerformance /></ProtectedDashboardRoute>} />
+          <Route path='development-reward' element={<ProtectedDashboardRoute><TeamDevelopment /></ProtectedDashboardRoute>} />
+        </Route>
+
+        <Route path='/upgrade'>
+          <Route path='member-topup' element={<ProtectedDashboardRoute><MemberTopup /></ProtectedDashboardRoute>} />
+          <Route path='upgrade-account' element={<ProtectedDashboardRoute><UpgradeAccount /></ProtectedDashboardRoute>} />
+        </Route>
+
+        <Route path='/orders' element={<ProtectedDashboardRoute><Orders /></ProtectedDashboardRoute>} />
+        <Route path='/royalty-rewards' element={<ProtectedDashboardRoute><RoyalityAndRewards /></ProtectedDashboardRoute>} />
+        <Route path='/report' element={<ProtectedDashboardRoute><Report /></ProtectedDashboardRoute>} />
+        <Route path='/news-events' element={<ProtectedDashboardRoute><NewsAndEvents /></ProtectedDashboardRoute>} />
+        <Route path='/support' element={<ProtectedDashboardRoute><Support /></ProtectedDashboardRoute>} />
       </Routes>
       <Toaster />
     </BrowserRouter>
+
   );
 }
 
