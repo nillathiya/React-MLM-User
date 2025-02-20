@@ -57,7 +57,7 @@ const Dashboard = () => {
           </>
         ) : (
           <>
-            <Breadcrumb title="dashboard"></Breadcrumb>
+            <Breadcrumb PageHeading="Dashboard" title="dashboard"></Breadcrumb>
 
             <UserActivityCard />
 

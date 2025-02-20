@@ -56,18 +56,18 @@ const WithdrawalReports = () => {
             <button className="export_btn">Export to Excel</button>
             <div className="position-relative z-1 py-32 text-center px-3 withdrwal_detail">
               <div className="d-flex justify-content-between">
-                <h6 className="text-white">Total Withdrawal</h6>
-                <p className="text-white">$ 0</p>
+                <h6 className=" p-3">Total Withdrawal</h6>
+                <p className=" p-3">$ 0</p>
               </div>
-              <hr className="text-white" />
+              <hr className="" />
               <div className="d-flex justify-content-between">
-                <h6 className="text-white">Paid Withdrawal</h6>
-                <p className="text-white">$ 0</p>
+                <h6 className=" p-3">Paid Withdrawal</h6>
+                <p className=" p-3">$ 0</p>
               </div>
-              <hr className="text-white" />
+              <hr className="" />
               <div className="d-flex justify-content-between">
-                <h6 className="text-white">Reject Withdrawal</h6>
-                <p className="text-white">$ 0</p>
+                <h6 className=" p-3">Reject Withdrawal</h6>
+                <p className=" p-3">$ 0</p>
               </div>
             </div>
           </div>

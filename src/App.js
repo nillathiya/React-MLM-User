@@ -31,6 +31,7 @@ import RoyalityAndRewards from "./pages/RoyalityRewards/royalityAndRewards";
 import Report from "./pages/Reports/report";
 import NewsAndEvents from "./pages/News&Event/newsAndEvents";
 import Support from "./pages/Supports/support";
+import ChatProfileLayer from "./pages/Supports/ChatProfileLayer";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -66,6 +67,7 @@ function App() {
         <Route path='/report' element={<Report />}/>
         <Route path='/news-events' element={<NewsAndEvents />}/>
         <Route path='/support' element={<Support />}/>
+        <Route path='/chat-profile' element={<ChatProfileLayer />}/>
         <Route path='*' element={<ErrorPage />} />
         <Route path='/' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
