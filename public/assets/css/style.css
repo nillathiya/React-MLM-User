@@ -12443,16 +12443,8 @@ h6,
   flex-wrap: wrap;
   align-items: center;
   gap: 0.9375rem;
+  justify-content: start;
 }
-
-.basic-data-table .dt-layout-row .dt-search {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.9375rem;
-  justify-content: flex-end;
-}
-
 .basic-data-table .dt-layout-row .dt-search .dt-input {
   color: var(--text-secondary-light) !important;
   height: 2.5rem;
