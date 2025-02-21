@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import useReactApexChart from "../../hook/useReactApexChart";
@@ -13,7 +13,12 @@ import EarningCategories from "./EarningCategories";
 import ExpenseStatistics from "./ExpenseStatistics";
 import Investment from "./investment";
 import NewCustomerList from "./newCustomerList";
+import { useDispatch } from "react-redux";
+import { getUserWalletAsync } from "../../feature/wallet/walletSlice";
+import { useSelector } from "react-redux";
 const Dashboard = () => {
+  const dispatch=useDispatch();
+  const {currentUser:loggedInUser}=useSelector((state)=>state.auth)
   const [copySuccess, setCopySuccess] = useState(false);
   const referralLink = "https://test.arbstake.com/register?ref=arbstake";
 
@@ -23,6 +28,11 @@ const Dashboard = () => {
       setTimeout(() => setCopySuccess(false), 2000);
     });
   };
+
+  console.log(loggedInUser?._id)
+  useEffect(()=>{
+    dispatch(getUserWalletAsync(loggedInUser?._id));
+  },[])
 
   return (
     <MasterLayout>
