@@ -1,0 +1,95 @@
+@media (max-width: 768px) {
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .table-container table {
+    width: 100%;
+    min-width: 600px;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .table-container thead,
+  .table-container tbody,
+  .table-container tr {
+    display: table;
+    width: 100%;
+  }
+
+  .table-container th,
+  .table-container td {
+    white-space: nowrap;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 425px) {
+  div.dt-container div.dt-layout-row {
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  div.dt-container .dt-paging {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    margin-top: 24px;
+  }
+  div.dt-container div.dt-layout-row {
+    display: block !important;
+    overflow-x: hidden;
+    text-align: center;
+  }
+  .basic-data-table .dt-layout-row div {
+    color: #4b5563;
+    display: flex;
+  }
+  .basic-data-table .dt-layout-row .dt-search .dt-input {
+    color: #4b5563 !important;
+    height: 2.5rem;
+    width: 84%;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+  }
+  .basic-data-table .dt-layout-row label {
+    color: #4b5563;
+    display: flex;
+    margin-top: 10px;
+  }
+}
+@media (max-width: 375px) {
+  div.dt-container .dt-paging {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    margin-top: 24px;
+  }
+  div.dt-container div.dt-layout-row {
+    display: block !important;
+    overflow-x: hidden;
+    text-align: center;
+  }
+  .basic-data-table .dt-layout-row div {
+    color: #4b5563;
+    display: flex;
+    justify-content: center;
+  }
+  .basic-data-table .dt-layout-row .dt-search .dt-input {
+    color: #4b5563 !important;
+    height: 2.5rem;
+    width: 75%;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+  }
+  .basic-data-table .dt-layout-row label {
+    color: #4b5563;
+    display: flex;
+    margin-top: 10px;
+  }
+}
