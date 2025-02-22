@@ -12,7 +12,10 @@ import {
 } from "../../feature/topup/topUpSlice";
 import Loader from "../../components/common/Loader";
 import { removeAmountFromWallet } from "../../feature/wallet/walletSlice";
+import { checkUsernameAsync } from "../../feature/user/userSlice";
 const MemberTopup = () => {
+  const [usernameValid, setUsernameValid] = useState(null);
+  const [userActiveStatus, setUserActiveStatus] = useState(null);
   const dispatch = useDispatch();
   const { userWallet } = useSelector((state) => state.wallet);
   const { pinDetails } = useSelector((state) => state.topUp);
@@ -21,8 +24,13 @@ const MemberTopup = () => {
   const {
     register,
     handleSubmit,
+    watch,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({ mode: "onBlur" });
+
+  const username = watch("username"); // Watch username field
 
   useEffect(() => {
     (async () => {
@@ -36,7 +44,47 @@ const MemberTopup = () => {
       }
     })();
   }, []);
+
+  // Function to check username validity
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (!username) return;
+      try {
+        const formData = {
+          username,
+        };
+        const response = await dispatch(checkUsernameAsync(formData)).unwrap();
+        console.log(response)
+        if (response.data.valid) {
+          setUsernameValid(true);
+          setUserActiveStatus(response.data.activeStatus);
+          clearErrors("username");
+        } else {
+          setUsernameValid(false);
+          setError("username", {
+            type: "manual",
+            message: "Username not found",
+          });
+        }
+      } catch (error) {
+        setUsernameValid(false);
+        setError("username", { type: "manual", message: "Username not found" });
+      }
+    };
+
+    const delayDebounce = setTimeout(() => {
+      checkUsername();
+    }, 500); // Debounce API call
+
+    return () => clearTimeout(delayDebounce);
+  }, [username, setError, clearErrors]);
+
   const handleFormSubmit = async (data) => {
+    if (!usernameValid) {
+      toast.error("Please enter a valid username");
+      return;
+    }
+
     const formData = {
       ...data,
       txType: "purchase",
@@ -94,9 +142,10 @@ const MemberTopup = () => {
                   })}
                 />
                 {errors.username && (
-                  <p className="error-message mt-1">
-                    {errors.username.message}
-                  </p>
+                  <p className="error-message">{errors.username.message}</p>
+                )}
+                {usernameValid && (
+                  <p className="text-green-500">✅ Username is valid</p>
                 )}
               </div>
 
@@ -111,11 +160,12 @@ const MemberTopup = () => {
                   className="input-field"
                 >
                   <option value="">Select Package</option>
-                  {pinDetails.length>0 && (pinDetails?.map((pinDetail) => (
-                    <option key={pinDetail._id} value={pinDetail._id}>
-                      {`${pinDetail.pinType} ($${pinDetail.pinRate})`}
-                    </option>
-                  )))}
+                  {pinDetails.length > 0 &&
+                    pinDetails?.map((pinDetail) => (
+                      <option key={pinDetail._id} value={pinDetail._id}>
+                        {`${pinDetail.pinType} ($${pinDetail.pinRate})`}
+                      </option>
+                    ))}
                 </select>
                 {errors.pinId && (
                   <p className="error-message">{errors.pinId.message}</p>
@@ -143,7 +193,11 @@ const MemberTopup = () => {
                 className="btn-primary"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Processing..." : "TOPUP"}
+                {isSubmitting
+                  ? "Processing..."
+                  : userActiveStatus == 0
+                  ? "TOPUP"
+                  : "UPGRADE"}
               </button>
             </form>
           </div>

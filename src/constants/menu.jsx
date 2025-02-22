@@ -78,11 +78,6 @@ const menuItems = [
         path: "/upgrade/member-topup",
         icon: "mdi:account-arrow-up-outline",
       },
-      {
-        title: "Upgrade Account",
-        path: "/upgrade/upgrade-account",
-        icon: "mdi:arrow-up-bold",
-      },
     ],
   },
   {

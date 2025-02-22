@@ -25,7 +25,6 @@ import TeamPerformance from "./pages/IncomeReports/teamPerformance";
 import TeamDevelopment from "./pages/IncomeReports/teamDevelopment";
 import Rewards from "./pages/IncomeReports/rewards";
 import MemberTopup from "./pages/Topup/memberTopup";
-import UpgradeAccount from "./pages/Topup/upgradeAccount";
 import Orders from "./pages/Order/orders";
 import RoyalityAndRewards from "./pages/RoyalityRewards/royalityAndRewards";
 import Report from "./pages/Reports/report";
@@ -114,7 +113,6 @@ function App() {
 
         <Route path='/upgrade'>
           <Route path='member-topup' element={<ProtectedDashboardRoute><MemberTopup /></ProtectedDashboardRoute>} />
-          <Route path='upgrade-account' element={<ProtectedDashboardRoute><UpgradeAccount /></ProtectedDashboardRoute>} />
         </Route>
 
         <Route path='/orders' element={<ProtectedDashboardRoute><Orders /></ProtectedDashboardRoute>} />

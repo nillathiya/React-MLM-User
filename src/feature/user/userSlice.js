@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerNewUser } from './userApi';
+import { registerNewUser, checkUsername } from './userApi';
 
 const initialState = {
   user: null, // Change from array to object (since it stores a single user)
@@ -22,6 +22,24 @@ export const registerNewUserAsync = createAsyncThunk(
   }
 );
 
+
+export const checkUsernameAsync = createAsyncThunk(
+  'users/checkUsername',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const data = await checkUsername(formData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An unknown error occurred'
+      );
+    }
+  }
+);
+
+
+
+
 const userSlice = createSlice({
   name: 'users',
   initialState,
@@ -38,7 +56,17 @@ const userSlice = createSlice({
       })
       .addCase(registerNewUserAsync.rejected, (state) => {
         state.isLoading = false;
-      });
+      })
+      // checkUsernameAsync
+      .addCase(checkUsernameAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(checkUsernameAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(checkUsernameAsync.rejected, (state) => {
+        state.isLoading = false;
+      })
   },
 });
 

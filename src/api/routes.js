@@ -17,7 +17,8 @@ export const ROUTES = {
 
   },
   USER: {
-    REGISTER: `${API_URL}/api/user/create`
+    REGISTER: `${API_URL}/api/user/create`,
+    CHECK_NAME: `${API_URL}/api/user/check-name`,
   },
   WALLET: {
     // TRANSACTIONS: `${API_URL}/api/wallet/transactions`,
@@ -26,7 +27,7 @@ export const ROUTES = {
   PIN_DETAILS: {
     GET_ALL: `${API_URL}/api/pin-detail/get`
   },
-  TOPUP:{
+  TOPUP: {
     CREATE: `${API_URL}/api/top-up/create`
   }
 };
