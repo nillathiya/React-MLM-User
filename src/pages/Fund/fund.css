@@ -58,32 +58,24 @@ label {
   font-size: 15px;
 }
 
-.input-field {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
 .amount-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
 }
 
-.token-select {
+/* .token-select {
   width: 50%;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-}
-.token-selectarb{
+} */
+/* .token-selectarb{
   width: 100%;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-}
+} */
 
 .token-dropdown {
   display: flex;

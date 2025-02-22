@@ -1,10 +1,9 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { verifyTransaction, getFundTransactionsByUser,userFundTransfer } from './transactionApi';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { verifyTransaction, getFundTransactionsByUser, userFundTransfer, userConvertFunds, getTransactionsByUser } from './transactionApi';
 
 const initialState = {
   loading: false,
   transactions: [],
-  addFunTransactions: [],
 };
 
 export const verifyTransactionAsync = createAsyncThunk(
@@ -23,9 +22,26 @@ export const verifyTransactionAsync = createAsyncThunk(
   },
 );
 
+export const getTransactionsByUserAsync = createAsyncThunk(
+  'transaction/getTransactionsByUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getTransactionsByUser();
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue('An unknown error occurred');
+      }
+    }
+  },
+);
+
+
 export const getFundTransactionsByUserAsync = createAsyncThunk(
   'transaction/getFundTransactionsByUser',
-  async (formData, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const data = await getFundTransactionsByUser();
       return data;
@@ -56,12 +72,36 @@ export const userFundTransferAsync = createAsyncThunk(
   },
 );
 
+export const userConvertFundsAsync = createAsyncThunk(
+  'transaction/userConvertFunds',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const data = await userConvertFunds(formData);
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue('An unknown error occurred');
+      }
+    }
+  },
+);
+
+
 
 // Define the slice
 const transactionSlice = createSlice({
   name: 'transaction',
   initialState,
-  reducers: {},
+  reducers: {
+    addTransaction: (state, action) => {
+      state.transactions.push(action.payload);
+    },
+    clearAllFundTransactions: (state) => {
+      state.transactions = [];
+    }
+  },
   extraReducers: (builder) => {
     builder
       // verifyTransactionAsync
@@ -69,7 +109,7 @@ const transactionSlice = createSlice({
         state.loading = true;
       })
       .addCase(verifyTransactionAsync.fulfilled, (state, action) => {
-        console.log('authSlice fulfilled', action.payload);
+        state.transactions.push(action.payload.data);
         state.loading = false;
       })
       .addCase(verifyTransactionAsync.rejected, (state, action) => {
@@ -81,15 +121,9 @@ const transactionSlice = createSlice({
         state.loading = true;
       })
       .addCase(getFundTransactionsByUserAsync.fulfilled, (state, action) => {
-        console.log('Transaction data received:', action.payload);
 
         state.loading = false;
         state.transactions = action.payload.data;
-
-        // Filter transactions where txType is "ADDFUND"
-        state.addFunTransactions = action.payload.data.filter(
-          (transaction) => transaction.txType === "ADDFUND"
-        );
       })
       .addCase(getFundTransactionsByUserAsync.rejected, (state, action) => {
         state.loading = false;
@@ -101,12 +135,47 @@ const transactionSlice = createSlice({
       })
       .addCase(userFundTransferAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.transactions.push(action.payload.data);
       })
       .addCase(userFundTransferAsync.rejected, (state, action) => {
         state.loading = false;
       })
 
+      // userConvertFundsAsync
+      .addCase(userConvertFundsAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(userConvertFundsAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.transactions.push(action.payload.data);
+      })
+      .addCase(userConvertFundsAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      // getTransactionsByUserAsync
+      .addCase(getTransactionsByUserAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTransactionsByUserAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.transactions = [...state.transactions, ...action.payload.data];
+      })      
+      .addCase(getTransactionsByUserAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
   },
 });
 
+export const { addTransaction, clearAllFundTransactions } = transactionSlice.actions;
+
+export const selectAddFundHistory = (state) =>
+  state.transaction.transactions.filter((tx) => tx.txType === "user_add_fund");
+
+export const selectUserFundTransfer = (state) =>
+  state.transaction.transactions.filter((tx) => tx.txType === "user_fund_transfer");
+
+export const selectUserFundConvertHistory = (state) =>
+  state.transaction.transactions.filter((tx) => tx.txType === "user_fund_convert");
+
+export const selectTransactionLoading = (state) => state.transaction.loading
 export default transactionSlice.reducer;

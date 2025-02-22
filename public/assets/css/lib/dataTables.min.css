@@ -600,6 +600,8 @@ div.dt-container div.dt-layout-row.dt-layout-table div.dt-layout-cell {
 }
 div.dt-container div.dt-layout-cell {
   display: table-cell;
+  /* Make Table responsive */
+  overflow-x: auto;
   vertical-align: middle;
   padding: 5px 0;
 }
@@ -615,6 +617,13 @@ div.dt-container div.dt-layout-cell.dt-end {
 div.dt-container div.dt-layout-cell:empty {
   display: none;
 }
+.dt-container .dt-search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; /* Ensures proper wrapping on small screens */
+  gap: 8px; /* Adds spacing between elements */
+}
 div.dt-container .dt-search input {
   border: 1px solid #aaa;
   border-radius: 3px;
@@ -622,6 +631,10 @@ div.dt-container .dt-search input {
   background-color: transparent;
   color: inherit;
   margin-left: 3px;
+  /* custom */
+  width: 100%; /* Takes full width in small screens */
+  max-width: 250px; /* Limits width on larger screens */
+  transition: 0.3s ease-in-out;
 }
 div.dt-container .dt-input {
   border: 1px solid #aaa;
@@ -833,16 +846,85 @@ div.dt-container.dt-empty-footer .dt-scroll-body tbody > tr:last-child > * {
     text-align: center;
   }
 }
-@media screen and (max-width: 640px) {
-  .dt-container .dt-length,
-  .dt-container .dt-search {
+/* @media screen and (max-width: 640px) {
+  .dt-container .dt-length {
     float: none;
     text-align: center;
   }
+} */
+/* Custom: Added to make response search bar */
+@media screen and (max-width: 768px) {
+  .dt-container {
+    display: flex;
+    justify-content: space-between; /* Align left and right */
+    align-items: center;
+    flex-wrap: wrap; /* Ensure elements wrap properly on smaller screens */
+  }
+
+  .dt-container .dt-length {
+    display: flex;
+    flex-direction: row; /* Keep dropdown and label in a row */
+    align-items: center;
+    text-align: left;
+  }
+
   .dt-container .dt-search {
-    margin-top: 0.5em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end; /* Move to right side */
+  }
+
+  .dt-container .dt-search input {
+    max-width: 100%;
   }
 }
+
+@media (max-width: 425px) {
+  div.dt-container div.dt-layout-row {
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  div.dt-container .dt-paging {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    margin-top: 24px;
+  }
+  div.dt-container div.dt-layout-row {
+    display: block !important;
+    overflow-x: hidden;
+    text-align: center;
+  }
+  .basic-data-table .dt-layout-row div {
+    color: #4b5563;
+    display: flex;
+  }
+  .basic-data-table .dt-layout-row .dt-search .dt-input {
+    color: #4b5563 !important;
+    height: 2.5rem;
+    width: 77%;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+  }
+  .basic-data-table .dt-layout-row label {
+    color: #4b5563;
+    display: flex;
+    margin-top: 10px;
+  }
+}
+/* Make search input smaller on small screens */
+@media screen and (max-width: 640px) {
+  .dt-container .dt-search input {
+    width: 100px; /* Adjust the width for small screens */
+    padding: 4px; /* Reduce padding */
+    font-size: 14px; /* Decrease font size */
+  }
+}
+
 html.dark {
   --dt-row-hover: 255, 255, 255;
   --dt-row-stripe: 255, 255, 255;

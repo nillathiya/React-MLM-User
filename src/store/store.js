@@ -4,6 +4,7 @@ import networkReducer from "../feature/network/networkSlice";
 import themeReducer from "../feature/theme/themeSlice";
 import authReducer from "../feature/auth/authSlice";
 import userReducer from "../feature/user/userSlice";
+import transactionReducer from "../feature/transaction/transactionSlice";
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer, createTransform } from 'redux-persist';
 import CryptoJS from "crypto-js";
@@ -24,17 +25,24 @@ const decryptData = (encryptedData) => {
     }
 };
 
-// 🔒 Create encryption transform for secure persistence
-const encryptTransform = createTransform(
+// 🔒 Create encryption transform for transactions
+const transactionEncryptTransform = createTransform(
     (inboundState) => encryptData(inboundState),  // Encrypt before saving
     (outboundState) => decryptData(outboundState),  // Decrypt when reading
 );
 
 // Persist Configs
+const transactionPersistConfig = {
+    key: "transaction",
+    storage,
+    transforms: [transactionEncryptTransform], // Apply encryption
+    whitelist: ["transactions"], // Ensure only transactions are persisted
+};
+
 const walletPersistConfig = {
     key: "wallet",
     storage,
-    transforms: [encryptTransform],
+    transforms: [transactionEncryptTransform],
     whitelist: ["userWallet"],
 };
 
@@ -47,15 +55,17 @@ const authPersistConfig = {
 // Apply persistence
 const persistedWalletReducer = persistReducer(walletPersistConfig, walletReducer);
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+const persistedTransactionReducer = persistReducer(transactionPersistConfig, transactionReducer);
 
 // Create Redux Store
 export const store = configureStore({
     reducer: {
-        wallet: persistedWalletReducer, 
+        wallet: persistedWalletReducer,
         network: networkReducer,
         theme: themeReducer,
-        auth: persistedAuthReducer, 
+        auth: persistedAuthReducer,
         user: userReducer,
+        transaction: persistedTransactionReducer, // 🔒 Use encrypted persisted reducer
     },
 });
 

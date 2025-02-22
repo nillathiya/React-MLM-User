@@ -8,6 +8,8 @@ import { ICON } from "../constants/icons";
 import Profile from "./profile";
 import { useDispatch } from "react-redux";
 import { clearUserExists, clearUser } from "../feature/auth/authSlice";
+import { clearUserWallet } from "../feature/wallet/walletSlice";
+import { clearAllFundTransactions } from "../feature/transaction/transactionSlice";
 const MasterLayout = ({ children }) => {
   const dispatch = useDispatch();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
@@ -115,6 +117,8 @@ const MasterLayout = ({ children }) => {
     await disconnect();
     await dispatch(clearUser());
     await dispatch(clearUserExists());
+    await dispatch(clearUserWallet());
+    await dispatch(clearAllFundTransactions());
     navigate("/");
     window.location.reload();
   };
@@ -123,6 +127,8 @@ const MasterLayout = ({ children }) => {
     // await disconnect();
     await dispatch(clearUser());
     await dispatch(clearUserExists());
+    await dispatch(clearUserWallet());
+    await dispatch(clearAllFundTransactions());
     await navigate("/");
     window.location.reload();
   };

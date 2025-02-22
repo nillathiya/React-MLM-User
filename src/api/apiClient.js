@@ -20,13 +20,14 @@ apiClient.interceptors.response.use(
 
       try {
         // // Lazy-load store and actions to prevent circular dependencies
-        // const { store } = await import('../store/store');
-        // const { adminLogoutAsync, clearUser } = await import('../features/auth/authSlice');
+        const { store } = await import('../store/store');
+        const { clearUser, clearUserExists } = await import('../feature/auth/authSlice');
 
-        // await store.dispatch(adminLogoutAsync());
-        // await store.dispatch(clearUser());
+        await store.dispatch(clearUser());
+        await store.dispatch(clearUserExists());
 
-        // window.location.href = '/';
+        window.location.reload();
+        window.location.href = '/';
       } catch (err) {
         console.error('Error during 401 handling:', err);
       }

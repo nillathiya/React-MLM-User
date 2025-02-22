@@ -3,9 +3,12 @@ export const API_URL = process.env.REACT_APP_API_URL;
 export const ROUTES = {
   TRANSACTION: {
     VERIFY: `${API_URL}/api/transaction/verify`,
+    GET_ALL: `${API_URL}/api/transaction/get-all`,
+    GET_BY_USER: `${API_URL}/api/transaction/user`,
     FUND: {
       GET_BY_USER: `${API_URL}/api/transaction/fund/user`,
       TRANSFER: `${API_URL}/api/transaction/fund/transfer`,
+      CONVERT: `${API_URL}/api/transaction/fund/convert`,
     }
   },
   AUTH: {

@@ -1,74 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
-import { FaSitemap } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import MasterLayout from "../../masterLayout/MasterLayout";
-import Breadcrumb from "../../components/Breadcrumb";
-import Skeleton from "../../helper/Skeleton/Skeleton.jsx";
-import "./fund.css";
+import Skeleton from "../../helper/Skeleton/Skeleton";
+import { useSelector } from "react-redux";
+import {
+  selectUserFundConvertHistory,
+  selectTransactionLoading,
+} from "../../feature/transaction/transactionSlice";
+import { formatDate } from "../../utils/dateUtils.js";
+import { DEFAULT_PER_PAGE_ITEMS } from "../../constants/appConstants";
 
 const FundConvertHistory = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const userFundConvertHistory = useSelector(selectUserFundConvertHistory);
+  const loading = useSelector(selectTransactionLoading);
+  const tableRef = useRef(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setUsers([
-        {
-          id: "526534",
-          name: "Credit",
-          date: "25 Jan 2024",
-          mobile: "7849025269",
-          status: "Active",
-          package: "25 Jan 2024 00:12",
-        },
-        {
-          id: "696589",
-          name: "Debit",
-          date: "25 Jan 2024",
-          mobile: "7894561236",
-          status: "Active",
-          package: "25 Jan 2024 00:12",
-        },
-      ]);
-      setLoading(false);
-    }, 2000);
-  }, []);
+    if (!loading && userFundConvertHistory.length > 0) {
+      if ($.fn.DataTable.isDataTable("#dataTable")) {
+        $("#dataTable").DataTable().destroy();
+      }
 
-  useEffect(() => {
-    if (!loading) {
-      const table = $("#dataTable").DataTable({
-        destroy: true,
-        pageLength: 10,
+      tableRef.current = $("#dataTable").DataTable({
+        pageLength: DEFAULT_PER_PAGE_ITEMS,
         responsive: true,
       });
-      return () => {
-        table.destroy(true);
-      };
     }
-  }, [loading]);
+
+    return () => {
+      if (tableRef.current) {
+        tableRef.current.destroy(true);
+      }
+    };
+  }, [loading, userFundConvertHistory]);
+
   return (
     <MasterLayout>
       <div className="card basic-data-table">
         <div className="card-header">
-          <h5 className="card-title mb-0">Default Data Tables</h5>
+          <h5 className="card-title mb-0">User Convert Fund History Table</h5>
         </div>
         <div className="card-body">
           <table
             className="table bordered-table mb-0"
             id="dataTable"
-            data-page-length={10}
+            data-page-length={DEFAULT_PER_PAGE_ITEMS}
           >
             <thead>
               <tr>
                 <th scope="col">S.L</th>
-                <th scope="col">Tx user</th>
+                <th scope="col">Tx User</th>
                 <th scope="col">Tx Type</th>
                 <th scope="col">Credit/Debit</th>
                 <th scope="col">Balance</th>
                 <th scope="col">Remark</th>
-                <th scope="col">Date&Time</th>
+                <th scope="col">Date & Time</th>
               </tr>
             </thead>
             <tbody>
@@ -100,26 +88,28 @@ const FundConvertHistory = () => {
                     </tr>
                   ))}
                 </>
-              ) : (
-                users.map((user, index) => (
-                  <tr key={user.id}>
+              ) : userFundConvertHistory.length > 0 ? (
+                userFundConvertHistory.map((data, index) => (
+                  <tr key={data._id}>
                     <td>{index + 1}</td>
                     <td>
                       <Link to="#" className="text-primary-600">
-                        #{user.id}
+                        #{data.uCode?.username || "N/A"}
                       </Link>
                     </td>
-                    <td>{user.date}</td>
-                    <td>{user.name}</td>
-                    <td>{user.mobile}</td>
-                    <td>
-                      <span className="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">
-                        {user.status}
-                      </span>
-                    </td>
-                    <td>{user.package}</td>
+                    <td>{data.txType || "N/A"}</td>
+                    <td>{data.debitCredit || "N/A"}</td>
+                    <td>{data.amount || "N/A"}</td>
+                    <td>{data.remark || "N/A"}</td>
+                    <td>{formatDate(data.createdAt)}</td>
                   </tr>
                 ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">
+                    User Conver Fund Transaction Not Found
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

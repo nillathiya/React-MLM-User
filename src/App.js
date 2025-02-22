@@ -36,6 +36,7 @@ import { useAccount } from "wagmi";
 import { selectIsLoggedIn } from "./feature/auth/authSlice";
 import Loader from "./components/common/Loader";
 import ChatProfileLayer from "./pages/Supports/ChatProfileLayer";
+import FundTransferHistory from  "./pages/Fund/FundTransferHistory";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -93,7 +94,7 @@ function App() {
           <Route path='addfund' element={<ProtectedDashboardRoute><AddFund /></ProtectedDashboardRoute>} />
           <Route path='add-fund-history' element={<ProtectedDashboardRoute><AddFundHistory /></ProtectedDashboardRoute>} />
           <Route path='transfer-fund' element={<ProtectedDashboardRoute><TranseferFund /></ProtectedDashboardRoute>} />
-          <Route path='fund-transfer-history' element={<ProtectedDashboardRoute><FundConvertHistory /></ProtectedDashboardRoute>} />
+          <Route path='fund-transfer-history' element={<ProtectedDashboardRoute><FundTransferHistory /></ProtectedDashboardRoute>} />
           <Route path='fund-convert' element={<ProtectedDashboardRoute><FundConvert /></ProtectedDashboardRoute>} />
           <Route path='fund-convert-history' element={<ProtectedDashboardRoute><FundConvertHistory /></ProtectedDashboardRoute>} />
         </Route>

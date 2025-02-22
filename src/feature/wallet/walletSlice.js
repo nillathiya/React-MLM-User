@@ -5,7 +5,7 @@ import CryptoJS from "crypto-js";
 
 const initialState = {
   address: null,
-  userWallet: {},
+  userWallet:null,
 };
 
 export const getUserWalletAsync = createAsyncThunk(
@@ -35,17 +35,20 @@ const walletSlice = createSlice({
     addAmountToWallet: (state, action) => {
       const { walletType, amount } = action.payload;
       if (walletType && amount > 0) {
-        state.userWallet[walletType] = (state.userWallet[walletType] || 0) + amount;
+        state.userWallet[walletType] = (state.userWallet[walletType] || 0) + parseFloat(amount);
       }
     },
     removeAmountFromWallet: (state, action) => {
       const { walletType, amount } = action.payload;
       if (walletType && state.userWallet[walletType] >= amount) {
-        state.userWallet[walletType] -= amount;
+        state.userWallet[walletType] -= parseFloat(amount);
       } else {
         console.error(`Insufficient balance in ${walletType}`);
       }
     },
+    clearUserWallet:(state)=>{
+      state.userWallet =null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -73,7 +76,7 @@ const walletSlice = createSlice({
           if (!decryptedData || decryptedData.trim() === "") {
             console.error("Decryption failed. Empty or invalid string.");
             return;
-          }
+          } 
 
           const decryptedWallet = JSON.parse(decryptedData);
 
@@ -102,5 +105,5 @@ const walletSlice = createSlice({
   }
 });
 
-export const { setWalletAddress, addAmountToWallet, removeAmountFromWallet } = walletSlice.actions;
+export const { setWalletAddress, addAmountToWallet, removeAmountFromWallet,clearUserWallet } = walletSlice.actions;
 export default walletSlice.reducer;

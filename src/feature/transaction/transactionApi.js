@@ -19,13 +19,25 @@ export const verifyTransaction = async (formData) => {
 };
 
 
+export const getTransactionsByUser = async () => {
+    try {
+        const response = await apiClient.post(
+            ROUTES.TRANSACTION.GET_BY_USER);
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw new Error(error.response?.data?.message || 'An error occurred.');
+        }
+        throw new Error('Get User Transaction failed. Please try again later.');
+    }
+};
+
 export const getFundTransactionsByUser = async () => {
     try {
         const response = await apiClient.post(
             ROUTES.TRANSACTION.FUND.GET_BY_USER);
         return response.data;
     } catch (error) {
-        console.log("error", error);
         if (error instanceof AxiosError) {
             throw new Error(error.response?.data?.message || 'An error occurred.');
         }
@@ -44,5 +56,19 @@ export const userFundTransfer = async (formData) => {
             throw new Error(error.response?.data?.message || 'An error occurred.');
         }
         throw new Error('Get User Fund Transfer failed. Please try again later.');
+    }
+};
+
+export const userConvertFunds= async (formData) => {
+    try {
+        const response = await apiClient.post(
+            ROUTES.TRANSACTION.FUND.CONVERT,formData);
+        return response.data;
+    } catch (error) {
+        console.log("error", error);
+        if (error instanceof AxiosError) {
+            throw new Error(error.response?.data?.message || 'An error occurred.');
+        }
+        throw new Error('Get User Fund Convert failed. Please try again later.');
     }
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import { FaDollarSign } from "react-icons/fa";
@@ -39,7 +39,11 @@ const AddFund = () => {
   const [selectedToken, setSelectedToken] = useState("token");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [amountInput, setAmountInput] = useState("");
+  const [isMetaMaskOpen, setIsMetaMaskOpen] = useState(false);
+  const [transactionVerificationLoading, setTransactionVerificationLoading] =
+    useState(false);
   const { address } = useAccount();
+  const dropdownRef = useRef(null);
 
   const { writeContractAsync, data: txHash, isLoading } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -69,6 +73,7 @@ const AddFund = () => {
     }
 
     try {
+      setIsMetaMaskOpen(true); // MetaMask is opening
       const tx = await writeContractAsync({
         abi,
         address: COMPANY.USDT_ADDRESS,
@@ -80,6 +85,8 @@ const AddFund = () => {
     } catch (error) {
       console.error("Transaction Failed:", error);
       toast.error("Transaction failed. Try again.");
+    } finally {
+      setIsMetaMaskOpen(false);
     }
   };
 
@@ -89,6 +96,7 @@ const AddFund = () => {
       if (isConfirmed) {
         toast.success("Transaction confirmed!");
 
+        setTransactionVerificationLoading(true);
         // Show loading toast and store its ID
         const loadingToastId = toast.loading("Please wait for verification...");
 
@@ -118,6 +126,7 @@ const AddFund = () => {
           toast.error("Verification failed. Please try again.");
         } finally {
           toast.dismiss(loadingToastId);
+          setTransactionVerificationLoading(false);
         }
       }
     };
@@ -125,14 +134,31 @@ const AddFund = () => {
     verifyTransaction();
   }, [isConfirmed, txHash, address, amountInput, dispatch]);
 
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
   return (
     <MasterLayout>
-      <Breadcrumb title="Fund Transfer" />
-      <div className="flex justify-center items-center mt-5">
-        <div className="payment-box">
-          <div className="amount-section">
+      <Breadcrumb title="Add Fund" />
+      <div className="flex justify-center items-center mt-10">
+        <div className="w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
+          {/* Page Heading */}
+          <h6 className="heading">Add Fund</h6>
+          <div>
             {/* Amount Input */}
-            <div className="amount-input">
+            <div className="">
               <label>Amount</label>
               <input
                 type="text"
@@ -144,8 +170,8 @@ const AddFund = () => {
             </div>
 
             {/* Token Dropdown */}
-            <div className="token-select relative">
-              <label className="d-flex justify-between mb-2">
+            <div className="flex flex-col relative mt-3" ref={dropdownRef}>
+              <label className="flex justify-between mb-2">
                 Token{" "}
                 <span className="balance">
                   Balance:{" "}
@@ -156,27 +182,32 @@ const AddFund = () => {
               </label>
 
               <div
-                className="token-dropdown flex items-center border border-gray-300 rounded-md p-2 cursor-pointer bg-white"
+                className=""
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <FaDollarSign className="token-icon text-gray-500 mr-2" />
-                <span>
-                  {selectedToken === "token" ? "Select Token" : selectedToken}
-                </span>
+                <div className="input-field flex items-center">
+                  <FaDollarSign className="token-icon text-gray-500 mr-2" />
+                  <span>
+                    {selectedToken === "token" ? "Select Token" : selectedToken}
+                  </span>
+                </div>
               </div>
 
               {/* Dropdown List */}
               {isDropdownOpen && (
-                <ul className="absolute bg-white w-full max-h-52 overflow-y-auto rounded shadow-md z-10 border mt-1">
+                <ul className="absolute bg-white dark:bg-darkCard w-full max-h-52 overflow-y-auto rounded shadow-md z-10 border border-gray-300 dark:border-darkBorder mt-1">
                   {tokens.map((group) => (
                     <div key={group.category}>
-                      <li className="px-3 py-1 text-gray-600 text-sm font-semibold bg-gray-100">
+                      {/* Category Header */}
+                      <li className="px-3 py-1 text-gray-600 dark:text-gray-200 text-sm font-semibold bg-gray-100 dark:bg-darkSecondary">
                         {group.category}
                       </li>
+
+                      {/* Dropdown Items */}
                       {group.items.map((token) => (
                         <li
                           key={token.name}
-                          className="flex items-center cursor-pointer hover:bg-gray-200 p-2 w-full"
+                          className="flex items-center cursor-pointer p-2 w-full hover:bg-gray-200 dark:bg-darkTertiary dark:hover:bg-gray-500"
                           onClick={() => {
                             setSelectedToken(token.name);
                             setIsDropdownOpen(false);
@@ -187,11 +218,13 @@ const AddFund = () => {
                               <img
                                 src={token.icon}
                                 alt={token.name}
-                                className="w-6 h-6 rounded-full bg-white object-cover mr-2"
+                                className="w-6 h-6 rounded-full bg-white dark:bg-gray-800 object-cover mr-2"
                               />
-                              <span>{token.name}</span>
+                              <span className="text-gray-700 dark:text-gray-200">
+                                {token.name}
+                              </span>
                             </div>
-                            <span className="font-medium text-gray-500">
+                            <span className="font-medium text-gray-500 dark:text-gray-400">
                               {token.balance}
                             </span>
                           </div>
@@ -206,11 +239,25 @@ const AddFund = () => {
 
           {/* Send Button */}
           <button
-            className={`submit-btn ${amountInput ? "active-btn" : ""}`}
-            disabled={isLoading}
+            className={`mt-3 ${amountInput ? "btn-primary" : "btn-disabled"}`}
+            disabled={
+              isLoading ||
+              !amountInput ||
+              isConfirming ||
+              transactionVerificationLoading ||
+              isMetaMaskOpen
+            }
             onClick={handleFundTransfer}
           >
-            {isLoading ? "Sending..." : "Send USDT"}
+            {isMetaMaskOpen
+              ? "Waiting for Confirmation..."
+              : isLoading
+              ? "Sending..."
+              : isConfirming
+              ? "Confirming..."
+              : transactionVerificationLoading
+              ? "Verification..."
+              : "Send USDT"}
           </button>
         </div>
       </div>

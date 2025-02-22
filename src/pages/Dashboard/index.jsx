@@ -16,9 +16,16 @@ import NewCustomerList from "./newCustomerList";
 import { useDispatch } from "react-redux";
 import { getUserWalletAsync } from "../../feature/wallet/walletSlice";
 import { useSelector } from "react-redux";
+import {
+  getFundTransactionsByUserAsync,
+  getTransactionsByUserAsync,
+} from "../../feature/transaction/transactionSlice";
+import toast from "react-hot-toast";
 const Dashboard = () => {
-  const dispatch=useDispatch();
-  const {currentUser:loggedInUser}=useSelector((state)=>state.auth)
+  const dispatch = useDispatch();
+  const { currentUser: loggedInUser } = useSelector((state) => state.auth);
+  const { userWallet } = useSelector((state) => state.wallet);
+  const { transactions } = useSelector((state) => state.transaction);
   const [copySuccess, setCopySuccess] = useState(false);
   const referralLink = "https://test.arbstake.com/register?ref=arbstake";
 
@@ -29,10 +36,25 @@ const Dashboard = () => {
     });
   };
 
-  console.log(loggedInUser?._id)
-  useEffect(()=>{
-    dispatch(getUserWalletAsync(loggedInUser?._id));
-  },[])
+  console.log("LoggedInUserId", loggedInUser?._id);
+  useEffect(() => {
+    if (!userWallet && loggedInUser?._id) {
+      dispatch(getUserWalletAsync(loggedInUser?._id));
+    }
+  }, [userWallet, loggedInUser?._id, dispatch]);
+
+  useEffect(() => {
+    (async () => {
+      if (transactions.length === 0 && loggedInUser?._id) {
+        try {
+          await dispatch(getFundTransactionsByUserAsync()).unwrap();
+          await dispatch(getTransactionsByUserAsync()).unwrap();
+        } catch (error) {
+          toast.error(error || "Fetched User Transaction Failed");
+        }
+      }
+    })();
+  }, [transactions, loggedInUser?._id, dispatch]);
 
   return (
     <MasterLayout>
