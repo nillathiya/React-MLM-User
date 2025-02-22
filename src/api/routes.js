@@ -22,6 +22,11 @@ export const ROUTES = {
   WALLET: {
     // TRANSACTIONS: `${API_URL}/api/wallet/transactions`,
     USER_WALLET: `${API_URL}/api/wallet/user`
+  },
+  PIN_DETAILS: {
+    GET_ALL: `${API_URL}/api/pin-detail/get`
+  },
+  TOPUP:{
+    CREATE: `${API_URL}/api/top-up/create`
   }
-
 };

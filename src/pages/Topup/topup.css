@@ -38,13 +38,13 @@
     font-size: 15px;
   }
   
-  .input-field {
+  /* .input-field {
     width: 100%;
     height: 40px;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ddd;
-  }
+  } */
   .topup_wallet_section{
     display:flex;
     justify-content: space-between;
