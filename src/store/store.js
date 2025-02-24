@@ -6,6 +6,7 @@ import authReducer from "../feature/auth/authSlice";
 import userReducer from "../feature/user/userSlice";
 import transactionReducer from "../feature/transaction/transactionSlice";
 import topUpReducer from "../feature/topup/topUpSlice";
+import ordersReducer from "../feature/order/orderSlice";
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer, createTransform } from 'redux-persist';
 import CryptoJS from "crypto-js";
@@ -67,7 +68,8 @@ export const store = configureStore({
         auth: persistedAuthReducer,
         user: userReducer,
         transaction: persistedTransactionReducer, // 🔒 Use encrypted persisted reducer
-        topUp: topUpReducer
+        topUp: topUpReducer,
+        orders: ordersReducer
     },
 });
 

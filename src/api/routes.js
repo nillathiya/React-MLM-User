@@ -29,5 +29,8 @@ export const ROUTES = {
   },
   TOPUP: {
     CREATE: `${API_URL}/api/top-up/create`
+  },
+  ORDERS:{
+    GET_BY_USER: `${API_URL}/api/orders/user`
   }
 };
