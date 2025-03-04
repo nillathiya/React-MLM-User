@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerNewUser, checkUsername, getUserRankAndTeamMetrics,getUserDirects,getUserGenerationTree } from './userApi';
+import { registerNewUser, checkUsername, getUserRankAndTeamMetrics,getUserDirects,getUserGenerationTree,getUserDetailsWithInvestmentInfo } from './userApi';
 
 const initialState = {
   user: null,
@@ -82,7 +82,21 @@ export const getUserGenerationTreeAsync = createAsyncThunk(
   }
 );
 
-
+export const getUserDetailsWithInvestmentInfoAsync = createAsyncThunk(
+  'users/getUserDetailsWithInvestmentInfo',
+  async (formData, {signal, rejectWithValue }) => {
+    try {
+      const data = await getUserDetailsWithInvestmentInfo(formData,signal);
+      return data;
+    } catch (error) {
+      if (error.name === "AbortError") {
+        console.log("Request was aborted");
+        return rejectWithValue("Request canceled");
+      }
+      return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
+    }
+  }
+);
 
 
 const userSlice = createSlice({
@@ -140,10 +154,20 @@ const userSlice = createSlice({
       })
       .addCase(getUserGenerationTreeAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log("action",action.payload.data);
         state.userGenerationTree = action.payload.data;
       })
       .addCase(getUserGenerationTreeAsync.rejected, (state) => {
+        state.isLoading = false;
+      })
+      // getUserDetailsWithInvestmentInfoAsync
+      .addCase(getUserDetailsWithInvestmentInfoAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserDetailsWithInvestmentInfoAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.data;
+      })
+      .addCase(getUserDetailsWithInvestmentInfoAsync.rejected, (state) => {
         state.isLoading = false;
       })
   },

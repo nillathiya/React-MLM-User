@@ -64,7 +64,24 @@ export const getUserGenerationTree = async () => {
   }
 };
 
+export const getUserDetailsWithInvestmentInfo = async (formData, signal) => {
+  try {
+    const response = await apiClient.post(
+      ROUTES.USER.GET_DETAILS_WITH_INVEST_INFO,
+      formData,
+      { signal }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.name === "CanceledError") {
+      console.log("Request canceled:", error.message);
+      return;
+    }
 
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
 
-
-
+    throw new Error("Get user details with investment info failed. Please try again later.");
+  }
+};
