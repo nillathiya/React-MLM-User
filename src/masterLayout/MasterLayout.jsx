@@ -10,16 +10,17 @@ import { useDispatch } from "react-redux";
 import { clearUserExists, clearUser } from "../feature/auth/authSlice";
 import { clearUserWallet } from "../feature/wallet/walletSlice";
 import { clearAllFundTransactions } from "../feature/transaction/transactionSlice";
+import { useSelector } from "react-redux";
 const MasterLayout = ({ children }) => {
   const dispatch = useDispatch();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
-
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
   const { isConnected, address, connector } = useAccount();
   const { data, error, status } = useEnsName({ address });
   const { disconnect } = useDisconnect();
+  const { currentUser: loggedInUser } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -251,7 +252,8 @@ const MasterLayout = ({ children }) => {
               <div className="d-flex flex-wrap align-items-center gap-3">
                 {/* ThemeToggleButton */}
                 <ThemeToggleButton />
-                <div className="dropdown d-none d-sm-inline-block">
+                {/* Language dropdown start */}
+                {/* <div className="dropdown d-none d-sm-inline-block">
                   <button
                     className="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
                     type="button"
@@ -458,9 +460,10 @@ const MasterLayout = ({ children }) => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* Language dropdown end */}
-                <div className="dropdown">
+                {/* Message dropdown start */}
+                {/* <div className="dropdown">
                   <button
                     className="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
                     type="button"
@@ -643,9 +646,10 @@ const MasterLayout = ({ children }) => {
                       </Link>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* Message dropdown end */}
-                <div className="dropdown">
+                {/* Notification dropdown start */}
+                {/* <div className="dropdown">
                   <button
                     className="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
                     type="button"
@@ -793,7 +797,7 @@ const MasterLayout = ({ children }) => {
                       </Link>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* Notification dropdown end */}
                 <div className="dropdown">
                   <button
@@ -817,10 +821,10 @@ const MasterLayout = ({ children }) => {
                           {/* {isWalletConnected && (
                             <p>Your wallet is connected!</p>
                           )} */}
-                          Shaidul Islam
+                          {loggedInUser.username ? loggedInUser.username : ""}
                         </h6>
                         <span className="text-secondary-light fw-medium text-sm">
-                          Admin
+                          User
                         </span>
                       </div>
                       <button type="button" className="hover-text-danger">
