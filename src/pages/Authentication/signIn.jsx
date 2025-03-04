@@ -12,6 +12,7 @@ import {
 import { registerNewUserAsync } from "../../feature/user/userSlice";
 import toast from "react-hot-toast";
 import Loader from "../../components/common/Loader";
+import { createUserWalletAsync } from "../../feature/wallet/walletSlice";
 const SignIn = () => {
   const dispatch = useDispatch();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
@@ -28,10 +29,9 @@ const SignIn = () => {
       dispatch(checkWalletAsync({ wallet: address }));
     }
   }, [isConnected, address, dispatch, loading]);
-  
 
-  console.log("isConnected", isConnected);
-  console.log("address", address);
+  // console.log("isConnected", isConnected);
+  // console.log("address", address);
 
   const handleAuth = async () => {
     console.log("User not Connected to wallet");
@@ -49,7 +49,13 @@ const SignIn = () => {
             sponsorUsername: refUsername ? refUsername : null,
           })
         ).unwrap();
-        await dispatch(userLoginAsync({ wallet: address })).unwrap();
+        const response = await dispatch(
+          userLoginAsync({ wallet: address })
+        ).unwrap();
+        if (response.status == "success") {
+          const userId = response.data.user._id;
+          await dispatch(createUserWalletAsync(userId)).unwrap();
+        }
       }
       navigate("/dashboard");
     } catch (err) {
@@ -83,7 +89,9 @@ const SignIn = () => {
                 }}
                 className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition focus:outline-none text-center"
               >
-                {userExists !== null ? "Authenticate" : "Connect Wallet"}
+                {userExists !== null && isConnected
+                  ? "Authenticate"
+                  : "Connect Wallet"}
               </button>
             )}
           </div>

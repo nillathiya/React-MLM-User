@@ -17,13 +17,7 @@ import FundConvertHistory from "./pages/Fund/fundConvertHistory";
 import FundConvert from "./pages/Fund/fundConvert";
 import { Toaster } from "react-hot-toast";
 import Withdrawal from "./pages/Withdrawal/withdrawal";
-import ArbWithdrawal from "./pages/Withdrawal/arbWithdrawal";
 import WithdrawalReports from "./pages/Withdrawal/withdrawalReport";
-import DailyStack from "./pages/IncomeReports/dailyStack";
-import StackSponsor from "./pages/IncomeReports/stackSponsor";
-import TeamPerformance from "./pages/IncomeReports/teamPerformance";
-import TeamDevelopment from "./pages/IncomeReports/teamDevelopment";
-import Rewards from "./pages/IncomeReports/rewards";
 import MemberTopup from "./pages/Topup/memberTopup";
 import Orders from "./pages/Order/orders";
 import RoyalityAndRewards from "./pages/RoyalityRewards/royalityAndRewards";
@@ -35,7 +29,8 @@ import { useAccount } from "wagmi";
 import { selectIsLoggedIn } from "./feature/auth/authSlice";
 import Loader from "./components/common/Loader";
 import ChatProfileLayer from "./pages/Supports/ChatProfileLayer";
-import FundTransferHistory from  "./pages/Fund/FundTransferHistory";
+import FundTransferHistory from "./pages/Fund/FundTransferHistory";
+import IncomeReports from "./pages/IncomeReports";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -100,16 +95,9 @@ function App() {
 
         <Route path='/withdrawal'>
           <Route path='' element={<ProtectedDashboardRoute><Withdrawal /></ProtectedDashboardRoute>} />
-          <Route path='arb-withdrawal' element={<ProtectedDashboardRoute><ArbWithdrawal /></ProtectedDashboardRoute>} />
         </Route>
 
-        <Route path='/income'>
-          <Route path='stake-reward' element={<ProtectedDashboardRoute><DailyStack /></ProtectedDashboardRoute>} />
-          <Route path='sponsor-reward' element={<ProtectedDashboardRoute><StackSponsor /></ProtectedDashboardRoute>} />
-          <Route path='reward' element={<ProtectedDashboardRoute><Rewards /></ProtectedDashboardRoute>} />
-          <Route path='performance-reward' element={<ProtectedDashboardRoute><TeamPerformance /></ProtectedDashboardRoute>} />
-          <Route path='development-reward' element={<ProtectedDashboardRoute><TeamDevelopment /></ProtectedDashboardRoute>} />
-        </Route>
+        <Route path='/income-report' element={<IncomeReports />} />
 
         <Route path='/upgrade'>
           <Route path='member-topup' element={<ProtectedDashboardRoute><MemberTopup /></ProtectedDashboardRoute>} />
@@ -120,7 +108,7 @@ function App() {
         <Route path='/report' element={<ProtectedDashboardRoute><Report /></ProtectedDashboardRoute>} />
         <Route path='/news-events' element={<ProtectedDashboardRoute><NewsAndEvents /></ProtectedDashboardRoute>} />
         <Route path='/support' element={<ProtectedDashboardRoute><Support /></ProtectedDashboardRoute>} />
-        <Route path='/chat-profile' element={<ChatProfileLayer />}/>
+        <Route path='/chat-profile' element={<ChatProfileLayer />} />
 
       </Routes>
       <Toaster />

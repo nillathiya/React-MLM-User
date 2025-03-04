@@ -3,4 +3,5 @@ export const ICON = {
     LOGOUT_WALLET: "material-symbols:logout-rounded",
     COPY: "akar-icons:copy",
     DEFAULT_USER: "mdi:user",
+    REFRESH:"material-symbols:refresh",
 }

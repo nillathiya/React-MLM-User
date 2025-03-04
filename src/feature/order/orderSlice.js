@@ -36,7 +36,7 @@ const ordersSlice = createSlice({
             })
             .addCase(getUserOrdersAsync.fulfilled, (state, action) => {
                 state.loading = false;
-                state.userOrders = action.payload.data;
+                state.userOrders = action.payload?.data || [];
             })
             .addCase(getUserOrdersAsync.rejected, (state, action) => {
                 state.loading = false;

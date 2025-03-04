@@ -9,6 +9,17 @@ export const ROUTES = {
       GET_BY_USER: `${API_URL}/api/transaction/fund/user`,
       TRANSFER: `${API_URL}/api/transaction/fund/transfer`,
       CONVERT: `${API_URL}/api/transaction/fund/convert`,
+    },
+    INCOME: {
+      GET_BY_USER: (
+        source
+      ) => {
+        const query = new URLSearchParams();
+        if (source !== undefined && source !== null)
+          query.append('source', source.trim().toString());
+        return `${API_URL}/api/transaction/income/user?${query.toString()}`;
+      },
+
     }
   },
   AUTH: {
@@ -19,9 +30,12 @@ export const ROUTES = {
   USER: {
     REGISTER: `${API_URL}/api/user/create`,
     CHECK_NAME: `${API_URL}/api/user/check-name`,
+    GET_USER_RANK_AND_TEAM_METRICS: `${API_URL}/api/rank-settings/user`,
+    GET_DIRECTS:`${API_URL}/api/user/get-directs`,
+    GET_GENERATION_TREE:`${API_URL}/api/user/generation-tree`
   },
   WALLET: {
-    // TRANSACTIONS: `${API_URL}/api/wallet/transactions`,
+    CREATE: `${API_URL}/api/wallet/create`,
     USER_WALLET: `${API_URL}/api/wallet/user`
   },
   PIN_DETAILS: {
@@ -30,7 +44,11 @@ export const ROUTES = {
   TOPUP: {
     CREATE: `${API_URL}/api/top-up/create`
   },
-  ORDERS:{
+  ORDERS: {
     GET_BY_USER: `${API_URL}/api/orders/user`
+  },
+  WITHDRAWAL: {
+    CREATE_REQUEST: `${API_URL}/api/withdrawal/create-request`,
+    GET_USER_FUND_WITHDRAWAL: `${API_URL}/api/withdrawal/get-user-transactions`
   }
 };

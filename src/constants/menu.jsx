@@ -58,11 +58,6 @@ const menuItems = [
     submenu: [
       { title: "Withdrawal", path: "/withdrawal", icon: "mdi:cash-remove" },
       {
-        title: "ARB Withdrawal",
-        path: "/withdrawal/arb-withdrawal",
-        icon: "mdi:currency-eth",
-      },
-      {
         title: "Withdrawal Report",
         path: "/Users/withdrawal-report",
         icon: "mdi:clipboard-list-outline",
@@ -86,23 +81,27 @@ const menuItems = [
     submenu: [
       {
         title: "Daily Stake Reward",
-        path: "/income/stake-reward",
+        path: "/income-report?source=roi",
         icon: "mdi:chart-bar",
       },
       {
         title: "Stake Sponsor Reward",
-        path: "/income/sponsor-reward",
+        path: "/income-report?source=direct",
         icon: "mdi:gift-outline",
       },
       {
         title: "Team Performance Reward",
-        path: "/income/performance-reward",
+        path: "/income-report?source=referral",
         icon: "mdi:account-group-outline",
       },
-      { title: "Reward", path: "/income/reward", icon: "mdi:medal-outline" },
+      {
+        title: "Reward",
+        path: "/income-report?source=reward",
+        icon: "mdi:medal-outline",
+      },
       {
         title: "Team Development Reward",
-        path: "/income/development-reward",
+        path: "/income-report?source=royalty",
         icon: "mdi:account-group",
       },
     ],

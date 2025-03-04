@@ -1,9 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { verifyTransaction, getFundTransactionsByUser, userFundTransfer, userConvertFunds, getTransactionsByUser } from './transactionApi';
+import { verifyTransaction, getFundTransactionsByUser, userFundTransfer, userConvertFunds, getTransactionsByUser, getIncomeTransactionsByUser } from './transactionApi';
+import CryptoJS from "crypto-js";
 
 const initialState = {
   loading: false,
+  incomeTransactionsLoading:false,
   transactions: [],
+  incomeTransactions: [],
 };
 
 export const verifyTransactionAsync = createAsyncThunk(
@@ -38,6 +41,21 @@ export const getTransactionsByUserAsync = createAsyncThunk(
   },
 );
 
+export const getIncomeTransactionsByUserAsync = createAsyncThunk(
+  'transaction/getIncomeTransactionsByUser',
+  async (params, { rejectWithValue }) => {
+    try {
+      const data = await getIncomeTransactionsByUser(params);
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue('An unknown error occurred');
+      }
+    }
+  },
+);
 
 export const getFundTransactionsByUserAsync = createAsyncThunk(
   'transaction/getFundTransactionsByUser',
@@ -100,7 +118,15 @@ const transactionSlice = createSlice({
     },
     clearAllFundTransactions: (state) => {
       state.transactions = [];
+    },
+    addTransactionByTransactionType: (state, action) => {
+      const { txType, data } = action.payload;
+      state.transactions = [
+        ...state.transactions.filter((tx) => tx.txType !== txType),
+        ...data
+      ];
     }
+
   },
   extraReducers: (builder) => {
     builder
@@ -159,14 +185,55 @@ const transactionSlice = createSlice({
       .addCase(getTransactionsByUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.transactions = [...state.transactions, ...action.payload.data];
-      })      
+      })
       .addCase(getTransactionsByUserAsync.rejected, (state, action) => {
         state.loading = false;
+      })
+
+      // getIncomeTransactionsByUserAsync
+      .addCase(getIncomeTransactionsByUserAsync.pending, (state) => {
+        state.incomeTransactionsLoading = true;
+      })
+      .addCase(getIncomeTransactionsByUserAsync.fulfilled, (state, action) => {
+        state.incomeTransactionsLoading = false;
+        const response = action.payload;
+        const encryptedIncomeTransactionData = response.data;
+
+        // console.log("Encrypted Data:", encryptedIncomeTransactionData);
+
+        if (!encryptedIncomeTransactionData) {
+          console.error("Error: No encrypted data received!");
+          return;
+        }
+
+        try {
+          const decryptedData = CryptoJS.AES.decrypt(
+            encryptedIncomeTransactionData,
+            process.env.REACT_APP_CRYPTO_SECRET_KEY
+          ).toString(CryptoJS.enc.Utf8);
+
+          // console.log("Decrypted Raw Data:", decryptedData);
+
+          if (!decryptedData) {
+            console.error("Error: Decryption resulted in empty data!");
+            return;
+          }
+
+          const decryptedIncomeTransaction = JSON.parse(decryptedData);
+
+          // console.log("Decrypted Transactions:", decryptedIncomeTransaction);
+          state.incomeTransactions = decryptedIncomeTransaction;
+        } catch (error) {
+          console.error("Decryption failed:", error);
+        }
+      })
+      .addCase(getIncomeTransactionsByUserAsync.rejected, (state, action) => {
+        state.incomeTransactionsLoading = false;
       })
   },
 });
 
-export const { addTransaction, clearAllFundTransactions } = transactionSlice.actions;
+export const { addTransaction, clearAllFundTransactions, addTransactionByTransactionType } = transactionSlice.actions;
 
 export const selectAddFundHistory = (state) =>
   state.transaction.transactions.filter((tx) => tx.txType === "user_add_fund");
@@ -176,6 +243,9 @@ export const selectUserFundTransfer = (state) =>
 
 export const selectUserFundConvertHistory = (state) =>
   state.transaction.transactions.filter((tx) => tx.txType === "user_fund_convert");
+
+export const selectUserFundWithdrwalHistory = (state) =>
+  state.transaction.transactions.filter((tx) => tx.txType === "user_fund_withdrawal");
 
 export const selectTransactionLoading = (state) => state.transaction.loading
 export default transactionSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
 import MasterLayout from "../../masterLayout/MasterLayout";
@@ -18,6 +18,7 @@ const Orders = () => {
   const [calculatingTotalPackageAmount, setCalculatingTotalPackageAmount] =
     useState(true);
   const [totalPackageAmount, setTotalPackageAmount] = useState(0);
+  const tableRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -30,27 +31,28 @@ const Orders = () => {
         }
       })();
     }
-  
+
     return () => {
       isMounted = false;
     };
-  }, [dispatch, currentUser?._id]); 
-  
+  }, [dispatch, currentUser?._id]);
+
   useEffect(() => {
-    if (!loading && userOrders?.length) {
+    if (!loading && userOrders.length > 0) {
       setTimeout(() => {
-        if ($.fn.DataTable.isDataTable("#dataTable")) {
-          $("#dataTable").DataTable().destroy();
+        const $table = $(tableRef.current);
+
+        // Check if DataTable is already initialized
+        if (!$.fn.DataTable.isDataTable(tableRef.current)) {
+          // Initialize DataTable only if it hasn't been initialized yet
+          $table.DataTable({
+            pageLength: DEFAULT_PER_PAGE_ITEMS,
+            responsive: true,
+          });
         }
-        $("#dataTable").DataTable({
-          destroy: true,
-          pageLength: DEFAULT_PER_PAGE_ITEMS,
-          responsive: true,
-        });
-      }, 100);
+      }, 300);
     }
-  }, [loading, userOrders]);
-  
+  }, [loading && userOrders]);
 
   useEffect(() => {
     if (!loading) {
@@ -65,7 +67,6 @@ const Orders = () => {
       setCalculatingTotalPackageAmount(false);
     }
   }, [loading, userOrders]);
-
 
   // console.log("loading",loading);
 
@@ -89,6 +90,7 @@ const Orders = () => {
         <div className="card-body">
           <table
             className="table bordered-table mb-0"
+            ref={tableRef}
             id="dataTable"
             data-page-length={DEFAULT_PER_PAGE_ITEMS}
           >
@@ -124,7 +126,7 @@ const Orders = () => {
                     <td>{index + 1}</td>
                     <td>{order.amount}</td>
                     <td>{formatDate(order.createdAt)}</td>
-                    <td>{order.status===1 ? "Running" : "Outdated"}</td>
+                    <td>{order.status === 1 ? "Running" : "Outdated"}</td>
                   </tr>
                 ))
               ) : (

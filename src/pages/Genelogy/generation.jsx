@@ -1,138 +1,128 @@
 import React, { useEffect, useState } from "react";
-import $ from "jquery";
-import "datatables.net-dt/js/dataTables.dataTables.js";
-import { FaSitemap } from "react-icons/fa"; // Import the FaSitemap icon
-import { Link } from "react-router-dom";
+import { Dialog } from "@headlessui/react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserGenerationTreeAsync } from "../../feature/user/userSlice";
+import toast from "react-hot-toast";
 import MasterLayout from "../../masterLayout/MasterLayout";
-import Skeleton from "../../helper/Skeleton/Skeleton";
-import "./genology.css";
 
 const Generation = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { userGenerationTree, isLoading } = useSelector((state) => state.user);
+  const { currentUser: loggedInUser } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setUsers([
-        {
-          id: "526534",
-          name: "Kathryn Murphy",
-          date: "25 Jan 2024",
-          status: "Active",
-          label: "Level2",
-          sponcer: "ARB513209 ()",
-        },
-        {
-          id: "696589",
-          name: "Annette Black",
-          date: "25 Jan 2024",
-          status: "Active",
-          label: "Level3",
-          sponcer: "ARB543690 ()",
-        },
-      ]);
-      setLoading(false);
-    }, 2000);
-  }, []);
+  const [tree, setTree] = useState(null);
+  const [expandedUsers, setExpandedUsers] = useState(new Set());
+  const [selectedUser, setSelectedUser] = useState(null);
 
+  // Fetch generation tree data
   useEffect(() => {
-    if (!loading) {
-      const table = $("#dataTable").DataTable({
-        destroy: true,
-        pageLength: 10,
-        responsive: true,
-      });
-      return () => {
-        table.destroy(true);
-      };
-    }
-  }, [loading]);
+    (async () => {
+      try {
+        if (userGenerationTree.length === 0) {
+          await dispatch(getUserGenerationTreeAsync()).unwrap();
+        }
+      } catch (error) {
+        toast.error(error || "Server error");
+      }
+    })();
+  }, [dispatch, userGenerationTree]);
+
+  // Build hierarchical tree and assign levels
+  useEffect(() => {
+    if (!loggedInUser || userGenerationTree.length === 0) return;
+
+    const userMap = new Map();
+    userGenerationTree.forEach((user) =>
+      userMap.set(user._id, { ...user, children: [], level: 0 })
+    );
+
+    userGenerationTree.forEach((user) => {
+      if (user.uSponsor && userMap.has(user.uSponsor)) {
+        const parent = userMap.get(user.uSponsor);
+        const child = userMap.get(user._id);
+        child.level = parent.level + 1; 
+        parent.children.push(child);
+      }
+    });
+
+    // Ensure logged-in user is root with level 0
+    setTree(userMap.get(loggedInUser._id) || null);
+  }, [userGenerationTree, loggedInUser]);
+
+  const toggleExpand = (userId) => {
+    setExpandedUsers((prev) => {
+      const newSet = new Set(prev);
+      newSet.has(userId) ? newSet.delete(userId) : newSet.add(userId);
+      return newSet;
+    });
+  };
+
+  const renderTree = (node) => {
+    if (!node) return null;
+
+    return (
+      <div key={node._id} className={`ml-${node.level * 4} border-l pl-4`}>
+        <div
+          className="cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 p-2 rounded-md flex items-center gap-2"
+          onClick={() => setSelectedUser(node)}
+        >
+          <span className="font-medium">
+            {node.username} <span className="text-sm text-gray-500">(Level {node.level})</span>
+          </span>
+          {node.children.length > 0 && (
+            <button
+              className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleExpand(node._id);
+              }}
+            >
+              {expandedUsers.has(node._id) ? "Collapse" : "Expand"}
+            </button>
+          )}
+        </div>
+
+        {expandedUsers.has(node._id) && node.children.length > 0 && (
+          <div>{node.children.map((child) => renderTree(child))}</div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <MasterLayout>
-      <div className="card basic-data-table">
-        <div className="card-header">
-          <h5 className="card-title mb-0">company ( arbstake )</h5>
+      <div className="p-4">
+        <h2 className="text-xl font-semibold mb-4">Your Team Hierarchy</h2>
+        <div className="border p-4 rounded-lg bg-white dark:bg-gray-900">
+          {isLoading ? (
+            <p className="text-gray-500">Loading...</p>
+          ) : tree ? (
+            renderTree(tree)
+          ) : (
+            <p className="text-gray-500">No downline members found.</p>
+          )}
         </div>
-        <div className="card-body">
-          <table
-            className="table bordered-table mb-0"
-            id="dataTable"
-            data-page-length={10}
-          >
-            <thead>
-              <tr>
-                <th scope="col">S.L</th>
-                <th scope="col">Action</th>
-                <th scope="col">Name</th>
-                <th scope="col">UserName</th>
-                <th scope="col">Join Date</th>
-                <th scope="col">Status</th>
-                <th scope="col">Level</th>
-                <th scope="col">Sponsor ID(Name)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <>
-                  {[...Array(5)].map((_, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Skeleton width="50px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="120px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="100px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="150px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="80px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="60px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="90px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="90px" height="20px" />
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
-                users.map((user, index) => (
-                  <tr key={user.id}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <a href="#" className="text-primary-600">
-                        <FaSitemap />
-                      </a>
-                    </td>
-                    <td>{user.name}</td>
-                    <td>
-                      <Link to="#" className="text-primary-600">
-                        #{user.id}
-                      </Link>
-                    </td>
-                    <td>{user.date}</td>
-                    <td>
-                      <span className="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">
-                        {user.status}
-                      </span>
-                    </td>
-                    <td>{user.sponcer}</td>
-                    <td>{user.label}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+
+        {/* User Details Modal */}
+        {selectedUser && (
+          <Dialog open={!!selectedUser} onClose={() => setSelectedUser(null)}>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-1/3">
+                <h3 className="text-lg font-semibold">User Details</h3>
+                <p>Username: {selectedUser.username}</p>
+                <p>Name: {selectedUser.name || "N/A"}</p>
+                <p>Sponsor: {selectedUser.uSponsor || "N/A"}</p>
+                <p>Level: {selectedUser.level}</p>
+                <button
+                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                  onClick={() => setSelectedUser(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </Dialog>
+        )}
       </div>
     </MasterLayout>
   );

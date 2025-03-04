@@ -1,6 +1,77 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserOrdersAsync } from "../../feature/order/orderSlice";
+import Skeleton from "../../helper/Skeleton/Skeleton";
+import toast from "react-hot-toast";
 
 const UserActivityCard = () => {
+  const dispatch = useDispatch();
+  const { currentUser: loggedInUser } = useSelector((state) => state.auth);
+  const { userOrders = [], loading: userOrdersLoading } = useSelector(
+    (state) => state.orders
+  );
+  const { incomeTransactions = [], incomeTransactionsLoading } = useSelector(
+    (state) => state.transaction
+  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (userOrders.length === 0) {
+          await dispatch(getUserOrdersAsync(loggedInUser?._id)).unwrap();
+        }
+      } catch (error) {
+        toast.error(error.message || "Server Failed...");
+      }
+    };
+
+    if (loggedInUser?._id) {
+      fetchData();
+    }
+  }, [loggedInUser, userOrders.length, dispatch]);
+
+  // Calculating user total package amount
+  const totalPackageAmount = userOrders.reduce((acc, order) => {
+    if (order.status === 1) acc += order.amount;
+    return acc;
+  }, 0);
+
+  const {
+    totalDailyStackReward,
+    totalStackSponserReward,
+    totalTeamPerformanceReward,
+    totalReward,
+    totalTeamDevelopmentReward,
+  } = incomeTransactions.reduce(
+    (acc, transaction) => {
+      if (transaction.status === 1) {
+        if (transaction.source === "roi") {
+          acc.totalDailyStackReward += transaction.amount;
+        }
+        if (transaction.source === "direct") {
+          acc.totalStackSponserReward += transaction.amount;
+        }
+        if (transaction.source === "referral") {
+          acc.totalTeamPerformanceReward += transaction.amount;
+        }
+        if (transaction.source === "reward") {
+          acc.totalReward += transaction.amount;
+        }
+        if (transaction.source === "royalty") {
+          acc.totalTeamDevelopmentReward += transaction.amount;
+        }
+      }
+
+      return acc;
+    },
+    {
+      totalDailyStackReward: 0,
+      totalStackSponserReward: 0,
+      totalTeamPerformanceReward: 0,
+      totalReward: 0,
+      totalTeamDevelopmentReward: 0,
+    }
+  );
+
   return (
     <div className="row gy-4">
       <div className="col-xxl-3 col-sm-6">
@@ -18,7 +89,15 @@ const UserActivityCard = () => {
                   <span className="fw-medium text-secondary-light text-md ">
                     My Package
                   </span>
-                  <h6 className="fw-semibold mt-2">$ 0</h6>
+                  {userOrdersLoading ? (
+                    <Skeleton
+                      width="80px"
+                      height="20px"
+                      className="block mx-auto mt-1"
+                    />
+                  ) : (
+                    <h6 className="fw-semibold mt-2">${totalPackageAmount}</h6>
+                  )}
                 </div>
               </div>
             </div>
@@ -40,7 +119,17 @@ const UserActivityCard = () => {
                   <span className="fw-medium text-secondary-light text-md">
                     Daily Stake Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">$ 0</h6>
+                  {incomeTransactionsLoading ? (
+                    <Skeleton
+                      width="80px"
+                      height="20px"
+                      className="block mx-auto mt-1"
+                    />
+                  ) : (
+                    <h6 className="fw-semibold mt-2">
+                      ${totalDailyStackReward}
+                    </h6>
+                  )}
                 </div>
               </div>
             </div>
@@ -62,7 +151,17 @@ const UserActivityCard = () => {
                   <span className="fw-medium text-secondary-light text-md">
                     Stake Sponsor Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">$ 440</h6>
+                  {incomeTransactionsLoading ? (
+                    <Skeleton
+                      width="80px"
+                      height="20px"
+                      className="block mx-auto mt-1"
+                    />
+                  ) : (
+                    <h6 className="fw-semibold mt-2">
+                      ${totalStackSponserReward}
+                    </h6>
+                  )}
                 </div>
               </div>
             </div>
@@ -84,7 +183,17 @@ const UserActivityCard = () => {
                   <span className="fw-medium text-secondary-light text-md">
                     Team Performance Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">$ 153.23</h6>
+                  {incomeTransactionsLoading ? (
+                    <Skeleton
+                      width="80px"
+                      height="20px"
+                      className="block mx-auto mt-1"
+                    />
+                  ) : (
+                    <h6 className="fw-semibold mt-2">
+                      ${totalTeamPerformanceReward}
+                    </h6>
+                  )}
                 </div>
               </div>
             </div>
@@ -106,7 +215,15 @@ const UserActivityCard = () => {
                   <span className="fw-medium text-secondary-light text-md">
                     Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">$ 0</h6>
+                  {incomeTransactionsLoading ? (
+                    <Skeleton
+                      width="80px"
+                      height="20px"
+                      className="block mx-auto mt-1"
+                    />
+                  ) : (
+                    <h6 className="fw-semibold mt-2">${totalReward}</h6>
+                  )}
                 </div>
               </div>
             </div>
@@ -128,7 +245,17 @@ const UserActivityCard = () => {
                   <span className="fw-medium text-secondary-light text-md">
                     Team Development Reward
                   </span>
-                  <h6 className="fw-semibold mt-2">$ 85</h6>
+                  {incomeTransactionsLoading ? (
+                    <Skeleton
+                      width="80px"
+                      height="20px"
+                      className="block mx-auto mt-1"
+                    />
+                  ) : (
+                    <h6 className="fw-semibold mt-2">
+                      ${totalTeamDevelopmentReward}
+                    </h6>
+                  )}
                 </div>
               </div>
             </div>

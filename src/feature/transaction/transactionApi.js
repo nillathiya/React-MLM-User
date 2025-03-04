@@ -45,10 +45,24 @@ export const getFundTransactionsByUser = async () => {
     }
 };
 
+export const getIncomeTransactionsByUser = async ({source}) => {
+    try {
+        const response = await apiClient.post(
+            ROUTES.TRANSACTION.INCOME.GET_BY_USER(source));
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw new Error(error.response?.data?.message || 'An error occurred.');
+        }
+        throw new Error('Get User Fund Transaction failed. Please try again later.');
+    }
+};
+
+
 export const userFundTransfer = async (formData) => {
     try {
         const response = await apiClient.post(
-            ROUTES.TRANSACTION.FUND.TRANSFER,formData);
+            ROUTES.TRANSACTION.FUND.TRANSFER, formData);
         return response.data;
     } catch (error) {
         console.log("error", error);
@@ -59,10 +73,10 @@ export const userFundTransfer = async (formData) => {
     }
 };
 
-export const userConvertFunds= async (formData) => {
+export const userConvertFunds = async (formData) => {
     try {
         const response = await apiClient.post(
-            ROUTES.TRANSACTION.FUND.CONVERT,formData);
+            ROUTES.TRANSACTION.FUND.CONVERT, formData);
         return response.data;
     } catch (error) {
         console.log("error", error);
@@ -72,3 +86,18 @@ export const userConvertFunds= async (formData) => {
         throw new Error('Get User Fund Convert failed. Please try again later.');
     }
 };
+
+export const userFundWithdrawal = async (formData) => {
+    try {
+        const response = await apiClient.post(
+            ROUTES.WITHDRAWAL.CREATE_REQUEST, formData);
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw new Error(error.response?.data?.message || 'An error occurred.');
+        }
+        throw new Error('User Fund withdrawal failed. Please try again later.');
+    }
+};
+
+

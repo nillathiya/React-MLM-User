@@ -7,6 +7,7 @@ import userReducer from "../feature/user/userSlice";
 import transactionReducer from "../feature/transaction/transactionSlice";
 import topUpReducer from "../feature/topup/topUpSlice";
 import ordersReducer from "../feature/order/orderSlice";
+import withdrawalReducer from "../feature/withdrawal/withdrawalSlice";
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer, createTransform } from 'redux-persist';
 import CryptoJS from "crypto-js";
@@ -69,7 +70,8 @@ export const store = configureStore({
         user: userReducer,
         transaction: persistedTransactionReducer, // 🔒 Use encrypted persisted reducer
         topUp: topUpReducer,
-        orders: ordersReducer
+        orders: ordersReducer,
+        withdrawal:withdrawalReducer,
     },
 });
 

@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserWallet } from "./walletApi";
+import { getUserWallet, createUserWallet } from "./walletApi";
 import { WalletMapping } from "../../constants/wallet";
 import CryptoJS from "crypto-js";
 
 const initialState = {
   address: null,
-  userWallet:null,
+  userWallet: null,
 };
 
 export const getUserWalletAsync = createAsyncThunk(
@@ -23,6 +23,24 @@ export const getUserWalletAsync = createAsyncThunk(
     }
   },
 );
+
+export const createUserWalletAsync = createAsyncThunk(
+  'wallet/createUserWallet',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const data = await createUserWallet(userId);
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue('An unknown error occurred');
+      }
+    }
+  },
+);
+
+
 
 const walletSlice = createSlice({
   name: "wallet",
@@ -46,8 +64,8 @@ const walletSlice = createSlice({
         console.error(`Insufficient balance in ${walletType}`);
       }
     },
-    clearUserWallet:(state)=>{
-      state.userWallet =null;
+    clearUserWallet: (state) => {
+      state.userWallet = null;
     }
   },
   extraReducers: (builder) => {
@@ -76,7 +94,7 @@ const walletSlice = createSlice({
           if (!decryptedData || decryptedData.trim() === "") {
             console.error("Decryption failed. Empty or invalid string.");
             return;
-          } 
+          }
 
           const decryptedWallet = JSON.parse(decryptedData);
 
@@ -102,8 +120,18 @@ const walletSlice = createSlice({
       .addCase(getUserWalletAsync.rejected, (state, action) => {
         state.loading = false;
       })
+      // createUserWalletAsync
+      .addCase(createUserWalletAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createUserWalletAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(createUserWalletAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
   }
 });
 
-export const { setWalletAddress, addAmountToWallet, removeAmountFromWallet,clearUserWallet } = walletSlice.actions;
+export const { setWalletAddress, addAmountToWallet, removeAmountFromWallet, clearUserWallet } = walletSlice.actions;
 export default walletSlice.reducer;

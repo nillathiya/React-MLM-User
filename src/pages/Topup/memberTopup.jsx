@@ -93,7 +93,7 @@ const MemberTopup = () => {
       await dispatch(createTopUpAsync(formData)).unwrap();
       await dispatch(
         removeAmountFromWallet({
-          walletType: "Fund_wallet",
+          walletType: "fund_wallet",
           amount: data.amount,
         })
       );
