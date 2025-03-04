@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerNewUser, checkUsername, getUserRankAndTeamMetrics,getUserDirects,getUserGenerationTree,getUserDetailsWithInvestmentInfo } from './userApi';
+import { registerNewUser, checkUsername, getUserRankAndTeamMetrics, getUserDirects, getUserGenerationTree, getUserDetailsWithInvestmentInfo } from './userApi';
+import CryptoJS from "crypto-js";
 
 const initialState = {
   user: null,
   users: [],
-  userDirects:[],
+  userDirects: [],
   userGenerationTree: [],
   rankData: null,
   isLoading: false,
@@ -84,9 +85,9 @@ export const getUserGenerationTreeAsync = createAsyncThunk(
 
 export const getUserDetailsWithInvestmentInfoAsync = createAsyncThunk(
   'users/getUserDetailsWithInvestmentInfo',
-  async (formData, {signal, rejectWithValue }) => {
+  async (formData, { signal, rejectWithValue }) => {
     try {
-      const data = await getUserDetailsWithInvestmentInfo(formData,signal);
+      const data = await getUserDetailsWithInvestmentInfo(formData, signal);
       return data;
     } catch (error) {
       if (error.name === "AbortError") {
@@ -154,7 +155,33 @@ const userSlice = createSlice({
       })
       .addCase(getUserGenerationTreeAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userGenerationTree = action.payload.data;
+        const response = action.payload;
+        const encryptedUserGenerationData = response.data;
+
+        if (!encryptedUserGenerationData) {
+          console.error("Error: No encrypted data received!");
+          return;
+        }
+
+        try {
+          const decryptedData = CryptoJS.AES.decrypt(
+            encryptedUserGenerationData,
+            process.env.REACT_APP_CRYPTO_SECRET_KEY
+          ).toString(CryptoJS.enc.Utf8);
+
+
+          if (!decryptedData) {
+            console.error("Error: Decryption resulted in empty data!");
+            return;
+          }
+
+          const decryptedUserGenerationData = JSON.parse(decryptedData);
+
+          state.userGenerationTree = decryptedUserGenerationData;
+        } catch (error) {
+          console.error("Decryption failed:", error);
+        }
+
       })
       .addCase(getUserGenerationTreeAsync.rejected, (state) => {
         state.isLoading = false;
@@ -165,7 +192,32 @@ const userSlice = createSlice({
       })
       .addCase(getUserDetailsWithInvestmentInfoAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.data;
+        const encryptedUserDetails = action.payload.data;
+
+        if (typeof encryptedUserDetails !== "string") {
+          console.error("Received data is not encrypted:", encryptedUserDetails);
+          return;
+        }
+
+        try {
+          const decryptedData = CryptoJS.AES.decrypt(
+            encryptedUserDetails,
+            process.env.REACT_APP_CRYPTO_SECRET_KEY
+          ).toString(CryptoJS.enc.Utf8);
+
+
+          if (!decryptedData || decryptedData.trim() === "") {
+            console.error("Decryption failed. Empty or invalid string.");
+            return;
+          }
+
+          const decryptedUserDetails = JSON.parse(decryptedData);
+          state.user = decryptedUserDetails
+
+        } catch (error) {
+          console.error("Decryption error:", error);
+        }
+
       })
       .addCase(getUserDetailsWithInvestmentInfoAsync.rejected, (state) => {
         state.isLoading = false;
