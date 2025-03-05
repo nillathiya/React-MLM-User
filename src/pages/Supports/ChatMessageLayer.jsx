@@ -23,6 +23,10 @@ const ChatMessageLayer = () => {
   const messagesEndRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const selectedTicketData = tickets.find(
+    (ticket) => ticket._id === selectedTicket?._id
+  );
+
   const filteredTickets = tickets.filter((ticket) =>
     ticket.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -163,8 +167,6 @@ const ChatMessageLayer = () => {
       const response = await axios.post(
         `${API_URL}/api/tickets/${ticket._id}/messages`
       );
-      console.log("++++++", response);
-
       if (response.data.success) {
         setMessages(response.data.messages);
       } else {
@@ -175,9 +177,11 @@ const ChatMessageLayer = () => {
     }
   };
   const sendMessage = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!input.trim() || !selectedTicket) return;
-
+    if (selectedTicket.status === "completed") {
+      return toast.error("Cannot send messages in a closed/completed ticket");
+    }
     try {
       await axios.post(`${API_URL}/api/tickets/message/send`, {
         ticketId: selectedTicket._id,
@@ -228,11 +232,167 @@ const ChatMessageLayer = () => {
       console.error("Error updating ticket status:", error);
     }
   };
-  console.log("User tickets", tickets);
+
+  useEffect(() => {
+    if (filteredTickets.length > 0 && !selectedTicket) {
+      fetchMessages(filteredTickets[0]);
+    }
+  }, [filteredTickets]);
 
   return (
     <>
-      <div className="create_new_ticket_section">
+      <div className="chat-wrapper mt-5">
+        <div
+          className="chat-sidebar card"
+          style={{ boxShadow: "7px 7px 21px rgba(0, 0, 0, 0.6)" }}
+        >
+          <div className="chat-sidebar-single active top-profile">
+            <div className="img">
+              <img src="assets/images/chat/1.png" alt="image_icon" />
+            </div>
+            <div className="info">
+              {selectedTicket && (
+                <>
+                  <h6 className="text-md mb-0">{selectedTicket.title}</h6>
+                  <p className="mb-0">{selectedTicket.status}</p>
+                </>
+              )}
+            </div>
+            <div className="action">
+              <div className="filter_ticket_section mb-4">
+                <form action="" className="flex items-center gap-3 form-input">
+                  {/* <label className="font-semibold text-gray-700 dark:text-gray-300">
+                    Filter Tickets
+                  </label> */}
+                  <select
+                    name="statusFilter"
+                    value={statusFilter}
+                    onChange={handleFilterChanges}
+                    className="ticket_filter_select border border-gray-300 dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                  >
+                    <option value="open">Open</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div className="chat-search">
+            <span className="icon">
+              <Icon icon="iconoir:search" />
+            </span>
+            <input
+              type="text"
+              name="#0"
+              autoComplete="off"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="chat-all-list">
+            {filteredTickets
+            .filter((ticket) => ticket.status === statusFilter)
+            .map((ticket) => (
+              <div
+                key={ticket._id}
+                className={`chat-sidebar-single ${
+                  selectedTicket?._id === ticket._id ? "active" : ""
+                }`}
+                onClick={() => fetchMessages(ticket)}
+              >
+                <div className="img">
+                  <img src="assets/images/chat/2.png" alt="image_icon" />
+                </div>
+                <div className="info">
+                  <h6 className="text-sm mb-1">{ticket.title}</h6>
+                </div>
+                <div className="action text-end">
+                  <p className="mb-0 text-neutral-400 text-xs lh-1">Now</p>
+                  {unreadTickets.has(ticket._id) && (
+                    <span className="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">
+                      !
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="chat-main card"
+          style={{ boxShadow: "7px 7px 21px rgba(0, 0, 0, 0.6)" }}
+        >
+          {selectedTicketData && selectedTicketData.messages && (
+            <>
+              <div className="chat-sidebar-single active">
+                <div className="img">
+                  <img src="assets/images/chat/11.png" alt="image_icon" />
+                </div>
+                <div className="info">
+                  <h6 className="text-md mb-0">{`#${selectedTicketData._id} (${selectedTicketData.title})`}</h6>
+                  <p className="mb-0">{selectedTicketData.status}</p>
+                </div>
+                <div className="action d-inline-flex align-items-center gap-3">
+                  <select
+                        value={selectedTicketData.status}
+                        onChange={(e) =>
+                          updateTicketStatus(selectedTicketData._id, e.target.value)
+                        }
+                        className="status_dropdown border border-gray-300 dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 w-full"
+                      >
+                        <option value="open">Open</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                </div>
+              </div>
+
+              <div className="chat-message-list">
+                {selectedTicketData.messages.map((msg, index) => (
+                  <p
+                    key={index}
+                    className={`p-2 rounded-lg mb-2 ${
+                      msg.sender === "user"
+                        ? " chat-bubble text-blue-800 dark:bg-blue-900 dark:text-blue-200 d-flex justify-content-end"
+                        : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    <strong>{msg.sender}  : </strong> &nbsp; {msg.text}
+                    <span className="ml-2 text-xs">
+                      {msg.isRead ? "✔✔" : "✔"}
+                    </span>
+                  </p>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+              <form className="chat-message-box">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  name="chatMessage"
+                  placeholder="Write message"
+                />
+                <div className="chat-message-box-action">
+                  <button
+                    type="submit"
+                    onClick={sendMessage}
+                    disabled={!input.trim()}
+                    className="btn btn-sm btn-primary-600 radius-8 d-inline-flex align-items-center gap-1"
+                  >
+                    Send
+                    <Icon icon="f7:paperplane" />
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="create_new_ticket_section mt-5">
         {/* Ticket Creation Form */}
         <div className="create_filter_ticket">
           <h3>Create a Ticket</h3>
@@ -254,202 +414,6 @@ const ChatMessageLayer = () => {
               Create Ticket
             </button>
           </form>
-        </div>
-      </div>
-
-      <div className="chat-wrapper mt-5">
-        <div
-          className="chat-sidebar card"
-          style={{ boxShadow: "7px 7px 21px rgba(0, 0, 0, 0.6)" }}
-        >
-          <div className="chat-sidebar-single active top-profile">
-            <div className="img">
-              <img src="assets/images/chat/1.png" alt="image_icon" />
-            </div>
-            <div className="info">
-              {selectedTicket && (
-                <>
-                  <h6 className="text-md mb-0">{selectedTicket.title}</h6>
-                  <p className="mb-0">{selectedTicket.status}</p>
-                </>
-              )}
-            </div>
-            <div className="action">
-              <div className="btn-group">
-                <button
-                  type="button"
-                  className="text-secondary-light text-xl"
-                  data-bs-toggle="dropdown"
-                  data-bs-display="static"
-                  aria-expanded="false"
-                >
-                  <Icon icon="bi:three-dots" />
-                </button>
-                <ul
-                  className="dropdown-menu dropdown-menu-lg-end border"
-                  name="statusFilter"
-                  value={statusFilter}
-                  onChange={handleFilterChanges}
-                >
-                  <li value="open">Open</li>
-                  <li value="completed">Completed</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="chat-search">
-            <span className="icon">
-              <Icon icon="iconoir:search" />
-            </span>
-            <input
-              type="text"
-              name="#0"
-              autoComplete="off"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="chat-all-list">
-            {tickets.map((ticket) => (
-              <div
-                key={ticket._id}
-                className={`chat-sidebar-single ${
-                  selectedTicket?._id === ticket._id ? "active" : ""
-                }`}
-                onClick={() => fetchMessages(ticket)}
-              >
-                <div className="img">
-                  <img src="assets/images/chat/2.png" alt="image_icon" />
-                </div>
-                <div className="info">
-                  <h6 className="text-sm mb-1">{ticket.title}</h6>
-                  {/* <p className="mb-0 text-xs">{ticket.description}</p> */}
-                </div>
-                <div className="action text-end">
-                  <p className="mb-0 text-neutral-400 text-xs lh-1">Now</p>
-                  {unreadTickets.has(ticket._id) && (
-                    <span className="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">
-                      !
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div
-          className="chat-main card"
-          style={{ boxShadow: "7px 7px 21px rgba(0, 0, 0, 0.6)" }}
-        >
-          {selectedTicket && (
-            <>
-              <div className="chat-sidebar-single active">
-                <div className="img">
-                  <img src="assets/images/chat/11.png" alt="image_icon" />
-                </div>
-                <div className="info">
-                  <h6 className="text-md mb-0">{`#${selectedTicket._id} (${selectedTicket.title})`}</h6>
-                  <p className="mb-0">{selectedTicket.status}</p>
-                </div>
-                <div className="action d-inline-flex align-items-center gap-3">
-                  <button type="button" className="text-xl text-primary-light">
-                    <Icon icon="mi:call" />
-                  </button>
-                  <button type="button" className="text-xl text-primary-light">
-                    <Icon icon="fluent:video-32-regular" />
-                  </button>
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="text-primary-light text-xl"
-                      data-bs-toggle="dropdown"
-                      data-bs-display="static"
-                      aria-expanded="false"
-                    >
-                      <Icon icon="tabler:dots-vertical" />
-                    </button>
-                    <ul
-                      className="dropdown-menu dropdown-menu-lg-end border"
-                      value={statusFilter}
-                      onChange={handleFilterChanges}
-                    >
-                      <li>
-                        <button
-                          className="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2"
-                          type="button"
-                          value="open"
-                        >
-                          <Icon icon="mdi:clear-circle-outline" />
-                          open
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2"
-                          type="button"
-                          value="completed"
-                        >
-                          <Icon icon="ic:baseline-block" />
-                          completed
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div className="chat-message-list">
-                {/* <div className="chat_messages max-h-60 overflow-y-auto p-3 border border-gray-200 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800">
-                  
-                </div> */}
-                {messages.map((msg, index) => (
-                  <p
-                    key={index}
-                    className={`p-2 rounded-lg mb-2 ${
-                      msg.sender === "user"
-                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 d-flex justify-content-end"
-                        : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    <strong>{msg.sender}:</strong> {msg.text}
-                    <span className="ml-2 text-xs">
-                      {msg.isRead ? "✔✔" : "✔"}
-                    </span>
-                  </p>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-              <form className="chat-message-box">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  name="chatMessage"
-                  placeholder="Write message"
-                />
-                <div className="chat-message-box-action">
-                  {/* <button type="button" className="text-xl">
-                    <Icon icon="ph:link" />
-                  </button>
-                  <button type="button" className="text-xl">
-                    <Icon icon="solar:gallery-linear" />
-                  </button> */}
-                  <button
-                    type="submit"
-                    onClick={sendMessage}
-                    disabled={!input.trim()}
-                    className="btn btn-sm btn-primary-600 radius-8 d-inline-flex align-items-center gap-1"
-                  >
-                    Send
-                    <Icon icon="f7:paperplane" />
-                  </button>
-                </div>
-              </form>
-            </>
-          )}
         </div>
       </div>
     </>

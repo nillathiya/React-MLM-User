@@ -67,3 +67,6 @@
 .createButton:hover {
     background: #357ABD;
 }
+.chat-bubble{
+    margin: 5px 0px;
+}
