@@ -31,6 +31,7 @@ import Loader from "./components/common/Loader";
 import ChatProfileLayer from "./pages/Supports/ChatProfileLayer";
 import FundTransferHistory from "./pages/Fund/FundTransferHistory";
 import IncomeReports from "./pages/IncomeReports";
+import ViewProfile from "./pages/Users/ViewProfile";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -109,6 +110,7 @@ function App() {
         <Route path='/news-events' element={<ProtectedDashboardRoute><NewsAndEvents /></ProtectedDashboardRoute>} />
         <Route path='/support' element={<ProtectedDashboardRoute><Support /></ProtectedDashboardRoute>} />
         <Route path='/chat-profile' element={<ChatProfileLayer />} />
+        <Route path='/view-profile' element={<ProtectedDashboardRoute><ViewProfile /></ProtectedDashboardRoute>} />
 
       </Routes>
       <Toaster />

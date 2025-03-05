@@ -33,7 +33,8 @@ export const ROUTES = {
     GET_USER_RANK_AND_TEAM_METRICS: `${API_URL}/api/rank-settings/user`,
     GET_DIRECTS: `${API_URL}/api/user/get-directs`,
     GET_GENERATION_TREE: `${API_URL}/api/user/generation-tree`,
-    GET_DETAILS_WITH_INVEST_INFO: `${API_URL}/api/user/details-with-investment`
+    GET_DETAILS_WITH_INVEST_INFO: `${API_URL}/api/user/details-with-investment`,
+    UPDATE_PROFILE: `${API_URL}/api/user/update/profile`
   },
   WALLET: {
     CREATE: `${API_URL}/api/wallet/create`,

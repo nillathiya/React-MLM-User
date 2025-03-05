@@ -85,3 +85,24 @@ export const getUserDetailsWithInvestmentInfo = async (formData, signal) => {
     throw new Error("Get user details with investment info failed. Please try again later.");
   }
 };
+
+export const updateUserProfile = async (formData) => {
+  try {
+    const response = await apiClient.post(
+      ROUTES.USER.UPDATE_PROFILE,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
+
+    throw new Error("Update user profile failed. Please try again later.");
+  }
+};

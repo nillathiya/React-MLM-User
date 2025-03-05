@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerNewUser, checkUsername, getUserRankAndTeamMetrics, getUserDirects, getUserGenerationTree, getUserDetailsWithInvestmentInfo } from './userApi';
+import { registerNewUser, checkUsername, getUserRankAndTeamMetrics, getUserDirects, getUserGenerationTree, getUserDetailsWithInvestmentInfo, updateUserProfile } from './userApi';
 import CryptoJS from "crypto-js";
 
 const initialState = {
@@ -94,6 +94,19 @@ export const getUserDetailsWithInvestmentInfoAsync = createAsyncThunk(
         console.log("Request was aborted");
         return rejectWithValue("Request canceled");
       }
+      return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
+    }
+  }
+);
+
+
+export const updateUserProfileAsync = createAsyncThunk(
+  'users/updateUserProfile',
+  async (formData, { getState, rejectWithValue }) => {
+    try {
+      const data = await updateUserProfile(formData);
+      return data;
+    } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
     }
   }

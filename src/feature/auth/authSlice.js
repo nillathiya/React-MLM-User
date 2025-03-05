@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { userLogin, checkWallet } from "./authApi";
+import {updateUserProfileAsync} from "../user/userSlice";
 
 const initialState = {
   loading: false,
@@ -86,7 +87,18 @@ const authSlice = createSlice({
       })
       .addCase(checkWalletAsync.rejected, (state, action) => {
         state.loading = false;
-      });
+      })
+      // updateUserProfileAsync
+      .addCase(updateUserProfileAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateUserProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload.data;
+      })
+      .addCase(updateUserProfileAsync.rejected, (state) => {
+        state.loading = false;
+      })
   },
 });
 
