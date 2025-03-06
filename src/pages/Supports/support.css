@@ -4,12 +4,11 @@
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
-    text-align: center;
     margin: auto;
 }
 
 .create_filter_ticket h3 {
-    font-size: 30px !important;
+    font-size: 20px !important;
     font-weight: 600;
     color: #333;
     margin-bottom: 15px;
@@ -21,15 +20,17 @@
     gap: 15px;
 }
 
-.create_input_section form {
+/* .create_input_section form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
+} */
 
 .create_input_section input,
 .create_input_section textarea {
-    width: 100%;
+    width: 49%;
+    height: 50px;
+    margin-right: 10px;
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -54,6 +55,7 @@
 .createButton {
     background: #4A90E2;
     color: white;
+    margin-top: 15px;
     padding: 12px 20px;
     border: none;
     border-radius: 8px;

@@ -189,7 +189,7 @@ const BalanceStatistic = () => {
           </div>
 
           <div className="mt-10 overflow-x-auto">
-            <div className="w-full min-w-[400px] lg:min-w-[600px] xl:min-w-[800px]">
+            <div className="w-full sm:min-w-[400px] lg:min-w-[600px] xl:min-w-[800px]">
               {chartLabels.length > 0 ? (
                 <ReactApexChart
                   options={incomeStatisticsOptions}
