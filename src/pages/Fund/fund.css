@@ -85,7 +85,7 @@ label {
   border: 1px solid rgb(104, 102, 102);
   padding: 8px;
 }
-.token-dropdownarb{
+.token-dropdownarb {
   display: flex;
   align-items: center;
   height: 50px;
@@ -153,6 +153,11 @@ label {
 /* transfer fund section */
 .fund_wallet_show {
   margin-bottom: 10px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Responsiveness */
