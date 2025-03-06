@@ -128,6 +128,7 @@ function ViewProfile() {
 
     try {
       await dispatch(updateUserProfileAsync(formData)).unwrap();
+      toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error || "Server error");
     }
