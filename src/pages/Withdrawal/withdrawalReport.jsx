@@ -16,6 +16,7 @@ import { DEFAULT_PER_PAGE_ITEMS } from "../../constants/appConstants";
 import { ICON } from "../../constants/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useDispatch } from "react-redux";
+import ExportToExcel from "../../components/common/ExportToExcel/index.jsx";
 
 const WithdrawalReports = () => {
   const dispatch = useDispatch();
@@ -85,11 +86,11 @@ const WithdrawalReports = () => {
   return (
     <MasterLayout>
       <Breadcrumb title="Withdrawal-report"></Breadcrumb>
-      <div className="radius-16 mt-5 withdrawal_report">
+      <div className="radius-16 mt-5 withdrawal_report  w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
         <div className=" p-0">
           <div className="p-20">
-            <button className="export_btn">Export to Excel</button>
-            <div className="position-relative z-1 py-32 text-center px-3 withdrwal_detail">
+            <ExportToExcel />
+            <div className=" withdrwal_detail mt-3 position-relative z-1 py-32 text-center px-3 w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
               <div className="d-flex justify-content-between">
                 <h6 className=" p-3">Total Withdrawal</h6>
                 <p className=" p-3">${formattedUserTotalWithdrawal}</p>
@@ -110,7 +111,7 @@ const WithdrawalReports = () => {
       </div>
       <div className="card basic-data-table mt-5">
         <div className="px-6 py-3 border-b-2 text-gray-600 flex justify-between items-center">
-          <h5 className="card-title mb-0 ">
+          <h5 className="card-title mb-0 " style={{marginLeft:"20px"}}>
             User Fund Withdrawal History Table
           </h5>
 
@@ -126,103 +127,102 @@ const WithdrawalReports = () => {
         </div>
 
         <div className="card-body">
-          <table
-            ref={tableRef}
-            className="table bordered-table mb-0"
-            id="dataTable"
-            data-page-length={DEFAULT_PER_PAGE_ITEMS}
-          >
-            <thead>
-              <tr>
-                <th scope="col">S.L</th>
-                <th scope="col">Amount ($)</th>
-                <th scope="col">charges($)</th>
-                <th scope="col">Withdrawal pool($)</th>
-                <th scope="col">Payable Amount ($)</th>
-                <th scope="col">Status</th>
-                <th scope="col">Reason</th>
-                <th scope="col">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading || fetchUserFundWithdrawalHistoryLoading ? (
-                <>
-                  {[...Array(5)].map((_, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Skeleton width="50px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="120px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="100px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="150px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="80px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="60px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="90px" height="20px" />
-                      </td>
-                      <td>
-                        <Skeleton width="90px" height="20px" />
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : userFundWithdrwalHistory.length > 0 ? (
-                userFundWithdrwalHistory.map((data, index) => (
-                  <tr key={data._id}>
-                    <td>{index + 1}</td>
-                    <td>
-                      $
-                      {(
-                        (data.amount ?? 0) +
-                        (data.txCharge ?? 0) +
-                        (data.wPool ?? 0)
-                      ).toFixed(2)}
-                    </td>
-                    <td>{data.txCharge}</td>
-                    <td>{data.wPool}</td>
-                    <td>{data.amount}</td>
-                    <td
-                      className={`
- rounded-md font-semibold text-center
-  ${
-    data.status === 0
-      ? "!bg-yellow-100 !text-yellow-700"
-      : data.status === 1
-      ? "!bg-green-100 !text-green-700"
-      : "!bg-red-100 !text-red-700"
-  }
-`}
-                    >
-                      {data.status === 0
-                        ? "Pending"
-                        : data.status === 1
-                        ? "Success"
-                        : "Rejected"}
-                    </td>
-
-                    <td>{data.reason || "N/A"}</td>
-                    <td>{formatDate(data.createdAt)}</td>
-                  </tr>
-                ))
-              ) : (
+          <div className="table-responsive">
+            <table
+              ref={tableRef}
+              className="table bordered-table mb-0"
+              id="dataTable"
+              data-page-length={DEFAULT_PER_PAGE_ITEMS}
+            >
+              <thead>
                 <tr>
-                  <td colSpan="7" className="text-center">
-                    User Fund Withdrawal Transaction Not Found
-                  </td>
+                  <th scope="col">S.L</th>
+                  <th scope="col">Amount ($)</th>
+                  <th scope="col">Charges ($)</th>
+                  <th scope="col">Withdrawal Pool ($)</th>
+                  <th scope="col">Payable Amount ($)</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Reason</th>
+                  <th scope="col">Date</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {loading || fetchUserFundWithdrawalHistoryLoading ? (
+                  <>
+                    {[...Array(5)].map((_, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Skeleton width="50px" height="20px" />
+                        </td>
+                        <td>
+                          <Skeleton width="120px" height="20px" />
+                        </td>
+                        <td>
+                          <Skeleton width="100px" height="20px" />
+                        </td>
+                        <td>
+                          <Skeleton width="150px" height="20px" />
+                        </td>
+                        <td>
+                          <Skeleton width="80px" height="20px" />
+                        </td>
+                        <td>
+                          <Skeleton width="60px" height="20px" />
+                        </td>
+                        <td>
+                          <Skeleton width="90px" height="20px" />
+                        </td>
+                        <td>
+                          <Skeleton width="90px" height="20px" />
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                ) : userFundWithdrwalHistory.length > 0 ? (
+                  userFundWithdrwalHistory.map((data, index) => (
+                    <tr key={data._id}>
+                      <td>{index + 1}</td>
+                      <td>
+                        $
+                        {(
+                          data.amount ??
+                          0 + data.txCharge ??
+                          0 + data.wPool ??
+                          0
+                        ).toFixed(2)}
+                      </td>
+                      <td>{data.txCharge}</td>
+                      <td>{data.wPool}</td>
+                      <td>{data.amount}</td>
+                      <td
+                        className={`status-cell ${
+                          data.status === 0
+                            ? "pending"
+                            : data.status === 1
+                            ? "success"
+                            : "rejected"
+                        }`}
+                      >
+                        {data.status === 0
+                          ? "Pending"
+                          : data.status === 1
+                          ? "Success"
+                          : "Rejected"}
+                      </td>
+                      <td>{data.reason || "N/A"}</td>
+                      <td>{formatDate(data.createdAt)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="text-center">
+                      User Fund Withdrawal Transaction Not Found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </MasterLayout>
