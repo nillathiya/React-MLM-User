@@ -27,8 +27,9 @@ const ChatMessageLayer = () => {
     (ticket) => ticket._id === selectedTicket?._id
   );
 
-  const filteredTickets = tickets.filter((ticket) =>
-    ticket.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTickets = tickets.filter((ticket) => 
+    ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    ticket._id.includes(searchQuery)
   );
 
   useEffect(() => {
