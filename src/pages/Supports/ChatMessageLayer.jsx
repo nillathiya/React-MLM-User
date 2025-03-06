@@ -6,11 +6,13 @@ import axios from "axios";
 import { IoMdSend } from "react-icons/io";
 import { Link } from "react-router-dom";
 import "./support.css";
+import { useSelector } from "react-redux";
 
 const API_URL = "http://192.168.29.191:5000";
 const socket = io(API_URL, { transports: ["websocket", "polling"] });
 const ChatMessageLayer = () => {
-  const userId = "67a1ed47bdb1df00ca4dab9c";
+  const {currentUser:loggedInUser}=useSelector((state)=>state.auth)
+  const userId = loggedInUser?._id || "";
 
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
