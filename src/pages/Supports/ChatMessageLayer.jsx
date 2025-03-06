@@ -413,9 +413,11 @@ const ChatMessageLayer = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
+            <div>
             <button type="submit" className="createButton">
               Create Ticket
             </button>
+            </div>
           </form>
         </div>
       </div>
