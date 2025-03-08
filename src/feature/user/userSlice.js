@@ -1,5 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerNewUser, checkUsername, getUserRankAndTeamMetrics, getUserDirects, getUserGenerationTree, getUserDetailsWithInvestmentInfo, updateUserProfile } from './userApi';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  registerNewUser,
+  checkUsername,
+  getUserRankAndTeamMetrics,
+  getUserDirects,
+  getUserGenerationTree,
+  getUserDetailsWithInvestmentInfo,
+  updateUserProfile,
+  getNewsAndEvents,
+} from "./userApi";
 import CryptoJS from "crypto-js";
 
 const initialState = {
@@ -8,83 +17,85 @@ const initialState = {
   userDirects: [],
   userGenerationTree: [],
   rankData: null,
+  newsEvents: [],
+  newsThumbnails: [],
+  latestNews: [],
   isLoading: false,
   pagination: null,
 };
 
 export const registerNewUserAsync = createAsyncThunk(
-  'users/registerNewUser',
+  "users/registerNewUser",
   async (formData, { rejectWithValue }) => {
     try {
       const data = await registerNewUser(formData);
       return data;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : 'An unknown error occurred'
+        error instanceof Error ? error.message : "An unknown error occurred"
       );
     }
   }
 );
 
-
 export const checkUsernameAsync = createAsyncThunk(
-  'users/checkUsername',
+  "users/checkUsername",
   async (formData, { rejectWithValue }) => {
     try {
       const data = await checkUsername(formData);
       return data;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : 'An unknown error occurred'
+        error instanceof Error ? error.message : "An unknown error occurred"
       );
     }
   }
 );
 
 export const getUserRankAndTeamMetricsAsync = createAsyncThunk(
-  'users/getUserRankAndTeamMetrics',
+  "users/getUserRankAndTeamMetrics",
   async (_, { rejectWithValue }) => {
     try {
       const data = await getUserRankAndTeamMetrics();
       return data;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : 'An unknown error occurred'
+        error instanceof Error ? error.message : "An unknown error occurred"
       );
     }
   }
 );
 
 export const getUserDirectsAsync = createAsyncThunk(
-  'users/getUserDirects',
+  "users/getUserDirects",
   async (_, { rejectWithValue }) => {
     try {
       const data = await getUserDirects();
       return data;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : 'An unknown error occurred'
+        error instanceof Error ? error.message : "An unknown error occurred"
       );
     }
   }
 );
 
 export const getUserGenerationTreeAsync = createAsyncThunk(
-  'users/getUserGenerationTree',
+  "users/getUserGenerationTree",
   async (_, { rejectWithValue }) => {
     try {
       const data = await getUserGenerationTree();
       return data;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : 'An unknown error occurred'
+        error instanceof Error ? error.message : "An unknown error occurred"
       );
     }
   }
 );
 
 export const getUserDetailsWithInvestmentInfoAsync = createAsyncThunk(
-  'users/getUserDetailsWithInvestmentInfo',
+  "users/getUserDetailsWithInvestmentInfo",
   async (formData, { signal, rejectWithValue }) => {
     try {
       const data = await getUserDetailsWithInvestmentInfo(formData, signal);
@@ -94,27 +105,43 @@ export const getUserDetailsWithInvestmentInfoAsync = createAsyncThunk(
         console.log("Request was aborted");
         return rejectWithValue("Request canceled");
       }
-      return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     }
   }
 );
 
-
 export const updateUserProfileAsync = createAsyncThunk(
-  'users/updateUserProfile',
+  "users/updateUserProfile",
   async (formData, { getState, rejectWithValue }) => {
     try {
       const data = await updateUserProfile(formData);
       return data;
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     }
   }
 );
 
+export const getUserNewsAndEventsAsync = createAsyncThunk(
+  "users/getNewsAndEvents",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getNewsAndEvents();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
 
 const userSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -182,7 +209,6 @@ const userSlice = createSlice({
             process.env.REACT_APP_CRYPTO_SECRET_KEY
           ).toString(CryptoJS.enc.Utf8);
 
-
           if (!decryptedData) {
             console.error("Error: Decryption resulted in empty data!");
             return;
@@ -194,7 +220,6 @@ const userSlice = createSlice({
         } catch (error) {
           console.error("Decryption failed:", error);
         }
-
       })
       .addCase(getUserGenerationTreeAsync.rejected, (state) => {
         state.isLoading = false;
@@ -203,38 +228,57 @@ const userSlice = createSlice({
       .addCase(getUserDetailsWithInvestmentInfoAsync.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getUserDetailsWithInvestmentInfoAsync.fulfilled, (state, action) => {
-        state.isLoading = false;
-        const encryptedUserDetails = action.payload.data;
+      .addCase(
+        getUserDetailsWithInvestmentInfoAsync.fulfilled,
+        (state, action) => {
+          state.isLoading = false;
+          const encryptedUserDetails = action.payload.data;
 
-        if (typeof encryptedUserDetails !== "string") {
-          console.error("Received data is not encrypted:", encryptedUserDetails);
-          return;
-        }
-
-        try {
-          const decryptedData = CryptoJS.AES.decrypt(
-            encryptedUserDetails,
-            process.env.REACT_APP_CRYPTO_SECRET_KEY
-          ).toString(CryptoJS.enc.Utf8);
-
-
-          if (!decryptedData || decryptedData.trim() === "") {
-            console.error("Decryption failed. Empty or invalid string.");
+          if (typeof encryptedUserDetails !== "string") {
+            console.error(
+              "Received data is not encrypted:",
+              encryptedUserDetails
+            );
             return;
           }
 
-          const decryptedUserDetails = JSON.parse(decryptedData);
-          state.user = decryptedUserDetails
+          try {
+            const decryptedData = CryptoJS.AES.decrypt(
+              encryptedUserDetails,
+              process.env.REACT_APP_CRYPTO_SECRET_KEY
+            ).toString(CryptoJS.enc.Utf8);
 
-        } catch (error) {
-          console.error("Decryption error:", error);
+            if (!decryptedData || decryptedData.trim() === "") {
+              console.error("Decryption failed. Empty or invalid string.");
+              return;
+            }
+
+            const decryptedUserDetails = JSON.parse(decryptedData);
+            state.user = decryptedUserDetails;
+          } catch (error) {
+            console.error("Decryption error:", error);
+          }
         }
-
-      })
+      )
       .addCase(getUserDetailsWithInvestmentInfoAsync.rejected, (state) => {
         state.isLoading = false;
       })
+
+      // getUserNewsAndEventsAsync
+      .addCase(getUserNewsAndEventsAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserNewsAndEventsAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.newsEvents = action.payload.data;
+        state.newsThumbnails = action.payload.data.map((item) => item.thumbnail);
+        state.latestNews = [...action.payload.data].sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+      })
+      .addCase(getUserNewsAndEventsAsync.rejected, (state) => {
+        state.isLoading = false;
+      });
   },
 });
 

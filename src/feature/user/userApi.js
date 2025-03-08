@@ -1,6 +1,6 @@
-import { apiClient } from '../../api/apiClient';
-import { ROUTES } from '../../api/routes';
-import { AxiosError } from 'axios';
+import { apiClient } from "../../api/apiClient";
+import { ROUTES } from "../../api/routes";
+import { AxiosError } from "axios";
 
 export const registerNewUser = async (formData) => {
   try {
@@ -9,9 +9,9 @@ export const registerNewUser = async (formData) => {
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || 'An error occurred.');
+      throw new Error(error.response?.data?.message || "An error occurred.");
     }
-    throw new Error('User Add failed. Please try again later.');
+    throw new Error("User Add failed. Please try again later.");
   }
 };
 
@@ -22,21 +22,25 @@ export const checkUsername = async (formData) => {
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || 'An error occurred.');
+      throw new Error(error.response?.data?.message || "An error occurred.");
     }
-    throw new Error('User Check Name failed. Please try again later.');
+    throw new Error("User Check Name failed. Please try again later.");
   }
 };
 
 export const getUserRankAndTeamMetrics = async () => {
   try {
-    const response = await apiClient.post(ROUTES.USER.GET_USER_RANK_AND_TEAM_METRICS);
+    const response = await apiClient.post(
+      ROUTES.USER.GET_USER_RANK_AND_TEAM_METRICS
+    );
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || 'An error occurred.');
+      throw new Error(error.response?.data?.message || "An error occurred.");
     }
-    throw new Error('Get User rank and Team Metrics failed. Please try again later.');
+    throw new Error(
+      "Get User rank and Team Metrics failed. Please try again later."
+    );
   }
 };
 
@@ -46,9 +50,9 @@ export const getUserDirects = async () => {
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || 'An error occurred.');
+      throw new Error(error.response?.data?.message || "An error occurred.");
     }
-    throw new Error('Get User directs failed. Please try again later.');
+    throw new Error("Get User directs failed. Please try again later.");
   }
 };
 
@@ -58,9 +62,9 @@ export const getUserGenerationTree = async () => {
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || 'An error occurred.');
+      throw new Error(error.response?.data?.message || "An error occurred.");
     }
-    throw new Error('Get User generation failed. Please try again later.');
+    throw new Error("Get User generation failed. Please try again later.");
   }
 };
 
@@ -82,7 +86,9 @@ export const getUserDetailsWithInvestmentInfo = async (formData, signal) => {
       throw new Error(error.response?.data?.message || "An error occurred.");
     }
 
-    throw new Error("Get user details with investment info failed. Please try again later.");
+    throw new Error(
+      "Get user details with investment info failed. Please try again later."
+    );
   }
 };
 
@@ -104,5 +110,17 @@ export const updateUserProfile = async (formData) => {
     }
 
     throw new Error("Update user profile failed. Please try again later.");
+  }
+};
+
+export const getNewsAndEvents = async () => {
+  try {
+    const response = await apiClient.post(ROUTES.NEWSEVENTS.GET_NEWS_EVENTS);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
+    throw new Error("Get User news and events failed. Please try again later.");
   }
 };
