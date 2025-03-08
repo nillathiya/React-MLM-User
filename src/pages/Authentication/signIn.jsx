@@ -8,6 +8,7 @@ import {
   checkWalletAsync,
   userLoginAsync,
   selectUserExists,
+  verifyTokenLoginAsync,
 } from "../../feature/auth/authSlice";
 import { registerNewUserAsync } from "../../feature/user/userSlice";
 import toast from "react-hot-toast";
@@ -22,7 +23,27 @@ const SignIn = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const refUsername = searchParams.get("ref");
+  const token = searchParams.get("impersonate");
   const userExists = useSelector(selectUserExists);
+
+  useEffect(() => {
+    if (token) {
+      verifyTokenLogin(token);
+    }
+  }, [token]);
+
+  const verifyTokenLogin = async (token) => {
+    setLoading(true);
+    try {
+      await dispatch(verifyTokenLoginAsync(token)).unwrap();
+      console.log("dwehdkqwehdiqwe")
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error || "Token validation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isConnected && address && !loading) {

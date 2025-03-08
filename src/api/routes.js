@@ -24,8 +24,8 @@ export const ROUTES = {
   },
   AUTH: {
     CHECK_WALLET: `${API_URL}/api/auth/user/check-wallet`,
-    USER_WALLET: `${API_URL}/api/auth/user/login`
-
+    USER_WALLET: `${API_URL}/api/auth/user/login`,
+    CHECK_TOKEN:`${API_URL}/api/auth/check-token`,
   },
   USER: {
     REGISTER: `${API_URL}/api/user/create`,

@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, useSearchParams } from "react-router-dom";
 import RouteScrollToTop from "./helper/RouteScrollToTop";
 import ErrorPage from "./pages/ErrorPage";
 import Dashboard from "./pages/Dashboard";
@@ -37,20 +37,38 @@ import ViewProfile from "./pages/Users/ViewProfile";
 
 const ProtectedDashboardRoute = ({ children }) => {
   const { isConnected, isConnecting } = useAccount();
-  const { isLoggedIn, loading } = useSelector(state => state.auth, shallowEqual);
+  const { isLoggedIn, loading, loginByAdmin } = useSelector(state => state.auth, shallowEqual);
 
-  // ✅ Show loader only when authentication is in progress
-  if (isConnected === null) {
+  // ✅ Show loader when authentication is in progress
+  if (loading || isConnecting) {
     return <Loader loader="ClipLoader" color="blue" size={50} fullPage />;
   }
 
+  // ✅ Allow access if login by user is true and user is logged in
+  if (isLoggedIn && loginByAdmin) {
+    console.log("Login By Admin is true and user is logged in");
+    return children;
+  }
+
+  // ✅ Protect the route
   return isLoggedIn && isConnected ? children : <Navigate to="/" />;
 };
 
 const ProtectedHomeRoute = ({ children }) => {
-  const { isConnected, isConnecting } = useAccount();
-  const { isLoggedIn, loading } = useSelector(state => state.auth, shallowEqual);
+  // const [searchParams] = useSearchParams();
+  // const token = searchParams.get("impersonate");
 
+  const { isConnected, isConnecting } = useAccount();
+  const { isLoggedIn, loading, loginByAdmin } = useSelector(state => state.auth, shallowEqual);
+
+  // if (loading || isConnecting) {
+  //   return <Loader loader="ClipLoader" color="blue" size={50} fullPage />;
+  // }
+
+  if (isLoggedIn && loginByAdmin) {
+    console.log("Login By Admin is true and user is logged in");
+    return <Navigate to="/dashboard" />
+  }
   if (isConnected === null) {
     return <Loader loader="ClipLoader" color="blue" size={50} fullPage />;
   }

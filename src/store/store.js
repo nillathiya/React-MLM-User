@@ -52,7 +52,7 @@ const walletPersistConfig = {
 const authPersistConfig = {
     key: 'auth',
     storage,
-    whitelist: ['currentUser', 'isLoggedIn'],
+    whitelist: ['currentUser', 'isLoggedIn','loginByAdmin'],
 };
 
 // Apply persistence

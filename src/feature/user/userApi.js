@@ -106,3 +106,5 @@ export const updateUserProfile = async (formData) => {
     throw new Error("Update user profile failed. Please try again later.");
   }
 };
+
+

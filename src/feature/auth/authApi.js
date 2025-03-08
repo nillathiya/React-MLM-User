@@ -28,3 +28,15 @@ export const checkWallet = async (formData) => {
   }
 };
 
+export const verifyTokenLogin = async (token) => {
+  try {
+    const response = await apiClient.post(ROUTES.AUTH.CHECK_TOKEN, { token });
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || 'An error occurred.');
+    }
+    throw new Error('User login failed. Please try again later.');
+  }
+};
+

@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userLogin, checkWallet } from "./authApi";
-import {updateUserProfileAsync} from "../user/userSlice";
+import { userLogin, checkWallet, verifyTokenLogin } from "./authApi";
+import { updateUserProfileAsync } from "../user/userSlice";
 
 const initialState = {
   loading: false,
   userExists: null,
   currentUser: null,
   isLoggedIn: false,
+  loginByAdmin: false,
 };
 
 export const userLoginAsync = createAsyncThunk(
@@ -41,6 +42,21 @@ export const checkWalletAsync = createAsyncThunk(
   }
 );
 
+export const verifyTokenLoginAsync = createAsyncThunk(
+  "auth/verifyTokenLogin",
+  async (token, { rejectWithValue }) => {
+    try {
+      const data = await verifyTokenLogin(token);
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+);
 
 
 // Define the slice
@@ -56,6 +72,7 @@ const authSlice = createSlice({
       state.currentUser = null;
       state.isLoggedIn = false;
       state.loading = false;
+      state.loginByAdmin = false;
     },
     clearUserExists(state) {
       state.userExists = null;
@@ -97,6 +114,19 @@ const authSlice = createSlice({
         state.currentUser = action.payload.data;
       })
       .addCase(updateUserProfileAsync.rejected, (state) => {
+        state.loading = false;
+      })
+      // verifyTokenLoginAsync
+      .addCase(verifyTokenLoginAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyTokenLoginAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload.data.user;
+        state.isLoggedIn = true;
+        state.loginByAdmin = true;
+      })
+      .addCase(verifyTokenLoginAsync.rejected, (state) => {
         state.loading = false;
       })
   },
