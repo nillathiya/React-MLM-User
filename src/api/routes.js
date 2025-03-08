@@ -52,5 +52,8 @@ export const ROUTES = {
   WITHDRAWAL: {
     CREATE_REQUEST: `${API_URL}/api/withdrawal/create-request`,
     GET_USER_FUND_WITHDRAWAL: `${API_URL}/api/withdrawal/get-user-transactions`
+  },
+  NEWSEVENTS: {
+    GET_NEWS_EVENTS: `${API_URL}/api/news-events/get-all`
   }
 };

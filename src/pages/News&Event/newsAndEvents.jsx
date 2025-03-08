@@ -1,123 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
-import "./newsAndEvents.css";
 import Breadcrumb from "../../components/Breadcrumb";
-
-const initialNewsData = {
-  id: 1,
-  image: "assets/news/3.jpg",
-  title:
-    "DIY and interior design tips: Decorating to celebrating the great indoors",
-  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  date: "Jan 02 - 2025",
-  link: "news-single.html",
-};
-
-const newsThumbnails = [
-  {
-    id: 1,
-    image: "assets/news/news-thumb-01.jpg",
-    title: "Today News",
-    date: "Dec 02, 2016",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque",
-  },
-  {
-    id: 2,
-    image: "assets/news/news-thumb-02.jpg",
-    title: "Breaking News",
-    date: "Dec 05, 2016",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque",
-  },
-  {
-    id: 3,
-    image: "assets/news/news-thumb-01.jpg",
-    title: "today news",
-    date: "Dec 02, 2016",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque",
-  },
-  {
-    id: 4,
-    image: "assets/news/news-thumb-02.jpg",
-    title: "today news",
-    date: "Dec 02, 2016",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque",
-  },
-  {
-    id: 5,
-    image: "assets/news/news-thumb-01.jpg",
-    title: "today news",
-    date: "Dec 02, 2016",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque",
-  },
-  {
-    id: 6,
-    image: "assets/news/news-thumb-02.jpg",
-    title: "today news",
-    date: "Dec 02, 2016",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque",
-  },
-];
-
-const latestNews = [
-  {
-    id: 1,
-    image: "assets/news/thumb3.jpg",
-    title: "About Freelancing",
-    date: "March 10, 2016",
-  },
-  {
-    id: 2,
-    image: "assets/news/thumb2.jpg",
-    title: "Need a Help?",
-    date: "March 15, 2016",
-  },
-  {
-    id: 3,
-    image: "assets/news/thumb2.jpg",
-    title: "Need a Help?",
-    date: "March 10, 2016",
-  },
-  {
-    id: 4,
-    image: "assets/news/thumb2.jpg",
-    title: "Need a Help?",
-    date: "March 10, 2016",
-  },
-  {
-    id: 5,
-    image: "assets/news/thumb2.jpg",
-    title: "Need a Help?",
-    date: "March 10, 2016",
-  },
-  {
-    id: 6,
-    image: "assets/news/thumb2.jpg",
-    title: "Need a Help?",
-    date: "March 10, 2016",
-  },
-];
+import { useSelector, useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { getUserNewsAndEventsAsync } from "../../feature/user/userSlice";
+import "./newsAndEvents.css";
+const API_URL = "http://192.168.29.191:5000";
 
 const NewsAndEvents = () => {
+  const dispatch = useDispatch();
+  const { newsThumbnails, latestNews, newsEvents, isLoading } = useSelector(
+    (state) => state.user
+  );
   const [activeTab, setActiveTab] = useState("news");
-  const [newsData, setNewsData] = useState(initialNewsData);
+  const [newsData, setNewsData] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Function to update newsData on click
+  useEffect(() => {
+    const fetchAllNewsAndEvent = async () => {
+      try {
+        await dispatch(getUserNewsAndEventsAsync()).unwrap();
+      } catch (error) {
+        toast.error(error || "Server error");
+      }
+    };
+    if (newsEvents.length == 0) {
+      fetchAllNewsAndEvent();
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (newsEvents?.length > 0) {
+      setNewsData(newsEvents[0]);
+    }
+  }, [newsEvents]);
+
   const handleNewsClick = (news) => {
-    setNewsData({
-      id: news.id,
-      image: news.image,
-      title: news.title,
-      description: news.description || "No description available",
-      date: news.date,
-      link: "#", // Assuming no specific link is provided
-    });
+    setNewsData(news);
   };
 
   const handleLoadMore = () => {
@@ -149,22 +68,33 @@ const NewsAndEvents = () => {
                   </h6>
                 </div>
 
-                {activeTab === "news" && (
+                {activeTab === "news" && newsData && (
                   <div className="row">
                     <div className="col-sm-6">
                       <div className="news-wrap">
-                        <a href={newsData.link}>
-                          <img
-                            className="img-responsive"
-                            src={newsData.image}
-                            alt="News"
-                            height="700"
-                            width="800"
-                          />
-                        </a>
+                        <div className="image_grid_lg">
+                          <div className="image-container">
+                            {newsData.images.length > 0 ? (
+                              newsData.images.map((image, index) => (
+                                <img
+                                  key={index}
+                                  className="news-image"
+                                  src={`${API_URL}${image}`}
+                                  alt={`News ${index}`}
+                                />
+                              ))
+                            ) : (
+                              <img
+                                className="news-image"
+                                src="/assets/news/35.jpg"
+                                alt="No image"
+                              />
+                            )}
+                          </div>
+                        </div>
                         <div className="news-content">
                           <h5>
-                            <a href={newsData.link}>{newsData.title}</a>
+                            <a href="#">{newsData.title}</a>
                           </h5>
                           <span className="news-cat">
                             {newsData.description.length > 80 ? (
@@ -175,7 +105,10 @@ const NewsAndEvents = () => {
                                 <a
                                   href="#"
                                   onClick={handleLoadMore}
-                                  style={{ color: "white", fontSize: "15px" }}
+                                  style={{
+                                    color: "white",
+                                    fontSize: "15px",
+                                  }}
                                 >
                                   {isExpanded ? "Show less..." : "Load more..."}
                                 </a>
@@ -188,33 +121,69 @@ const NewsAndEvents = () => {
                         </div>
                       </div>
                     </div>
+
                     <div className="col-sm-6">
                       <div className="widget_no_box">
                         <ul className="thumbnail-widget">
-                          {newsThumbnails.map((thumb) => (
-                            <li
-                              key={thumb.id}
-                              onClick={() => handleNewsClick(thumb)}
-                            >
-                              <div className="thumb-wrap">
-                                <img
-                                  width="100"
-                                  height="100"
-                                  alt="Thumb"
-                                  className="img-responsive"
-                                  src={thumb.image}
-                                />
-                              </div>
-                              <div className="thumb-content">
-                                <span className="color">{thumb.date}</span>
-                                <p>
-                                  {thumb.description.length > 80
-                                    ? thumb.description.slice(0, 80) + "..."
-                                    : thumb.description}
-                                </p>
-                              </div>
-                            </li>
-                          ))}
+                          {newsEvents
+                            .filter((news) => news.category === "news")
+                            .map((news) => (
+                              <li
+                                key={news._id}
+                                onClick={() => handleNewsClick(news)}
+                              >
+                                <div className="thumb-wrap">
+                                  {news.images.length > 0 ? (
+                                    <div className="image-grid-container">
+                                      <div className="image-grid">
+                                        {news.images.map((image, index) => (
+                                          <img
+                                            key={index}
+                                            width="60"
+                                            height="60"
+                                            alt="Thumb"
+                                            className="img-responsive"
+                                            src={`${API_URL}${image}`}
+                                          />
+                                        ))}
+                                      </div>
+                                      <div className="grid-text">
+                                        <span className="color">
+                                          {news.title}
+                                        </span>
+                                        <p>
+                                          {news.description.length > 80
+                                            ? news.description.slice(0, 80) +
+                                              "..."
+                                            : news.description}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="single-image-wrap">
+                                      <img
+                                        width="60"
+                                        height="60"
+                                        alt="No image"
+                                        className="img-responsive"
+                                        src="/assets/news/news-thumb-033.jpg"
+                                      />
+                                      <div className="thumb-content">
+                                        <span className="color">
+                                          {news.title}
+                                        </span>
+                                        <p>
+                                          {news.description.length > 80
+                                            ? news.description.slice(0, 80) +
+                                              "..."
+                                            : news.description}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </li>
+                            ))}
                         </ul>
                       </div>
                     </div>
@@ -227,16 +196,16 @@ const NewsAndEvents = () => {
                       <div className="events-wrap">
                         <h5>Upcoming Events</h5>
                         <ul className="events-list">
-                          <li>
-                            <strong>Event Name:</strong> Tech Conference 2024
-                            <br />
-                            <strong>Date:</strong> April 15, 2024
-                          </li>
-                          <li>
-                            <strong>Event Name:</strong> Health & Wellness Expo
-                            <br />
-                            <strong>Date:</strong> May 10, 2024
-                          </li>
+                          {newsEvents
+                            .filter((item) => item.category === "event")
+                            .map((item, index) => (
+                              <li key={item._id}>
+                                <strong>Event Name:</strong> {item.title}
+                                <br />
+                                <strong>Date:</strong>{" "}
+                                {new Date(item.eventDate).toLocaleDateString()}
+                              </li>
+                            ))}
                         </ul>
                       </div>
                     </div>
@@ -248,28 +217,71 @@ const NewsAndEvents = () => {
             {activeTab !== "events" && (
               <div className="col-md-3">
                 <aside className="right_sidebar">
-                  <div className="widget_no_box">
+                  <div className="widget_lates_box">
                     <h5 className="widget-title">
                       Latest News<span></span>
                     </h5>
-                    <ul className="thumbnail-widget">
-                      {latestNews.map((news) => (
-                        <li key={news.id} onClick={() => handleNewsClick(news)}>
-                          <div className="thumb-wrap">
-                            <img
-                              width="60"
-                              height="60"
-                              alt="Thumb"
-                              className="img-responsive"
-                              src={news.image}
-                            />
-                          </div>
-                          <div className="thumb-content">
-                            <a href="#">{news.title}</a>
-                            <span>{news.date}</span>
-                          </div>
-                        </li>
-                      ))}
+                    <ul className="thumbnail_latest_widget">
+                      {latestNews.length > 0 ? (
+                        latestNews
+                          .filter((news) => news.category === "news")
+                          .slice(0, 5)
+                          .map((news) => (
+                            <li
+                              key={news._id}
+                              onClick={() => handleNewsClick(news)}
+                            >
+                              <div className="thumb-wrap">
+                                {news.images.length > 0 ? (
+                                  <div className="image-grid-container">
+                                    <div className="image-grid">
+                                      {news.images.map((image, index) => (
+                                        <img
+                                          key={index}
+                                          width="60"
+                                          height="60"
+                                          alt="Thumb"
+                                          className="img-responsive"
+                                          src={`${API_URL}${image}`}
+                                        />
+                                      ))}
+                                    </div>
+                                    <div className="grid-text">
+                                      <a href="#">{news.title}</a>
+                                      <span>
+                                        {new Date(
+                                          news.createdAt
+                                        ).toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="single-image-wrap single_latest_news_wrap">
+                                    <img
+                                      width="60"
+                                      height="60"
+                                      alt="No image"
+                                      className="img-responsive"
+                                      src="/assets/news/news-thumb-033.jpg"
+                                    />
+                                    <div className="thumb-content latest_thumb_content">
+                                      <a href="#">{news.title}</a>
+                                      <span>
+                                        {new Date(
+                                          news.createdAt
+                                        ).toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </li>
+                          ))
+                      ) : (
+                        <p className="no-news-message">
+                          No latest news available
+                        </p>
+                      )}
                     </ul>
                   </div>
                 </aside>
