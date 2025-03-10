@@ -6,12 +6,18 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
   margin: auto;
 }
-
+html.dark  .create_new_ticket_section {
+  background: #273142;
+  color: rgb(255, 255, 255);
+}
 .create_filter_ticket h3 {
   font-size: 20px !important;
   font-weight: 600;
   color: #333;
   margin-bottom: 15px;
+}
+html.dark .create_filter_ticket h3 {
+  color: white;
 }
 
 /* .create_input_section {
@@ -38,7 +44,13 @@
   transition: all 0.3s ease-in-out;
   background: #f9f9f9;
 }
-
+html.dark .create_input_section input,
+html.dark .create_input_section textarea {
+  background: #585e68;
+}
+html.dark .chat-bubble {
+  background: none;
+}
 .create_input_section input:focus,
 .create_input_section textarea:focus {
   border-color: #4a90e2;

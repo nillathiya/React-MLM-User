@@ -27,6 +27,10 @@
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+html.dark .tab-news {
+  background: #273142;
+  color: rgb(255, 255, 255);
+}
 
 .title-bg-line {
   display: flex;
@@ -48,6 +52,9 @@
   color: #333;
   font-size: 20px;
   font-weight: 700;
+}
+html.dark .title a {
+  color: rgb(255, 255, 255);
 }
 
 .title a:hover {
@@ -95,8 +102,12 @@
   width: 403px;
   height: 355px;
   display: block;
+  background-color: #f0f0f0;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.4);
 }
-
+html.dark .news-wrap img {
+  background-color: #586172;
+}
 .news-wrap:hover img {
   transform: scale(1.05);
 }
@@ -237,7 +248,13 @@
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
-
+html.dark .right_sidebar {
+  background: #273142;
+  color: rgb(255, 255, 255);
+}
+html.dark .thumb-content a {
+  color: rgb(255, 255, 255);
+}
 .widget-title {
   font-size: 20px;
   font-weight: 600;
@@ -260,16 +277,50 @@
   top: -4px;
   width: 50%;
 }
-
+.thumbnail-widget {
+  margin: 8px;
+}
 .thumbnail-widget li {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  padding: 10px;
+  margin: 10px 10px 10px 0px;
+  box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.1);
+}
+html.dark .thumbnail-widget li {
+  width: 100%;
+  background-color: #586172;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 .thumbnail_latest_widget li {
+  width: 95%;
+  background-color: #ffffff;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  padding: 10px;
+  margin: 10px 10px 10px 0px;
+  box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.1);
+}
+html.dark .thumbnail_latest_widget li {
+  width: 95%;
+  background-color: #586172;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 .thumb-wrap img {
   width: 80px;
@@ -417,5 +468,13 @@
   .news-wrap img {
     width: 483px;
     height: 150px;
+  }
+}
+@media screen and (max-width: 320px) {
+  .thumb-content {
+    margin-left: -10px;
+  }
+  .thumb-content p {
+    font-size: 13px;
   }
 }
