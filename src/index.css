@@ -86,6 +86,43 @@
            focus:ring-2 focus:ring-darkPrimary;
   }
 
+  .react-tel-input {
+    @apply w-full border border-gray-300 rounded-md bg-white text-gray-900 dark:bg-darkCard dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-darkPrimary !important;
+  }
+
+  .react-tel-input .flag-dropdown {
+    @apply bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg;
+  }
+  .react-tel-input .country-list {
+    @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md shadow-lg;
+    @apply max-h-60 overflow-y-auto; /* Ensures scrolling */
+  }
+
+  .react-tel-input .country {
+    @apply px-3 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700;
+  }
+
+  /* Selected Country (Flag Dropdown Button) */
+  .react-tel-input .selected-flag {
+    @apply bg-gray-200 dark:bg-gray-700 text-black dark:text-white 
+         px-3 py-2 border border-gray-300 dark:border-gray-600 
+         rounded-md shadow-md cursor-pointer;
+  }
+
+  /* Add hover effect for selected country */
+  .react-tel-input .selected-flag:hover {
+    @apply bg-gray-300 dark:bg-gray-600;
+  }
+
+  /* Selected Country inside the Dropdown */
+  .react-tel-input .country.highlight {
+    @apply bg-blue-500 dark:bg-blue-600 text-white font-semibold;
+  }
+
+  /* Hover Effect on Countries */
+  .react-tel-input .country:hover {
+    @apply bg-gray-200 dark:bg-gray-700 text-black dark:text-white;
+  }
 }
 
 @layer utilities {

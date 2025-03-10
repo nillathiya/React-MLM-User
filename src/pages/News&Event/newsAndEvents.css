@@ -410,6 +410,23 @@ html.dark .thumbnail_latest_widget li {
   margin-left: 10px;
 }
 
+html.dark .events-wrap {
+  background: #273142;
+  color: rgb(255, 255, 255);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+html.dark .events-wrap h5 {
+  font-size: 20px;
+  font-weight: 600;
+}
+html.dark .events-list li {
+  background: #273142;
+  color: rgb(255, 255, 255);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
 /* Responsiveness */
 @media screen and (max-width: 768px) {
   .tab-news {

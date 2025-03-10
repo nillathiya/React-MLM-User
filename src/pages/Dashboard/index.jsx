@@ -237,7 +237,7 @@ const Dashboard = () => {
                       type="text"
                       value={referralLink}
                       readOnly
-                      className="dark:text-red-600 copy-input"
+                      className="copy-input"
                     />
                     <button className="copy-btn" onClick={handleCopy}>
                       Copy Link

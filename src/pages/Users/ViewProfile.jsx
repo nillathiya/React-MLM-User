@@ -378,7 +378,7 @@ function ViewProfile() {
                           <input
                             id="username"
                             type="text"
-                            className="form-control radius-8"
+                            className="form-control !input-field radius-8"
                             placeholder="Enter Full Name"
                             disabled
                             {...register("username", {
@@ -448,7 +448,7 @@ function ViewProfile() {
                       </div>
                       {/* Mobile */}
                       <div className="col-sm-6">
-                        <div className="mb-20 overflow-hidden">
+                        <div className="mb-20 ">
                           <label
                             htmlFor="number"
                             className="form-label fw-semibold text-primary-light text-sm mb-8"
@@ -475,8 +475,11 @@ function ViewProfile() {
                                 country={"in"}
                                 onlyCountries={["us", "in", "gb"]}
                                 placeholder="Enter phone number"
-                                containerClass="w-full flex !important"
-                                inputClass="w-full px-5 py-2 border border-gray-300 rounded-md !important"
+                                containerClass="w-full flex"
+                                inputClass="react-tel-input"
+                                dropdownClass="overflow-y-auto !bg-white dark:!bg-gray-800 !text-gray-900 dark:!text-white border border-gray-300 dark:!border-gray-600 rounded-md shadow-lg
+                                "
+                                buttonClass="bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
                                 autoFormat={true}
                                 // enableSearch={true}
                                 onChange={(value, data) => {
@@ -614,14 +617,13 @@ function ViewProfile() {
 
                       {/* Country Select */}
                       <div className="col-sm-6">
-                        <div className="mb-20">
-                          <label className="form-label fw-semibold text-primary-light text-sm mb-8">
+                        <div className="mb-5">
+                          <label className="form-label font-semibold text-primary-light text-sm mb-8">
                             Country
                           </label>
                           <Controller
                             name="address.country"
                             control={control}
-                            // rules={{ required: "Country is required" }}
                             render={({ field }) => (
                               <Select
                                 {...field}
@@ -630,6 +632,43 @@ function ViewProfile() {
                                 isDisabled={
                                   !getValues("mobile") || errors.mobile
                                 }
+                                className="react-select-container"
+                                classNamePrefix="react-select"
+                                styles={{
+                                  control: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: state.isDisabled
+                                      ? "#f3f4f6"
+                                      : "#fff", // Light gray if disabled
+                                    borderColor: state.isFocused
+                                      ? "#3b82f6" // Blue on focus
+                                      : "#d1d5db", // Gray border
+                                    boxShadow: state.isFocused
+                                      ? "0 0 0 2px rgba(59, 130, 246, 0.5)"
+                                      : "none",
+                                    "&:hover": { borderColor: "#3b82f6" },
+                                    borderRadius: "6px",
+                                    padding: "4px",
+                                  }),
+                                  menu: (provided) => ({
+                                    ...provided,
+                                    backgroundColor: "#fff",
+                                    borderRadius: "6px",
+                                    border: "1px solid #e5e7eb",
+                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                  }),
+                                  option: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: state.isSelected
+                                      ? "#3b82f6"
+                                      : state.isFocused
+                                      ? "#e5e7eb"
+                                      : "#fff",
+                                    color: state.isSelected ? "#fff" : "#000",
+                                    padding: "10px",
+                                    cursor: "pointer",
+                                  }),
+                                }}
                                 onChange={(selectedOption) => {
                                   if (!getValues("mobile") || errors.mobile) {
                                     setError("address.country", {
@@ -665,7 +704,6 @@ function ViewProfile() {
                               />
                             )}
                           />
-
                           {errors?.address?.country && (
                             <p className="error-message text-danger-600">
                               {errors.address.country.message}
@@ -689,6 +727,41 @@ function ViewProfile() {
                                 options={stateOptions}
                                 placeholder="Select State"
                                 isDisabled={!selectedCountry}
+                                className="react-select-container"
+                                classNamePrefix="react-select"
+                                styles={{
+                                  control: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: "#fff", // Always white
+                                    borderColor: state.isFocused
+                                      ? "#3b82f6"
+                                      : "#d1d5db", // Blue on focus, gray otherwise
+                                    boxShadow: state.isFocused
+                                      ? "0 0 0 2px rgba(59, 130, 246, 0.5)"
+                                      : "none",
+                                    "&:hover": { borderColor: "#3b82f6" },
+                                    borderRadius: "6px",
+                                    padding: "4px",
+                                  }),
+                                  menu: (provided) => ({
+                                    ...provided,
+                                    backgroundColor: "#fff",
+                                    borderRadius: "6px",
+                                    border: "1px solid #e5e7eb",
+                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                  }),
+                                  option: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: state.isSelected
+                                      ? "#3b82f6"
+                                      : state.isFocused
+                                      ? "#e5e7eb"
+                                      : "#fff",
+                                    color: state.isSelected ? "#fff" : "#000",
+                                    padding: "10px",
+                                    cursor: "pointer",
+                                  }),
+                                }}
                                 onChange={(selectedOption) => {
                                   setValue("address.state", selectedOption);
                                   setValue("address.city", null);
@@ -714,6 +787,7 @@ function ViewProfile() {
                               />
                             )}
                           />
+
                           {errors?.address?.state && (
                             <p className="error-message text-danger-600">
                               {errors.address.state.message}
@@ -737,9 +811,45 @@ function ViewProfile() {
                                 options={cityOptions || []}
                                 placeholder="Select City"
                                 isDisabled={!watch("address.state")}
+                                className="react-select-container"
+                                classNamePrefix="react-select"
+                                styles={{
+                                  control: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: "#fff", // Always white
+                                    borderColor: state.isFocused
+                                      ? "#3b82f6"
+                                      : "#d1d5db", // Blue on focus, gray otherwise
+                                    boxShadow: state.isFocused
+                                      ? "0 0 0 2px rgba(59, 130, 246, 0.5)"
+                                      : "none",
+                                    "&:hover": { borderColor: "#3b82f6" },
+                                    borderRadius: "6px",
+                                    padding: "4px",
+                                  }),
+                                  menu: (provided) => ({
+                                    ...provided,
+                                    backgroundColor: "#fff",
+                                    borderRadius: "6px",
+                                    border: "1px solid #e5e7eb",
+                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                  }),
+                                  option: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: state.isSelected
+                                      ? "#3b82f6"
+                                      : state.isFocused
+                                      ? "#e5e7eb"
+                                      : "#fff",
+                                    color: state.isSelected ? "#fff" : "#000",
+                                    padding: "10px",
+                                    cursor: "pointer",
+                                  }),
+                                }}
                               />
                             )}
                           />
+
                           {errors?.address?.city && (
                             <p className="error-message text-danger-600">
                               {errors.address.city.message}
