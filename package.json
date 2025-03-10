@@ -47,6 +47,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.10.5",
     "react-confetti": "^6.4.0",
+    "react-country-state-city": "^1.1.11",
     "react-d3-tree": "^3.6.6",
     "react-datepicker": "^7.4.0",
     "react-dom": "^18.2.0",

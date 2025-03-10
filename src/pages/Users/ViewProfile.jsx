@@ -36,6 +36,21 @@ function ViewProfile() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+  const [isDark, setIsDark] = useState(
+    document.documentElement.classList.contains("dark")
+  );
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const isDarkMode =
+        document.documentElement.getAttribute("data-theme") === "dark" ||
+        document.documentElement.classList.contains("dark");
+      setIsDark(isDarkMode);
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
   // Toggle function for password field
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -617,7 +632,7 @@ function ViewProfile() {
 
                       {/* Country Select */}
                       <div className="col-sm-6">
-                        <div className="mb-5">
+                        <div className="mb-20">
                           <label className="form-label font-semibold text-primary-light text-sm mb-8">
                             Country
                           </label>
@@ -632,41 +647,61 @@ function ViewProfile() {
                                 isDisabled={
                                   !getValues("mobile") || errors.mobile
                                 }
-                                className="react-select-container"
-                                classNamePrefix="react-select"
+                                className=""
                                 styles={{
                                   control: (provided, state) => ({
                                     ...provided,
-                                    backgroundColor: state.isDisabled
-                                      ? "#f3f4f6"
-                                      : "#fff", // Light gray if disabled
+                                    backgroundColor: isDark
+                                      ? "#3e4d66"
+                                      : "#fff",
                                     borderColor: state.isFocused
-                                      ? "#3b82f6" // Blue on focus
-                                      : "#d1d5db", // Gray border
+                                      ? "#3b82f6"
+                                      : isDark
+                                      ? "#374151"
+                                      : "#d1d5db",
                                     boxShadow: state.isFocused
                                       ? "0 0 0 2px rgba(59, 130, 246, 0.5)"
                                       : "none",
                                     "&:hover": { borderColor: "#3b82f6" },
                                     borderRadius: "6px",
                                     padding: "4px",
+                                    color: isDark ? "#ffffff" : "#000000",
+                                    opacity: state.isDisabled ? 0.5 : 1,
+                                  }),
+                                  singleValue: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#ffffff" : "#000000",
+                                  }),
+                                  input: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#ffffff" : "#000000",
+                                  }),
+                                  placeholder: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#cbd5e1" : "#9CA3AF",
                                   }),
                                   menu: (provided) => ({
                                     ...provided,
-                                    backgroundColor: "#fff",
-                                    borderRadius: "6px",
-                                    border: "1px solid #e5e7eb",
-                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                    backgroundColor: isDark
+                                      ? "#1E293B"
+                                      : "#fff",
                                   }),
                                   option: (provided, state) => ({
                                     ...provided,
                                     backgroundColor: state.isSelected
                                       ? "#3b82f6"
                                       : state.isFocused
-                                      ? "#e5e7eb"
-                                      : "#fff",
-                                    color: state.isSelected ? "#fff" : "#000",
-                                    padding: "10px",
-                                    cursor: "pointer",
+                                      ? isDark
+                                        ? "#374151"
+                                        : "#e5e7eb"
+                                      : isDark
+                                      ? "#1E293B"
+                                      : "#ffffff",
+                                    color: state.isSelected
+                                      ? "#ffffff"
+                                      : isDark
+                                      ? "#fff"
+                                      : "#000",
                                   }),
                                 }}
                                 onChange={(selectedOption) => {
@@ -727,39 +762,60 @@ function ViewProfile() {
                                 options={stateOptions}
                                 placeholder="Select State"
                                 isDisabled={!selectedCountry}
-                                className="react-select-container"
-                                classNamePrefix="react-select"
                                 styles={{
                                   control: (provided, state) => ({
                                     ...provided,
-                                    backgroundColor: "#fff", // Always white
+                                    backgroundColor: isDark
+                                      ? "#3e4d66"
+                                      : "#fff",
                                     borderColor: state.isFocused
                                       ? "#3b82f6"
-                                      : "#d1d5db", // Blue on focus, gray otherwise
+                                      : isDark
+                                      ? "#374151"
+                                      : "#d1d5db",
                                     boxShadow: state.isFocused
                                       ? "0 0 0 2px rgba(59, 130, 246, 0.5)"
                                       : "none",
                                     "&:hover": { borderColor: "#3b82f6" },
                                     borderRadius: "6px",
                                     padding: "4px",
+                                    color: isDark ? "#ffffff" : "#000000",
+                                    opacity: state.isDisabled ? 0.5 : 1,
+                                  }),
+                                  singleValue: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#ffffff" : "#000000",
+                                  }),
+                                  input: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#ffffff" : "#000000",
+                                  }),
+                                  placeholder: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#cbd5e1" : "#9CA3AF",
                                   }),
                                   menu: (provided) => ({
                                     ...provided,
-                                    backgroundColor: "#fff",
-                                    borderRadius: "6px",
-                                    border: "1px solid #e5e7eb",
-                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                    backgroundColor: isDark
+                                      ? "#1E293B"
+                                      : "#fff",
                                   }),
                                   option: (provided, state) => ({
                                     ...provided,
                                     backgroundColor: state.isSelected
                                       ? "#3b82f6"
                                       : state.isFocused
-                                      ? "#e5e7eb"
-                                      : "#fff",
-                                    color: state.isSelected ? "#fff" : "#000",
-                                    padding: "10px",
-                                    cursor: "pointer",
+                                      ? isDark
+                                        ? "#374151"
+                                        : "#e5e7eb"
+                                      : isDark
+                                      ? "#1E293B"
+                                      : "#ffffff",
+                                    color: state.isSelected
+                                      ? "#ffffff"
+                                      : isDark
+                                      ? "#fff"
+                                      : "#000",
                                   }),
                                 }}
                                 onChange={(selectedOption) => {
@@ -811,39 +867,60 @@ function ViewProfile() {
                                 options={cityOptions || []}
                                 placeholder="Select City"
                                 isDisabled={!watch("address.state")}
-                                className="react-select-container"
-                                classNamePrefix="react-select"
                                 styles={{
                                   control: (provided, state) => ({
                                     ...provided,
-                                    backgroundColor: "#fff", // Always white
+                                    backgroundColor: isDark
+                                      ? "#3e4d66"
+                                      : "#fff",
                                     borderColor: state.isFocused
                                       ? "#3b82f6"
-                                      : "#d1d5db", // Blue on focus, gray otherwise
+                                      : isDark
+                                      ? "#374151"
+                                      : "#d1d5db",
                                     boxShadow: state.isFocused
                                       ? "0 0 0 2px rgba(59, 130, 246, 0.5)"
                                       : "none",
                                     "&:hover": { borderColor: "#3b82f6" },
                                     borderRadius: "6px",
                                     padding: "4px",
+                                    color: isDark ? "#ffffff" : "#000000",
+                                    opacity: state.isDisabled ? 0.5 : 1,
+                                  }),
+                                  singleValue: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#ffffff" : "#000000",
+                                  }),
+                                  input: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#ffffff" : "#000000",
+                                  }),
+                                  placeholder: (provided) => ({
+                                    ...provided,
+                                    color: isDark ? "#cbd5e1" : "#9CA3AF",
                                   }),
                                   menu: (provided) => ({
                                     ...provided,
-                                    backgroundColor: "#fff",
-                                    borderRadius: "6px",
-                                    border: "1px solid #e5e7eb",
-                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                    backgroundColor: isDark
+                                      ? "#1E293B"
+                                      : "#fff",
                                   }),
                                   option: (provided, state) => ({
                                     ...provided,
                                     backgroundColor: state.isSelected
                                       ? "#3b82f6"
                                       : state.isFocused
-                                      ? "#e5e7eb"
-                                      : "#fff",
-                                    color: state.isSelected ? "#fff" : "#000",
-                                    padding: "10px",
-                                    cursor: "pointer",
+                                      ? isDark
+                                        ? "#374151"
+                                        : "#e5e7eb"
+                                      : isDark
+                                      ? "#1E293B"
+                                      : "#ffffff",
+                                    color: state.isSelected
+                                      ? "#ffffff"
+                                      : isDark
+                                      ? "#fff"
+                                      : "#000",
                                   }),
                                 }}
                               />
