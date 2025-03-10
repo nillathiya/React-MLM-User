@@ -181,12 +181,16 @@ const MasterLayout = ({ children }) => {
             {menuItems.map((item, index) => (
               <li key={index} className={item.submenu ? "dropdown" : ""}>
                 <NavLink
-                  to={item.path || "/"}
+                  to={item.title === "Logout" ? "#" : item.path || "/"}
                   className={({ isActive }) => (isActive ? "active-page" : "")}
+                  onClick={(event) => {
+                    if (item.title === "Logout") handleLogout(event);
+                  }}
                 >
                   {item.icon && <Icon icon={item.icon} className="menu-icon" />}
                   <span>{item.title}</span>
                 </NavLink>
+
                 {/* Submenu */}
                 {item.submenu && (
                   <ul className="sidebar-submenu">
