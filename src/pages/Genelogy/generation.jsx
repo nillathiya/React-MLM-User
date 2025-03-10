@@ -33,7 +33,7 @@ const Generation = () => {
       setUserGenerationTreeLoading(true);
       try {
         if (userGenerationTree.length === 0) {
-          await dispatch(getUserGenerationTreeAsync()).unwrap();
+          await dispatch(getUserGenerationTreeAsync(loggedInUser._id)).unwrap();
         }
       } catch (error) {
         toast.error(error || "Server error");

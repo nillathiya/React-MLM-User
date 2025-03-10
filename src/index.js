@@ -15,9 +15,7 @@ import { config } from "./config/wagmiConfig"
 import { WagmiConfig } from "wagmi"
 import { Toaster } from "react-hot-toast";
 
-
 const queryClient = new QueryClient();
-
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

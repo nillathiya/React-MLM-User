@@ -8,6 +8,7 @@ import {
   getUserDetailsWithInvestmentInfo,
   updateUserProfile,
   getNewsAndEvents,
+  getRankSettings,
 } from "./userApi";
 import CryptoJS from "crypto-js";
 
@@ -20,6 +21,7 @@ const initialState = {
   newsEvents: [],
   newsThumbnails: [],
   latestNews: [],
+  rankSettings: [],
   isLoading: false,
   pagination: null,
 };
@@ -82,9 +84,9 @@ export const getUserDirectsAsync = createAsyncThunk(
 
 export const getUserGenerationTreeAsync = createAsyncThunk(
   "users/getUserGenerationTree",
-  async (_, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      const data = await getUserGenerationTree();
+      const data = await getUserGenerationTree(userId);
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -139,6 +141,23 @@ export const getUserNewsAndEventsAsync = createAsyncThunk(
     }
   }
 );
+
+export const getRankSettingsAsync = createAsyncThunk(
+  "users/getRankSettings",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getRankSettings();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
+
+
+
 
 const userSlice = createSlice({
   name: "users",
@@ -278,7 +297,18 @@ const userSlice = createSlice({
       })
       .addCase(getUserNewsAndEventsAsync.rejected, (state) => {
         state.isLoading = false;
-      });
+      })
+      // getRankSettingsAsync
+      .addCase(getRankSettingsAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getRankSettingsAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.rankSettings = action.payload.data;
+      })
+      .addCase(getRankSettingsAsync.rejected, (state) => {
+        state.isLoading = false;
+      })
   },
 });
 

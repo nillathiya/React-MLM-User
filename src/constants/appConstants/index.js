@@ -4,10 +4,19 @@ export const API_TIMEOUT = 5000;
 export const DAYS_FILTER_OPTIONS = ["overall", "today", "yesterday", "currentWeek", "lastWeek"];
 
 export const INCOME_FIELDS = {
-    roi: "Daily Stake Reward",
-    direct: "Stake Sponsor Reward",
-    referral: "Team Performance Reward",
-    reward: "Reward",
-    royalty: "Team Development Reward",
-  };
-  
+  roi: "Daily Stake Reward",
+  direct: "Stake Sponsor Reward",
+  referral: "Team Performance Reward",
+  reward: "Reward",
+  royalty: "Team Development Reward",
+};
+
+
+export const RANK_FIELDS = {
+  selfBusiness: "self-business",
+  directTeam: "direct-team",
+  directBusines: "direct-business",
+  teamSize: "total-team-size",
+  teamBusiness: "total-team-business",
+  rewards: "rewards",
+}

@@ -56,9 +56,9 @@ export const getUserDirects = async () => {
   }
 };
 
-export const getUserGenerationTree = async () => {
+export const getUserGenerationTree = async (userId) => {
   try {
-    const response = await apiClient.post(ROUTES.USER.GET_GENERATION_TREE);
+    const response = await apiClient.post(ROUTES.USER.GET_GENERATION_TREE, { userId });
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -122,5 +122,17 @@ export const getNewsAndEvents = async () => {
       throw new Error(error.response?.data?.message || "An error occurred.");
     }
     throw new Error("Get User news and events failed. Please try again later.");
+  }
+};
+
+export const getRankSettings = async () => {
+  try {
+    const response = await apiClient.post(ROUTES.USER.GET_RANK_SETTINGS);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
+    throw new Error("Get Rank Settings failed. Please try again later.");
   }
 };
