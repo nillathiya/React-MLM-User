@@ -157,7 +157,7 @@ const Generation = () => {
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
           User Team Hierarchy
         </h2>
-        <div className="border p-4 rounded-lg bg-gray-100 dark:bg-darkCard h-[500px] shadow-lg">
+        <div className="border p-4 rounded-lg bg-gray-100 h-[500px] shadow-lg mt-3">
           {userGenerationTreeLoading ? (
             <Loader loader="ClipLoader" size={50} color="blue" />
           ) : treeData ? (

@@ -40,13 +40,16 @@ const Report = () => {
     return true;
   });
 
-  const incomeSummary = filteredTransactions.reduce((acc, transaction) => {
-    if (transaction.status === 1 && INCOME_FIELDS[transaction.source]) {
-      acc[transaction.source] =
-        (acc[transaction.source] || 0) + transaction.amount;
-    }
+  const incomeSummary = Object.keys(INCOME_FIELDS).reduce((acc, key) => {
+    acc[key] = 0;
     return acc;
   }, {});
+
+  filteredTransactions.forEach((transaction) => {
+    if (transaction.status === 1 && INCOME_FIELDS[transaction.source]) {
+      incomeSummary[transaction.source] += transaction.amount;
+    }
+  });
 
   const totalIncome = Object.values(incomeSummary).reduce(
     (acc, value) => acc + value,
@@ -137,6 +140,6 @@ const Report = () => {
       </div>
     </MasterLayout>
   );
-}
+};
 
-export default Report
+export default Report;

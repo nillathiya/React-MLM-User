@@ -4,4 +4,5 @@ export const ICON = {
     COPY: "akar-icons:copy",
     DEFAULT_USER: "mdi:user",
     REFRESH:"material-symbols:refresh",
+    TROPHY:"noto:trophy",
 }

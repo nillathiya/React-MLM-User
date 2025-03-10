@@ -36,13 +36,16 @@ const IncomeStatistics = () => {
     return true;
   });
 
-  const incomeSummary = filteredTransactions.reduce((acc, transaction) => {
-    if (transaction.status === 1 && INCOME_FIELDS[transaction.source]) {
-      acc[transaction.source] =
-        (acc[transaction.source] || 0) + transaction.amount;
-    }
+  const incomeSummary = Object.keys(INCOME_FIELDS).reduce((acc, key) => {
+    acc[key] = 0; // Initialize all income sources with zero
     return acc;
   }, {});
+
+  filteredTransactions.forEach((transaction) => {
+    if (transaction.status === 1 && INCOME_FIELDS[transaction.source]) {
+      incomeSummary[transaction.source] += transaction.amount;
+    }
+  });
 
   const totalIncome = Object.values(incomeSummary).reduce(
     (acc, value) => acc + value,
@@ -51,7 +54,7 @@ const IncomeStatistics = () => {
 
   const incomeData = Object.entries(incomeSummary).map(([key, value]) => ({
     key: INCOME_FIELDS[key],
-    value: value,
+    value: value, // Keep as number
   }));
 
   // Define colors for progress segments
@@ -63,8 +66,6 @@ const IncomeStatistics = () => {
     "#F59E0B", // Orange
     "#F97316", // Dark Orange
   ];
-
-  console.log("incomeData", incomeData);
 
   return (
     <div className="col-md-6">
@@ -107,10 +108,12 @@ const IncomeStatistics = () => {
           </div>
 
           {/* Key-Value Data Display */}
-
           {incomeData.map((item, index) => (
-            <div className="d-flex align-items-center justify-content-between p-12 bg-neutral-100">
-              <div key={index} className="d-flex align-items-center gap-2">
+            <div
+              key={index}
+              className="d-flex align-items-center justify-content-between p-12 bg-neutral-100"
+            >
+              <div className="d-flex align-items-center gap-2">
                 <span
                   className="w-3 h-3 rounded-full"
                   style={{

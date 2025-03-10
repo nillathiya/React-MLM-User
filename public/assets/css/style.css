@@ -13015,6 +13015,7 @@ select option {
 
 /* === form css end === */
 /* === card css start === */
+
 .card {
   background-color: var(--white);
   border-radius: 8px;

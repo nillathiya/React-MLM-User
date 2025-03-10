@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import useReactApexChart from "../../hook/useReactApexChart";
@@ -25,6 +25,9 @@ import {
 import toast from "react-hot-toast";
 import { getWalletBalance } from "../../utils/walletUtils";
 import { INCOME_FIELDS } from "../../constants/appConstants";
+import Confetti from "react-confetti";
+// import { Icon } from '@iconify/react/dist/iconify.js';
+import { ICON } from "../../constants/icons";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -40,6 +43,16 @@ const Dashboard = () => {
 
   const [copySuccess, setCopySuccess] = useState(false);
   const referralLink = `${window.location.origin}?ref=${loggedInUser?.username}`;
+  const [showConfetti, setShowConfetti] = useState(false);
+  const confettiRef = useRef(null); // Reference for the div
+
+  const userRank = loggedInUser.myRank || 0;
+  useEffect(() => {
+    if (userRank > 0) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
+    }
+  }, [userRank]);
 
   const handleCopy = async () => {
     try {
@@ -238,12 +251,27 @@ const Dashboard = () => {
             {/* Investment */}
             <Investment />
 
-            <div className="card radius-16 mt-5">
+            {/* User Rank  */}
+            <div
+              ref={confettiRef}
+              className="card radius-16 mt-5 relative overflow-hidden"
+            >
+              {/* Confetti only inside this div */}
+              {showConfetti && confettiRef.current && (
+                <Confetti
+                  width={confettiRef.current.offsetWidth}
+                  height={confettiRef.current.offsetHeight}
+                  numberOfPieces={150} // Limit the number of confetti
+                  recycle={false}
+                />
+              )}
+
               <div className="card-header">
                 <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                  <h6 className="mb-2 fw-bold text-lg">Quick Transfer</h6>
+                  <h6 className="mb-2 fw-bold text-lg">User Rank</h6>
                 </div>
               </div>
+
               <div className="card-body p-0">
                 <div className="p-20">
                   <div className="position-relative z-1 py-32 text-center px-3">
@@ -252,12 +280,27 @@ const Dashboard = () => {
                       alt=""
                       className="position-absolute top-0 start-0 w-100 h-100 z-n1"
                     />
-                    <h3 className="text-white">$500.00</h3>
-                    <span className="text-white">Your Balance</span>
+                    <div className="relative flex items-center justify-center">
+                      {/* Trophy Icon */}
+                      <Icon
+                        icon={ICON.TROPHY}
+                        width={100}
+                        height={100}
+                        className="text-yellow-500 text-5xl"
+                      />
+
+                      {/* Rank Above Trophy */}
+                      <span className="absolute top-[12px] text-2xl font-bold text-white">
+                        {userRank}
+                      </span>
+                    </div>
+
+                    <span className="text-white font-semibold">Your Rank</span>
                   </div>
                 </div>
               </div>
             </div>
+            {/* User Rank End */}
           </div>
           {/* Sidebar end */}
         </div>
