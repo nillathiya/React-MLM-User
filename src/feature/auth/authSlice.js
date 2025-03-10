@@ -124,7 +124,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.currentUser = action.payload.data.user;
         state.isLoggedIn = true;
-        state.loginByAdmin = true;
+        state.updateUserProfileAsync = true;
       })
       .addCase(verifyTokenLoginAsync.rejected, (state) => {
         state.loading = false;
