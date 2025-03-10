@@ -73,19 +73,25 @@ const Orders = () => {
   return (
     <MasterLayout>
       <Breadcrumb title="Fund Transfer History" />
-      <div className="Total_ammount mb-5">
-        <div
-          className={`flex flex-col justify-center items-center daily_total_income 
-      `}
-        >
-          <h6 className="heading capitalize mb-2">Total Package Amount</h6>
+      <div className="mb-5">
+        <div className="flex !flex-col justify-center items-center !bg-white dark:!bg-gray-800 !p-4 !rounded-lg !shadow-md">
+          <h6 className="!text-gray-800 dark:!text-gray-200 !text-lg !font-semibold !capitalize !mb-2">
+            Total Package Amount
+          </h6>
           {calculatingTotalPackageAmount ? (
-            <Skeleton width="80px" height="20px" className="block mx-auto" />
+            <Skeleton
+              width="80px"
+              height="20px"
+              className="block mx-auto bg-gray-300 dark:bg-gray-600"
+            />
           ) : (
-            <p className="font-semibold">${totalPackageAmount}</p>
+            <p className="text-gray-900 dark:text-gray-100 font-semibold text-lg">
+              ${totalPackageAmount}
+            </p>
           )}
         </div>
       </div>
+
       <div className="card basic-data-table">
         <div className="card-body">
           <table
