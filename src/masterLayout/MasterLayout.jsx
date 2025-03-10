@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
 import menuItems from "../constants/menu";
@@ -11,6 +10,9 @@ import { clearUserExists, clearUser } from "../feature/auth/authSlice";
 import { clearUserWallet } from "../feature/wallet/walletSlice";
 import { clearAllFundTransactions } from "../feature/transaction/transactionSlice";
 import { useSelector } from "react-redux";
+import { API_URL } from "../api/routes";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
 const MasterLayout = ({ children }) => {
   const dispatch = useDispatch();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
@@ -811,11 +813,20 @@ const MasterLayout = ({ children }) => {
                     type="button"
                     data-bs-toggle="dropdown"
                   >
-                    <img
-                      src="/assets/images/user.png"
-                      alt="image_user"
-                      className="w-40-px h-40-px object-fit-cover rounded-circle"
-                    />
+                    {loggedInUser?.profilePicture ? (
+                      <img
+                        src={`${API_URL}${loggedInUser.profilePicture}`}
+                        alt="image_user"
+                        className="w-40-px h-40-px object-fit-cover rounded-circle"
+                      />
+                    ) : (
+                      <div>
+                        <Icon
+                          icon={ICON.DEFAULT_USER}
+                          className="w-40-px h-40-px object-fit-cover rounded-circle bg-gray-700 p-1"
+                        />
+                      </div>
+                    )}
                   </button>
                   <div className="dropdown-menu to-top dropdown-menu-sm   gap-2">
                     <div className="mb-3">
