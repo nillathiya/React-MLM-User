@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import dayjs from "dayjs"; // For date filtering
+import dayjs from "dayjs";
 
 const Investment = () => {
   const { userOrders = [] } = useSelector((state) => state.orders);
@@ -19,53 +19,76 @@ const Investment = () => {
         case "Today":
           return orderDate.isSame(now, "day");
         case "Weekly":
-          return orderDate.isAfter(now.subtract(7, "day"));
+          return orderDate.isAfter(dayjs().subtract(7, "day"));
         case "Monthly":
-          return orderDate.isAfter(now.subtract(1, "month"));
+          return orderDate.isAfter(dayjs().subtract(1, "month"));
         case "Yearly":
-          return orderDate.isAfter(now.subtract(1, "year"));
+          return orderDate.isAfter(dayjs().subtract(1, "year"));
         default:
           return true;
       }
     });
   };
 
-  // Calculate total investment based on the selected filter
-  const totalInvestment =
-    filterOrders(userOrders, filter)?.reduce(
-      (acc, order) => acc + order.amount,
-      0
-    ) || 0;
+  const totalInvestment = Array.isArray(userOrders)
+    ? filterOrders(userOrders, filter)?.reduce(
+        (acc, order) => acc + (order.amount || 0),
+        0
+      )
+    : 0;
 
-  // Net Income Calculation
   const netIncome =
     incomeTransactions?.reduce((acc, tx) => acc + tx.amount, 0) || 0;
-
-  // Total Fund Withdrawal Calculation
   const totalFundWithdrawal =
     userFundWithdrawal?.reduce(
       (acc, tx) => (tx.status === 1 ? acc + tx.amount : acc),
       0
     ) || 0;
 
-  // Percentage calculations (starting from 100%)
-  const withdrawalPercentage =
-    totalInvestment > 0 ? (totalFundWithdrawal / totalInvestment) * 100 : 0;
+  const totalActivity = totalInvestment + netIncome + totalFundWithdrawal;
+
+  const investmentPercentage =
+    totalActivity > 0 ? (totalInvestment / totalActivity) * 100 : 0;
   const incomePercentage =
-    totalInvestment > 0 ? (netIncome / totalInvestment) * 100 : 0;
-  const remainingPercentage = Math.max(
-    100 - withdrawalPercentage - incomePercentage,
-    0
-  );
+    totalActivity > 0 ? (netIncome / totalActivity) * 100 : 0;
+  const withdrawalPercentage =
+    totalActivity > 0 ? (totalFundWithdrawal / totalActivity) * 100 : 0;
+
+  const baseSize = 160;
+  const minSize = 50;
+
+  let remainingSizeRaw = (investmentPercentage / 100) * baseSize;
+  let incomeSizeRaw = (incomePercentage / 100) * baseSize;
+  let withdrawalSizeRaw = (withdrawalPercentage / 100) * baseSize;
+
+  let totalRawSize = remainingSizeRaw + incomeSizeRaw + withdrawalSizeRaw;
+  if (totalRawSize > baseSize) {
+    let scaleFactor = baseSize / totalRawSize;
+    remainingSizeRaw *= scaleFactor;
+    incomeSizeRaw *= scaleFactor;
+    withdrawalSizeRaw *= scaleFactor;
+  }
+
+  let remainingSize = Math.max(remainingSizeRaw, minSize);
+  let incomeSize = Math.max(incomeSizeRaw, minSize);
+  let withdrawalSize = Math.max(withdrawalSizeRaw, minSize);
+
+  let adjustedTotalSize = remainingSize + incomeSize + withdrawalSize;
+  if (adjustedTotalSize > baseSize) {
+    let excess = adjustedTotalSize - baseSize;
+    let reduceFactor = excess / 3;
+
+    remainingSize = Math.max(remainingSize - reduceFactor, minSize);
+    incomeSize = Math.max(incomeSize - reduceFactor, minSize);
+    withdrawalSize = Math.max(withdrawalSize - reduceFactor, minSize);
+  }
 
   return (
-    <div className="card rounded-lg p-6 bg-white dark:!bg-gray-900 shadow-lg mt-6">
-      <div className="card-header flex justify-between items-center mb-4">
+    <div className="card radius-16 !rounded-lg bg-white dark:!bg-gray-900 shadow-lg mt-6">
+      <div className="card-header flex justify-between items-center mb-4 ">
         <h6 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
           Investment
         </h6>
-
-        {/* Dropdown for Filter Selection */}
         <select
           className="form-select form-select-sm w-auto bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded"
           value={filter}
@@ -77,7 +100,6 @@ const Investment = () => {
           <option>Yearly</option>
         </select>
       </div>
-
       <div className="card-body text-center">
         <p className="text-gray-700 dark:text-gray-300 text-md flex justify-center items-center">
           Total Investment:{" "}
@@ -85,52 +107,99 @@ const Investment = () => {
             ${totalInvestment.toLocaleString()}
           </span>
         </p>
-
-        {/* Investment Chart */}
-        <div className="relative flex justify-center items-center mt-10">
-          {/* Remaining Investment Percentage */}
-          <div className="w-40 h-40 flex justify-center items-center rounded-full border-2 border-white bg-green-600 text-white relative z-10">
-            <h5 className="text-lg font-semibold">{remainingPercentage.toFixed(1)}%</h5>
+        <div className="relative flex justify-center items-center mt-10 w-full max-w-[500px] h-[220px] mx-auto">
+          <div
+            className="flex justify-center items-center rounded-full border-2 
+             !bg-green-500 dark:!bg-green-700 
+             !border-black dark:!border-white 
+             !text-black dark:!text-white 
+             shadow-lg"
+            style={{
+              width: `${remainingSize}px`,
+              height: `${remainingSize}px`,
+            }}
+          >
+            <h5
+              className={`font-semibold leading-none ${
+                remainingSize < 70 ? "text-xs" : "text-lg"
+              }`}
+            >
+              {investmentPercentage.toFixed(1)}%
+            </h5>
           </div>
 
-          {/* Income Percentage */}
-          <div className="w-36 h-36 flex justify-center items-center rounded-full border-2 border-white bg-blue-600 text-white absolute top-0 left-0 transform -translate-x-6 -translate-y-4">
-            <h5 className="text-lg font-semibold">{incomePercentage.toFixed(1)}%</h5>
+          <div
+            className="absolute flex justify-center items-center rounded-full border-2 
+             bg-blue-600 dark:bg-blue-700 
+             border-white dark:border-gray-400 
+             text-white shadow-md"
+            style={{
+              width: `${incomeSize}px`,
+              height: `${incomeSize}px`,
+              left: "10%",
+              top: "10%",
+            }}
+          >
+            <h5
+              className={`font-semibold leading-none ${
+                incomeSize < 70 ? "text-xs" : "text-lg"
+              }`}
+            >
+              {incomePercentage.toFixed(1)}%
+            </h5>
           </div>
-
-          {/* Withdrawal Percentage */}
-          <div className="w-36 h-36 flex justify-center items-center rounded-full border-2 border-white bg-red-600 text-white absolute top-0 right-0 transform translate-x-6 -translate-y-4">
-            <h5 className="text-lg font-semibold">{withdrawalPercentage.toFixed(1)}%</h5>
+          <div
+            className="absolute flex justify-center items-center rounded-full border-2 
+             bg-red-600 dark:bg-red-700 
+             border-white dark:border-gray-400 
+             text-white shadow-md"
+            style={{
+              width: `${withdrawalSize}px`,
+              height: `${withdrawalSize}px`,
+              right: "10%",
+              bottom: "10%",
+            }}
+          >
+            <h5
+              className={`font-semibold leading-none ${
+                withdrawalSize < 70 ? "text-xs" : "text-lg"
+              }`}
+            >
+              {withdrawalPercentage.toFixed(1)}%
+            </h5>
           </div>
         </div>
-
         {/* Income Breakdown */}
         <div className="flex justify-between mt-8">
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-green-600"></span>
-              <span className="text-gray-600 dark:text-gray-300 text-sm">Remaining Investment</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm">
+                Investment
+              </span>
             </div>
             <h6 className="text-green-500 font-semibold text-lg">
-              {remainingPercentage.toFixed(1)}%
+              {totalInvestment}
             </h6>
           </div>
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-blue-600"></span>
-              <span className="text-gray-600 dark:text-gray-300 text-sm">Net Income</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm">
+                Net Income
+              </span>
             </div>
-            <h6 className="text-blue-500 font-semibold text-lg">
-              {incomePercentage.toFixed(1)}%
-            </h6>
+            <h6 className="text-blue-500 font-semibold text-lg">{netIncome}</h6>
           </div>
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-red-600"></span>
-              <span className="text-gray-600 dark:text-gray-300 text-sm">Withdrawals</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm">
+                Withdrawals
+              </span>
             </div>
             <h6 className="text-red-500 font-semibold text-lg">
-              {withdrawalPercentage.toFixed(1)}%
+              {totalFundWithdrawal}
             </h6>
           </div>
         </div>
