@@ -157,7 +157,7 @@ const Generation = () => {
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
           User Team Hierarchy
         </h2>
-        <div className="border p-4 rounded-lg bg-gray-100 h-[500px] shadow-lg mt-3">
+        <div className="border p-4 rounded-lg bg-gray-100 dark:bg-darkCard h-[500px] shadow-lg mt-3 text-white">
           {userGenerationTreeLoading ? (
             <Loader loader="ClipLoader" size={50} color="blue" />
           ) : treeData ? (
@@ -181,7 +181,7 @@ const Generation = () => {
         {selectedUser && (
           <Dialog open={!!selectedUser} onClose={() => setSelectedUser(null)}>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white dark:bg-gray-800 !p-5 rounded-lg shadow-xl w-1/3">
+              <div className="bg-white dark:!bg-gray-800 !p-5 rounded-lg shadow-xl w-1/3">
                 <h3 className="text-lg font-semibold mb-2 border-b-2 border-gray-300 text-gray-900 dark:text-gray-100">
                   User Details
                 </h3>

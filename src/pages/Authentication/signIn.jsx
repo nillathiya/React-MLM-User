@@ -36,7 +36,7 @@ const SignIn = () => {
     setLoading(true);
     try {
       await dispatch(verifyTokenLoginAsync(token)).unwrap();
-      console.log("dwehdkqwehdiqwe")
+      console.log("dwehdkqwehdiqwe");
       navigate("/dashboard");
     } catch (error) {
       toast.error(error || "Token validation failed");

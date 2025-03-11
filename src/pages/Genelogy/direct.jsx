@@ -109,7 +109,7 @@ const Direct = () => {
                         className={`rounded-md font-semibold text-center px-3 py-1
     ${user.activeStatus === 1 ? "!text-green-700" : "!text-yellow-700"}`}
                       >
-                        {user.activeStatus === 1 ? "Active" : "Not Active"}
+                        {user.activeStatus === 1 ? "Active" : "InActive"}
                       </td>
                       <td>{formatDate(user.createdAt)}</td>
                     </tr>
