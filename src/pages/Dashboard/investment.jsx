@@ -3,14 +3,21 @@ import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
 const Investment = () => {
-  const { userOrders = [] } = useSelector((state) => state.orders);
+  const { userOrders = [], loading: ordersLoading } = useSelector(
+    (state) => state.orders
+  );
   const {
     incomeTransactions = [],
+    incomeTransactionsLoading,
+    loading: transactionLoading,
     selectUserFundWithdrwalHistory: userFundWithdrawal = [],
   } = useSelector((state) => state.transaction);
 
   const [filter, setFilter] = useState("Today");
 
+  // Loading check
+  const isLoading =
+    ordersLoading || transactionLoading || incomeTransactionsLoading;
   const filterOrders = (orders, range) => {
     const now = dayjs();
     return orders?.filter((order) => {
@@ -29,6 +36,14 @@ const Investment = () => {
       }
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <span className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></span>
+      </div>
+    );
+  }
 
   const totalInvestment = Array.isArray(userOrders)
     ? filterOrders(userOrders, filter)?.reduce(
