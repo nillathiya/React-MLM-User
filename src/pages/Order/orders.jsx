@@ -94,6 +94,7 @@ const Orders = () => {
 
       <div className="card basic-data-table">
         <div className="card-body">
+          <div className="table-responsive">
           <table
             className="table bordered-table mb-0"
             ref={tableRef}
@@ -144,6 +145,7 @@ const Orders = () => {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </MasterLayout>

@@ -218,16 +218,6 @@ table {
   td {
     padding: 6px;
   }
-
-  /* Hide less important columns on small screens */
-  th:nth-child(3),
-  th:nth-child(4),
-  th:nth-child(7),
-  td:nth-child(3),
-  td:nth-child(4),
-  td:nth-child(7) {
-    display: none;
-  }
 }
 
 @media (max-width: 320px) {

@@ -128,6 +128,7 @@ const IncomeReports = () => {
         </div>
 
         <div className="card-body">
+          <div className="table-responsive">
           <table
             ref={tableRef}
             className="table bordered-table mb-0"
@@ -206,6 +207,7 @@ const IncomeReports = () => {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </MasterLayout>
