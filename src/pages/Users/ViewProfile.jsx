@@ -239,8 +239,9 @@ function ViewProfile() {
                       dob
                     </span>
                     <span className="w-70 text-secondary-light fw-medium">
-                      {new Date(loggedInUser.dob).toISOString().split("T")[0] ||
-                        "N/A"}
+                      {loggedInUser.dob && !isNaN(new Date(loggedInUser.dob))
+                        ? new Date(loggedInUser.dob).toISOString().split("T")[0]
+                        : "N/A"}
                     </span>
                   </li>
                   <li className="d-flex align-items-center gap-1 mb-12">
