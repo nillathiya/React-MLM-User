@@ -390,7 +390,17 @@ html.dark .thumbnail_latest_widget li {
 .grid-text {
   margin-top: 8px;
 }
-
+.latest_grid_description {
+  font-size: 13px;
+  font-family: sans-serif;
+  color: #a5a5a5;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: break-spaces;
+  display: block;
+  width: 100%;
+}
 .grid-text a {
   font-weight: bold;
   display: block;

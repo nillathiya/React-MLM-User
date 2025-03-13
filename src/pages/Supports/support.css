@@ -51,6 +51,9 @@ html.dark .create_input_section textarea {
 html.dark .chat-bubble {
   background: none;
 }
+html.dark .no_ticket{
+  color: white;
+}
 .create_input_section input:focus,
 .create_input_section textarea:focus {
   border-color: #4a90e2;

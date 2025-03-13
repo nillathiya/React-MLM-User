@@ -4,6 +4,7 @@ import Breadcrumb from "../../components/Breadcrumb";
 import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { getUserNewsAndEventsAsync } from "../../feature/user/userSlice";
+import { FaAngleUp } from "react-icons/fa";
 import "./newsAndEvents.css";
 const API_URL = "http://192.168.29.191:5000";
 
@@ -86,7 +87,7 @@ const NewsAndEvents = () => {
                             ) : (
                               <img
                                 className="news-image"
-                                src="/assets/news/35.jpg"
+                                src="#"
                                 alt="No image"
                               />
                             )}
@@ -110,7 +111,16 @@ const NewsAndEvents = () => {
                                     fontSize: "15px",
                                   }}
                                 >
-                                  {isExpanded ? "Show less..." : "Load more..."}
+                                  {isExpanded ? (
+                                    <>
+                                      <span className="d-flex">
+                                        Show less{" "}
+                                        <FaAngleUp style={{ margin: "5px" }} />
+                                      </span>
+                                    </>
+                                  ) : (
+                                    "Load more..."
+                                  )}
                                 </a>
                               </>
                             ) : (
@@ -133,7 +143,7 @@ const NewsAndEvents = () => {
                                 onClick={() => handleNewsClick(news)}
                               >
                                 <div className="thumb-wrap">
-                                  {news.images.length > 0 ? (
+                                  {news.images.length > 0 && (
                                     <div className="image-grid-container">
                                       <div className="image-grid">
                                         {news.images.map((image, index) => (
@@ -147,40 +157,18 @@ const NewsAndEvents = () => {
                                           />
                                         ))}
                                       </div>
-                                      <div className="grid-text">
-                                        <span className="color">
-                                          {news.title}
-                                        </span>
-                                        <p>
-                                          {news.description.length > 80
-                                            ? news.description.slice(0, 80) +
-                                              "..."
-                                            : news.description}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <div className="single-image-wrap">
-                                      <img
-                                        width="60"
-                                        height="60"
-                                        alt="No image"
-                                        className="img-responsive"
-                                        src="/assets/news/news-thumb-033.jpg"
-                                      />
-                                      <div className="thumb-content">
-                                        <span className="color">
-                                          {news.title}
-                                        </span>
-                                        <p>
-                                          {news.description.length > 80
-                                            ? news.description.slice(0, 80) +
-                                              "..."
-                                            : news.description}
-                                        </p>
-                                      </div>
                                     </div>
                                   )}
+                                  <div className="grid-text">
+                                    <span className="color">{news.title}</span>
+                                    <p>
+                                      {news.description.length > 80
+                                        ? news.description.slice(0, 80) + "..."
+                                        : news.description}
+                                    </p>
+                                    <small>{news.date}</small>{" "}
+                                    {/* Display date */}
+                                  </div>
                                 </div>
                               </li>
                             ))}
@@ -232,7 +220,8 @@ const NewsAndEvents = () => {
                               onClick={() => handleNewsClick(news)}
                             >
                               <div className="thumb-wrap">
-                                {news.images.length > 0 ? (
+                                {/* Show only if images exist */}
+                                {news.images.length > 0 && (
                                   <div className="image-grid-container">
                                     <div className="image-grid">
                                       {news.images.map((image, index) => (
@@ -246,34 +235,24 @@ const NewsAndEvents = () => {
                                         />
                                       ))}
                                     </div>
-                                    <div className="grid-text">
-                                      <a href="#">{news.title}</a>
-                                      <span>
-                                        {new Date(
-                                          news.createdAt
-                                        ).toLocaleDateString()}
-                                      </span>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="single-image-wrap single_latest_news_wrap">
-                                    <img
-                                      width="60"
-                                      height="60"
-                                      alt="No image"
-                                      className="img-responsive"
-                                      src="/assets/news/news-thumb-033.jpg"
-                                    />
-                                    <div className="thumb-content latest_thumb_content">
-                                      <a href="#">{news.title}</a>
-                                      <span>
-                                        {new Date(
-                                          news.createdAt
-                                        ).toLocaleDateString()}
-                                      </span>
-                                    </div>
                                   </div>
                                 )}
+
+                                {/* News title and date (always visible) */}
+                                <div className="grid-text">
+                                  <a href="#">{news.title}</a>
+                                  <p className="latest_grid_description">
+                                    {news.description.length > 60
+                                      ? news.description.substring(0, 60) +
+                                        "..."
+                                      : news.description}
+                                  </p>
+                                  <span>
+                                    {new Date(
+                                      news.createdAt
+                                    ).toLocaleDateString()}
+                                  </span>
+                                </div>
                               </div>
                             </li>
                           ))
