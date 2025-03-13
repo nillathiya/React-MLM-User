@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 // import "./fund.css";
@@ -6,18 +6,61 @@ import { useSelector, useDispatch } from "react-redux";
 import { getWalletBalance } from "../../utils/walletUtils";
 import { useForm } from "react-hook-form";
 import { userFundTransferAsync } from "../../feature/transaction/transactionSlice";
+import { checkUsernameAsync } from "../../feature/user/userSlice";
 import { removeAmountFromWallet } from "../../feature/wallet/walletSlice";
 import toast from "react-hot-toast";
 
 const TransferFund = () => {
   const dispatch = useDispatch();
+  const [usernameValid, setUsernameValid] = useState(null);
+  const [userActiveStatus, setUserActiveStatus] = useState(null);
+
   const { userWallet } = useSelector((state) => state.wallet);
 
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm({ mode: "onBlur" });
+
+  const username = watch("username");
+
+  // Function to check username validity
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (!username) return;
+      try {
+        const formData = {
+          username,
+        };
+        const response = await dispatch(checkUsernameAsync(formData)).unwrap();
+        console.log(response);
+        if (response.data.valid) {
+          setUsernameValid(true);
+          setUserActiveStatus(response.data.activeStatus);
+          clearErrors("username");
+        } else {
+          setUsernameValid(false);
+          setError("username", {
+            type: "manual",
+            message: "Username not found",
+          });
+        }
+      } catch (error) {
+        setUsernameValid(false);
+        setError("username", { type: "manual", message: "Username not found" });
+      }
+    };
+
+    const delayDebounce = setTimeout(() => {
+      checkUsername();
+    }, 500); // Debounce API call
+
+    return () => clearTimeout(delayDebounce);
+  }, [username, setError, clearErrors]);
 
   const handleFormSubmit = async (data) => {
     const formData = {
@@ -71,7 +114,10 @@ const TransferFund = () => {
                 })}
               />
               {errors.username && (
-                <p className="error-message mt-1">{errors.username.message}</p>
+                <p className="error-message">{errors.username.message}</p>
+              )}
+              {usernameValid && (
+                <p className="text-green-500">✅ Username is valid</p>
               )}
             </div>
 
