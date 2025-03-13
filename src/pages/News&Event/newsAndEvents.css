@@ -496,6 +496,18 @@ html.dark .events-list li {
     width: 483px;
     height: 150px;
   }
+
+  .news-content .news-cat {
+    display: inline-block;
+    color: #fff;
+    width: -webkit-fill-available;
+    font-size: 12px;
+    height: 88px;
+    overflow-y: scroll;
+    border-radius: 4px;
+    white-space: break-spaces;
+    text-overflow: ellipsis;
+  }
 }
 @media screen and (max-width: 320px) {
   .thumb-content {
