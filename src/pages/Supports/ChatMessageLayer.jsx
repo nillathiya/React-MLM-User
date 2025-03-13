@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 const API_URL = "http://192.168.29.191:5000";
 const socket = io(API_URL, { transports: ["websocket", "polling"] });
 const ChatMessageLayer = () => {
-  const {currentUser:loggedInUser}=useSelector((state)=>state.auth)
+  const { currentUser: loggedInUser } = useSelector((state) => state.auth);
   const userId = loggedInUser?._id || "";
 
   const [tickets, setTickets] = useState([]);
@@ -29,9 +29,10 @@ const ChatMessageLayer = () => {
     (ticket) => ticket._id === selectedTicket?._id
   );
 
-  const filteredTickets = tickets.filter((ticket) => 
-    ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    ticket._id.includes(searchQuery)
+  const filteredTickets = tickets.filter(
+    (ticket) =>
+      ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ticket._id.includes(searchQuery)
   );
 
   useEffect(() => {
@@ -180,7 +181,7 @@ const ChatMessageLayer = () => {
     }
   };
   const sendMessage = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!input.trim() || !selectedTicket) return;
     if (selectedTicket.status === "completed") {
       return toast.error("Cannot send messages in a closed/completed ticket");
@@ -249,148 +250,173 @@ const ChatMessageLayer = () => {
           className="chat-sidebar card"
           style={{ boxShadow: "7px 7px 21px rgba(0, 0, 0, 0.6)" }}
         >
-          <div className="chat-sidebar-single active top-profile">
-            <div className="img">
-              <img src="assets/images/chat/1.png" alt="image_icon" />
-            </div>
-            <div className="info">
-              {selectedTicket && (
-                <>
-                  <h6 className="text-md mb-0">{selectedTicket.title}</h6>
-                  <p className="mb-0">{selectedTicket.status}</p>
-                </>
-              )}
-            </div>
-            <div className="action">
-              <div className="filter_ticket_section mb-4">
-                <form action="" className="flex items-center gap-3 form-input">
-                  {/* <label className="font-semibold text-gray-700 dark:text-gray-300">
-                    Filter Tickets
-                  </label> */}
-                  <select
-                    name="statusFilter"
-                    value={statusFilter}
-                    onChange={handleFilterChanges}
-                    className="ticket_filter_select border border-gray-300 dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+          {filteredTickets.length > 0 && (
+            <div className="chat-sidebar-single active top-profile">
+              <div className="img">
+                <img src="assets/images/chat/1.png" alt="image_icon" />
+              </div>
+              <div className="info">
+                {selectedTicket && (
+                  <>
+                    <h6 className="text-md mb-0">{selectedTicket.title}</h6>
+                    <p className="mb-0">{selectedTicket.status}</p>
+                  </>
+                )}
+              </div>
+              <div className="action">
+                <div className="filter_ticket_section mb-4">
+                  <form
+                    action=""
+                    className="flex items-center gap-3 form-input"
                   >
-                    <option value="open">Open</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </form>
+                    <select
+                      name="statusFilter"
+                      value={statusFilter}
+                      onChange={handleFilterChanges}
+                      className="ticket_filter_select border border-gray-300 dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                    >
+                      <option value="open">Open</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="chat-search">
-            <span className="icon">
-              <Icon icon="iconoir:search" />
-            </span>
-            <input
-              type="text"
-              name="#0"
-              autoComplete="off"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="chat-all-list">
-            {filteredTickets
-            .filter((ticket) => ticket.status === statusFilter)
-            .map((ticket) => (
-              <div
-                key={ticket._id}
-                className={`chat-sidebar-single ${
-                  selectedTicket?._id === ticket._id ? "active" : ""
-                }`}
-                onClick={() => fetchMessages(ticket)}
-              >
-                <div className="img">
-                  <img src="assets/images/chat/2.png" alt="image_icon" />
-                </div>
-                <div className="info">
-                  <h6 className="text-sm mb-1">{ticket.title}</h6>
-                </div>
-                <div className="action text-end">
-                  <p className="mb-0 text-neutral-400 text-xs lh-1">Now</p>
-                  {unreadTickets.has(ticket._id) && (
-                    <span className="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">
-                      !
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          )}
+
+          {/* Search Bar Always Visible */}
+          {filteredTickets.length > 0 && (
+            <div className="chat-search">
+              <span className="icon">
+                <Icon icon="iconoir:search" />
+              </span>
+              <input
+                type="text"
+                name="#0"
+                autoComplete="off"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          )}
+
+          {/* Conditionally Render Tickets or Message */}
+          {filteredTickets.length > 0 ? (
+            <div className="chat-all-list">
+              {filteredTickets
+                .filter((ticket) => ticket.status === statusFilter)
+                .map((ticket) => (
+                  <div
+                    key={ticket._id}
+                    className={`chat-sidebar-single ${
+                      selectedTicket?._id === ticket._id ? "active" : ""
+                    }`}
+                    onClick={() => fetchMessages(ticket)}
+                  >
+                    <div className="img">
+                      <img src="assets/images/chat/2.png" alt="image_icon" />
+                    </div>
+                    <div className="info">
+                      <h6 className="text-sm mb-1">{ticket.title}</h6>
+                    </div>
+                    <div className="action text-end">
+                      <p className="mb-0 text-neutral-400 text-xs lh-1">Now</p>
+                      {unreadTickets.has(ticket._id) && (
+                        <span className="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">
+                          !
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ) : (
+            <p className="no_ticket text-gray-500 text-center py-4 mb-3 mt-3">
+              No tickets available, please create a ticket.
+            </p>
+          )}
         </div>
 
         <div
           className="chat-main card"
           style={{ boxShadow: "7px 7px 21px rgba(0, 0, 0, 0.6)" }}
         >
-          {selectedTicketData && selectedTicketData.messages && (
+          {filteredTickets.length > 0 ? (
             <>
-              <div className="chat-sidebar-single active">
-                <div className="img">
-                  <img src="assets/images/chat/11.png" alt="image_icon" />
-                </div>
-                <div className="info">
-                  <h6 className="text-md mb-0">{`#${selectedTicketData._id} (${selectedTicketData.title})`}</h6>
-                  <p className="mb-0">{selectedTicketData.status}</p>
-                </div>
-                <div className="action d-inline-flex align-items-center gap-3">
-                  <select
+              {selectedTicketData && selectedTicketData.messages && (
+                <>
+                  <div className="chat-sidebar-single active">
+                    <div className="img">
+                      <img src="assets/images/chat/11.png" alt="image_icon" />
+                    </div>
+                    <div className="info">
+                      <h6 className="text-md mb-0">{`#${selectedTicketData._id} (${selectedTicketData.title})`}</h6>
+                      <p className="mb-0">{selectedTicketData.status}</p>
+                    </div>
+                    <div className="action d-inline-flex align-items-center gap-3">
+                      <select
                         value={selectedTicketData.status}
                         onChange={(e) =>
-                          updateTicketStatus(selectedTicketData._id, e.target.value)
+                          updateTicketStatus(
+                            selectedTicketData._id,
+                            e.target.value
+                          )
                         }
                         className="status_dropdown border border-gray-300 dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 w-full"
                       >
                         <option value="open">Open</option>
                         <option value="completed">Completed</option>
                       </select>
-                </div>
-              </div>
+                    </div>
+                  </div>
 
-              <div className="chat-message-list">
-                {selectedTicketData.messages.map((msg, index) => (
-                  <p
-                    key={index}
-                    className={`p-2 rounded-lg mb-2 ${
-                      msg.sender === "user"
-                        ? " chat-bubble text-blue-800 dark:bg-blue-900 dark:text-blue-200 d-flex justify-content-end"
-                        : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    <strong>{msg.sender}  : </strong> &nbsp; {msg.text}
-                    <span className="ml-2 text-xs">
-                      {msg.isRead ? "✔✔" : "✔"}
-                    </span>
-                  </p>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-              <form className="chat-message-box">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  name="chatMessage"
-                  placeholder="Write message"
-                />
-                <div className="chat-message-box-action">
-                  <button
-                    type="submit"
-                    onClick={sendMessage}
-                    disabled={!input.trim()}
-                    className="btn btn-sm btn-primary-600 radius-8 d-inline-flex align-items-center gap-1"
-                  >
-                    Send
-                    <Icon icon="f7:paperplane" />
-                  </button>
-                </div>
-              </form>
+                  <div className="chat-message-list">
+                    {selectedTicketData.messages.map((msg, index) => (
+                      <p
+                        key={index}
+                        className={`p-2 rounded-lg mb-2 ${
+                          msg.sender === "user"
+                            ? " chat-bubble text-blue-800 dark:bg-blue-900 dark:text-blue-200 d-flex justify-content-end"
+                            : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                        }`}
+                      >
+                        <strong>{msg.sender} : </strong> &nbsp; {msg.text}
+                        <span className="ml-2 text-xs">
+                          {msg.isRead ? "✔✔" : "✔"}
+                        </span>
+                      </p>
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </div>
+                  <form className="chat-message-box">
+                    <input
+                      type="text"
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                      name="chatMessage"
+                      placeholder="Write message"
+                    />
+                    <div className="chat-message-box-action">
+                      <button
+                        type="submit"
+                        onClick={sendMessage}
+                        disabled={!input.trim()}
+                        className="btn btn-sm btn-primary-600 radius-8 d-inline-flex align-items-center gap-1"
+                      >
+                        Send
+                        <Icon icon="f7:paperplane" />
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
             </>
+          ) : (
+            <p className="no_ticket text-gray-500 text-center py-4 mb-3 mt-3">
+              No tickets available, please create a ticket.
+            </p>
           )}
         </div>
       </div>
@@ -414,9 +440,9 @@ const ChatMessageLayer = () => {
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
             <div>
-            <button type="submit" className="createButton">
-              Create Ticket
-            </button>
+              <button type="submit" className="createButton">
+                Create Ticket
+              </button>
             </div>
           </form>
         </div>
