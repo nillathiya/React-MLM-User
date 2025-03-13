@@ -29,7 +29,7 @@ const decryptData = (encryptedData) => {
 };
 
 // 🔒 Create encryption transform for transactions
-const transactionEncryptTransform = createTransform(
+const encryptTransform = createTransform(
     (inboundState) => encryptData(inboundState),  // Encrypt before saving
     (outboundState) => decryptData(outboundState),  // Decrypt when reading
 );
@@ -38,27 +38,36 @@ const transactionEncryptTransform = createTransform(
 const transactionPersistConfig = {
     key: "transaction",
     storage,
-    transforms: [transactionEncryptTransform], // Apply encryption
+    transforms: [encryptTransform], // Apply encryption
     whitelist: ["transactions"], // Ensure only transactions are persisted
 };
 
 const walletPersistConfig = {
     key: "wallet",
     storage,
-    transforms: [transactionEncryptTransform],
+    transforms: [encryptTransform],
     whitelist: ["userWallet"],
 };
 
 const authPersistConfig = {
     key: 'auth',
     storage,
-    whitelist: ['currentUser', 'isLoggedIn','loginByAdmin'],
+    transforms: [encryptTransform],
+    whitelist: ['currentUser', 'isLoggedIn', 'loginByAdmin'],
 };
+
+const userPersistConfig = {
+    key: "user",
+    storage,
+    transforms: [encryptTransform],
+    whitelist: ['userSettings']
+}
 
 // Apply persistence
 const persistedWalletReducer = persistReducer(walletPersistConfig, walletReducer);
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 const persistedTransactionReducer = persistReducer(transactionPersistConfig, transactionReducer);
+const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
 
 // Create Redux Store
 export const store = configureStore({
@@ -67,11 +76,11 @@ export const store = configureStore({
         network: networkReducer,
         theme: themeReducer,
         auth: persistedAuthReducer,
-        user: userReducer,
+        user: persistedUserReducer,
         transaction: persistedTransactionReducer, // 🔒 Use encrypted persisted reducer
         topUp: topUpReducer,
         orders: ordersReducer,
-        withdrawal:withdrawalReducer,
+        withdrawal: withdrawalReducer,
     },
 });
 

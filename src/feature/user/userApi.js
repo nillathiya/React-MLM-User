@@ -136,3 +136,29 @@ export const getRankSettings = async () => {
     throw new Error("Get Rank Settings failed. Please try again later.");
   }
 };
+
+
+export const getUserSettings = async () => {
+  try {
+    const response = await apiClient.post(ROUTES.USER.GET_SETTINGS);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
+    throw new Error("Get User Settings failed. Please try again later.");
+  }
+};
+
+export const getCompanyInfo = async () => {
+  try {
+    const response = await apiClient.post(ROUTES.COMPANY_INFO.GET_ALL);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
+    throw new Error("Get Company info failed. Please try again later.");
+  }
+};
+

@@ -7,32 +7,16 @@ import {
   useAccount,
   useWriteContract,
   useWaitForTransactionReceipt,
+  useReadContract,
+  useChainId,
 } from "wagmi";
-import { parseUnits } from "viem";
+import { parseUnits, formatUnits } from "viem";
 import { abi } from "../../ABI/usdtAbi";
 import { toast } from "react-hot-toast";
-import { COMPANY } from "../../constants/company";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { verifyTransactionAsync } from "../../feature/transaction/transactionSlice";
-
-// Token Data
-const tokens = [
-  {
-    category: "Stablecoins",
-    items: [
-      {
-        name: "USDT",
-        icon: "https://cryptologos.cc/logos/tether-usdt-logo.svg?v=026",
-        balance: "10.00",
-      },
-      {
-        name: "USDC",
-        icon: "https://images.vexels.com/media/users/3/135829/isolated/svg/1a857d341d8b6dd31426d6a62a8d9054.svg",
-        balance: "5.00",
-      },
-    ],
-  },
-];
+import { getWalletBalance } from "../../utils/walletUtils";
+import { getTokens } from "../../utils/tokens"; // Import the new token utility
 
 const AddFund = () => {
   const dispatch = useDispatch();
@@ -42,14 +26,52 @@ const AddFund = () => {
   const [isMetaMaskOpen, setIsMetaMaskOpen] = useState(false);
   const [transactionVerificationLoading, setTransactionVerificationLoading] =
     useState(false);
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
+  const chainId = useChainId();
   const dropdownRef = useRef(null);
+  const { userWallet } = useSelector((state) => state.wallet);
+  const { companyInfo } = useSelector((state) => state.user);
 
   const { writeContractAsync, data: txHash, isLoading } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  // Handle Amount Input
+  // Get tokens based on chainId
+  const tokens = getTokens(chainId);
+  const faltToken=tokens.flatMap((group) => group.items);
+
+  // Fetch live balances for each token at the top level
+  const usdtBalance = useReadContract({
+    abi,
+    address:faltToken.find((token)=>token.name==="USDT")?.address,
+    functionName: "balanceOf",
+    args: [address],
+    enabled: !!address,
+  });
+
+  const usdcBalance = useReadContract({
+    abi,
+    address: faltToken.find((token)=>token.name==="USDC")?.address,
+    functionName: "balanceOf",
+    args: [address],
+    enabled: !!address,
+  });
+
+  // Map tokens with their live balances
+  const tokenBalances = tokens.flatMap((group) =>
+    group.items.map((token) => ({
+      ...token,
+      balance: token.name === "USDT" ? usdtBalance : usdcBalance,
+    }))
+  );
+
+
+  console.log("tokens", tokens);
+  console.log("faltToken", faltToken);
+  console.log("tokenBalances", tokenBalances);
+
+  console.log(faltToken.find((token)=>token.name==="USDT")?.address)
+
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (/^\d*\.?\d*$/.test(value)) {
@@ -60,27 +82,54 @@ const AddFund = () => {
     }
   };
 
-  // Handle Fund Transfer
   const handleFundTransfer = async () => {
-    if (selectedToken !== "USDT") {
-      toast.error("Please select USDT to proceed.");
+    const token = tokenBalances.find((t) => t.name === selectedToken);
+    if (!token || selectedToken === "token") {
+      toast.error("Please select a valid token (e.g., USDT) to proceed.");
       return;
     }
 
-    if (!amountInput || isNaN(amountInput) || parseFloat(amountInput) <= 0) {
+    if (
+      !amountInput ||
+      isNaN(parseFloat(amountInput)) ||
+      parseFloat(amountInput) <= 0
+    ) {
       toast.error("Enter a valid amount.");
       return;
     }
 
+    if (token.address === "Not Supported") {
+      toast.error(`${token.name} is not supported on this network.`);
+      return;
+    }
+
+    // Check if amount exceeds token balance
+    const balanceData = token.balance.data;
+    if (balanceData) {
+      const balance = parseFloat(formatUnits(balanceData, token.decimals));
+      const amount = parseFloat(amountInput);
+      if (amount > balance) {
+        toast.error(
+          `Insufficient ${token.name} balance. Available: ${balance}`
+        );
+        return;
+      }
+    } else {
+      toast.error("Unable to verify token balance. Please try again.");
+      return;
+    }
+
     try {
-      setIsMetaMaskOpen(true); // MetaMask is opening
+      setIsMetaMaskOpen(true);
       const tx = await writeContractAsync({
         abi,
-        address: COMPANY.USDT_ADDRESS,
+        address: token.address,
         functionName: "transfer",
-        args: [COMPANY.WALLET_ADDRESS, parseUnits(amountInput, 18)],
+        args: [
+          companyInfo.WALLET_ADDRESS,
+          parseUnits(amountInput, token.decimals),
+        ],
       });
-
       console.log("Transaction Sent:", tx);
     } catch (error) {
       console.error("Transaction Failed:", error);
@@ -90,33 +139,27 @@ const AddFund = () => {
     }
   };
 
-  // Handle Transaction Status & Verification
   useEffect(() => {
     const verifyTransaction = async () => {
-      if (isConfirmed) {
+      if (isConfirmed && txHash) {
         toast.success("Transaction confirmed!");
-
         setTransactionVerificationLoading(true);
-        // Show loading toast and store its ID
-        const loadingToastId = toast.loading("Please wait for verification...");
+        const loadingToastId = toast.loading("Verifying transaction...");
 
         try {
           const formData = {
-            txHash: txHash,
+            txHash,
             userAddress: address,
             amount: amountInput,
           };
-
           const result = await dispatch(
             verifyTransactionAsync(formData)
           ).unwrap();
           console.log("Verification Result:", result);
 
-          // Remove the loading toast
           toast.dismiss(loadingToastId);
-
-          if (result.status == "success") {
-            toast.success("USDT added successfully!");
+          if (result.status === "success") {
+            toast.success("Funds added successfully!");
           } else {
             toast.error("Transaction verification failed.");
           }
@@ -125,7 +168,6 @@ const AddFund = () => {
           toast.dismiss(loadingToastId);
           toast.error("Verification failed. Please try again.");
         } finally {
-          toast.dismiss(loadingToastId);
           setTransactionVerificationLoading(false);
         }
       }
@@ -134,28 +176,34 @@ const AddFund = () => {
     verifyTransaction();
   }, [isConfirmed, txHash, address, amountInput, dispatch]);
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  console.log("chainId", chainId);
+  console.log("tokens", tokens);
 
   return (
     <MasterLayout>
       <Breadcrumb title="Add Fund" />
       <div className="flex justify-center items-center mt-10">
         <div className="w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
-          {/* Page Heading */}
           <h6 className="heading">Add Fund</h6>
+          <div className="grid grid-cols-2 gap-4 !mb-6">
+            <div className="wallet-box wallet-fund">
+              <p className="wallet-title">Fund Wallet</p>
+              <span className="wallet-balance">
+                ${getWalletBalance(userWallet, "fund_wallet")}
+              </span>
+            </div>
+          </div>
+
           <div>
             {/* Amount Input */}
             <div className="">
@@ -172,64 +220,74 @@ const AddFund = () => {
             {/* Token Dropdown */}
             <div className="flex flex-col relative mt-3" ref={dropdownRef}>
               <label className="flex justify-between mb-2">
-                Token{" "}
+                Token
                 <span className="balance">
                   Balance:{" "}
-                  {tokens
-                    .flatMap((g) => g.items)
-                    .find((t) => t.name === selectedToken)?.balance || "0.00"}
+                  {tokenBalances.find((t) => t.name === selectedToken)?.balance
+                    .data
+                    ? formatUnits(
+                        tokenBalances.find((t) => t.name === selectedToken)
+                          ?.balance.data,
+                        tokenBalances.find((t) => t.name === selectedToken)
+                          ?.decimals || 6
+                      )
+                    : "0.00"}
                 </span>
               </label>
 
               <div
-                className=""
+                className="input-field flex items-center cursor-pointer"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <div className="input-field flex items-center">
-                  <FaDollarSign className="token-icon text-gray-500 mr-2" />
-                  <span>
-                    {selectedToken === "token" ? "Select Token" : selectedToken}
-                  </span>
-                </div>
+                <FaDollarSign className="token-icon text-gray-500 mr-2" />
+                <span>
+                  {selectedToken === "token" ? "Select Token" : selectedToken}
+                </span>
               </div>
 
-              {/* Dropdown List */}
               {isDropdownOpen && (
                 <ul className="absolute bg-white dark:bg-darkCard w-full max-h-52 overflow-y-auto rounded shadow-md z-10 border border-gray-300 dark:border-darkBorder mt-1">
                   {tokens.map((group) => (
                     <div key={group.category}>
-                      {/* Category Header */}
                       <li className="px-3 py-1 text-gray-600 dark:text-gray-200 text-sm font-semibold bg-gray-100 dark:bg-darkSecondary">
                         {group.category}
                       </li>
-
-                      {/* Dropdown Items */}
-                      {group.items.map((token) => (
-                        <li
-                          key={token.name}
-                          className="flex items-center cursor-pointer p-2 w-full hover:bg-gray-200 dark:bg-darkTertiary dark:hover:bg-gray-500"
-                          onClick={() => {
-                            setSelectedToken(token.name);
-                            setIsDropdownOpen(false);
-                          }}
-                        >
-                          <div className="flex items-center justify-between w-full">
-                            <div className="flex items-center">
-                              <img
-                                src={token.icon}
-                                alt={token.name}
-                                className="w-6 h-6 rounded-full bg-white dark:bg-gray-800 object-cover mr-2"
-                              />
-                              <span className="text-gray-700 dark:text-gray-200">
-                                {token.name}
+                      {group.items.map((token) => {
+                        const balanceData = tokenBalances.find(
+                          (t) => t.name === token.name
+                        )?.balance;
+                        return (
+                          <li
+                            key={token.name}
+                            className="flex items-center cursor-pointer p-2 w-full hover:bg-gray-200 dark:bg-darkTertiary dark:hover:bg-gray-500"
+                            onClick={() => {
+                              setSelectedToken(token.name);
+                              setIsDropdownOpen(false);
+                            }}
+                          >
+                            <div className="flex items-center justify-between w-full">
+                              <div className="flex items-center">
+                                <img
+                                  src={token.icon}
+                                  alt={token.name}
+                                  className="w-6 h-6 rounded-full bg-white dark:bg-gray-800 object-cover mr-2"
+                                />
+                                <span className="text-gray-700 dark:text-gray-200">
+                                  {token.name}
+                                </span>
+                              </div>
+                              <span className="font-medium text-gray-500 dark:text-gray-400">
+                                {balanceData?.data
+                                  ? formatUnits(
+                                      balanceData.data,
+                                      token.decimals
+                                    )
+                                  : "0.00"}
                               </span>
                             </div>
-                            <span className="font-medium text-gray-500 dark:text-gray-400">
-                              {token.balance}
-                            </span>
-                          </div>
-                        </li>
-                      ))}
+                          </li>
+                        );
+                      })}
                     </div>
                   ))}
                 </ul>
@@ -256,8 +314,8 @@ const AddFund = () => {
               : isConfirming
               ? "Confirming..."
               : transactionVerificationLoading
-              ? "Verification..."
-              : "Send USDT"}
+              ? "Verifying..."
+              : "Send"}
           </button>
         </div>
       </div>

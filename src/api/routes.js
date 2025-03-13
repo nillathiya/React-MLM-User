@@ -35,7 +35,8 @@ export const ROUTES = {
     GET_DIRECTS: `${API_URL}/api/user/get-directs`,
     GET_GENERATION_TREE: `${API_URL}/api/user/generation-tree`,
     GET_DETAILS_WITH_INVEST_INFO: `${API_URL}/api/user/details-with-investment`,
-    UPDATE_PROFILE: `${API_URL}/api/user/update/profile`
+    UPDATE_PROFILE: `${API_URL}/api/user/update/profile`,
+    GET_SETTINGS: `${API_URL}/api/user-settings/get`,
   },
   WALLET: {
     CREATE: `${API_URL}/api/wallet/create`,
@@ -56,5 +57,8 @@ export const ROUTES = {
   },
   NEWSEVENTS: {
     GET_NEWS_EVENTS: `${API_URL}/api/news-events/get-all`
-  }
+  },
+  COMPANY_INFO: {
+    GET_ALL: `${API_URL}/api/company-info/get`,
+  },
 };

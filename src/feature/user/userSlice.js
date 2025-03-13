@@ -9,6 +9,8 @@ import {
   updateUserProfile,
   getNewsAndEvents,
   getRankSettings,
+  getUserSettings,
+  getCompanyInfo,
 } from "./userApi";
 import CryptoJS from "crypto-js";
 
@@ -22,8 +24,14 @@ const initialState = {
   newsThumbnails: [],
   latestNews: [],
   rankSettings: [],
+  userSettings: [],
+  companyInfo: [],
   isLoading: false,
   pagination: null,
+  companyInfo: {
+    WALLET_ADDRESS: "",
+    USDT_ADDRESS: "",
+  },
 };
 
 export const registerNewUserAsync = createAsyncThunk(
@@ -156,13 +164,57 @@ export const getRankSettingsAsync = createAsyncThunk(
   }
 );
 
+export const getUserSettingsAsync = createAsyncThunk(
+  "users/getUserSettings",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getUserSettings();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
 
+export const getCompanyInfoAsync = createAsyncThunk(
+  "users/getCompanyInfo",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getCompanyInfo();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
 
+// Helper function to recursively clear an object
+const clearObject = (obj) => {
+  const cleared = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+        cleared[key] = clearObject(obj[key]);
+      } else {
+        cleared[key] = "";
+      }
+    }
+  }
+  return cleared;
+};
 
 const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    clearCompanyInfo: (state) => {
+      state.companyInfo = clearObject(state.companyInfo);
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Register New User
@@ -309,11 +361,45 @@ const userSlice = createSlice({
       .addCase(getRankSettingsAsync.rejected, (state) => {
         state.isLoading = false;
       })
+      // getUserSettingsAsync
+      .addCase(getUserSettingsAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserSettingsAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userSettings = action.payload.data;
+      })
+      .addCase(getUserSettingsAsync.rejected, (state) => {
+        state.isLoading = false;
+      })
+      // getCompanyInfoAsync
+      .addCase(getCompanyInfoAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getCompanyInfoAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+
+        const companyInfoMap = {
+          companyBSCAddress: "WALLET_ADDRESS",
+          companyUSDTAddress: "USDT_ADDRESS",
+        };
+
+        state.companyInfo = (action.payload.data || []).reduce((acc, item) => {
+          const key = companyInfoMap[item.label];
+          if (key) {
+            acc[key] = item.value || "";
+          }
+          return acc;
+        }, { WALLET_ADDRESS: "", USDT_ADDRESS: "" });
+      })
+      .addCase(getCompanyInfoAsync.rejected, (state) => {
+        state.isLoading = false;
+      });
   },
 });
 
 export default userSlice.reducer;
-
+export const { clearCompanyInfo } = userSlice.actions;
 // Selectors
 export const selectUser = (state) => state.users.user;
 export const selectUsers = (state) => state.users.users;
