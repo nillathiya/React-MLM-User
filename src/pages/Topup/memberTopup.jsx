@@ -13,6 +13,8 @@ import {
 import Loader from "../../components/common/Loader";
 import { removeAmountFromWallet } from "../../feature/wallet/walletSlice";
 import { checkUsernameAsync } from "../../feature/user/userSlice";
+import { safeParseJSON } from "../../utils/common";
+
 const MemberTopup = () => {
   const [usernameValid, setUsernameValid] = useState(null);
   const [userActiveStatus, setUserActiveStatus] = useState(null);
@@ -20,7 +22,10 @@ const MemberTopup = () => {
   const { userWallet } = useSelector((state) => state.wallet);
   const { pinDetails } = useSelector((state) => state.topUp);
   const [loading, setLoading] = useState(false);
+  const { userSettings } = useSelector((state) => state.user);
 
+  const INVEST_WALLETS = safeParseJSON(userSettings.INVEST_WALLETS);
+  console.log("INVEST_WALLETS", INVEST_WALLETS);
   const {
     register,
     handleSubmit,
@@ -54,7 +59,7 @@ const MemberTopup = () => {
           username,
         };
         const response = await dispatch(checkUsernameAsync(formData)).unwrap();
-        console.log(response)
+        console.log(response);
         if (response.data.valid) {
           setUsernameValid(true);
           setUserActiveStatus(response.data.activeStatus);
@@ -93,7 +98,7 @@ const MemberTopup = () => {
       await dispatch(createTopUpAsync(formData)).unwrap();
       await dispatch(
         removeAmountFromWallet({
-          walletType: "fund_wallet",
+          walletType: Object.keys(INVEST_WALLETS),
           amount: data.amount,
         })
       );
@@ -116,9 +121,9 @@ const MemberTopup = () => {
             <h6 className="heading">TopUp Form</h6>
             <div className="grid grid-cols-2 gap-4 !mb-6">
               <div className="wallet-box wallet-fund">
-                <p className="wallet-title">Fund Wallet</p>
+                <p className="wallet-title">{Object.values(INVEST_WALLETS)}</p>
                 <span className="wallet-balance">
-                  ${getWalletBalance(userWallet, "fund_wallet")}
+                  ${getWalletBalance(userWallet, Object.keys(INVEST_WALLETS))}
                 </span>
               </div>
             </div>

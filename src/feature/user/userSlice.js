@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { slugToConstant, labelToConstant } from "../../utils/common";
 import {
   registerNewUser,
   checkUsername,
@@ -24,14 +25,10 @@ const initialState = {
   newsThumbnails: [],
   latestNews: [],
   rankSettings: [],
-  userSettings: [],
-  companyInfo: [],
+  userSettings: {},
   isLoading: false,
   pagination: null,
-  companyInfo: {
-    WALLET_ADDRESS: "",
-    USDT_ADDRESS: "",
-  },
+  companyInfo: {},
 };
 
 export const registerNewUserAsync = createAsyncThunk(
@@ -367,8 +364,26 @@ const userSlice = createSlice({
       })
       .addCase(getUserSettingsAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userSettings = action.payload.data;
+        const settings = action.payload.data || [];
+
+        console.log("userSettings", settings);
+
+        // Mapping slugs to constant values
+        const userSettingMap = {};
+        settings.forEach((setting) => {
+          userSettingMap[setting.slug] = slugToConstant(setting.slug);
+        });
+
+        // Reducing settings into a structured object
+        state.userSettings = settings.reduce((acc, item) => {
+          const key = userSettingMap[item.slug];
+          if (key) {
+            acc[key] = item.value || "";
+          }
+          return acc;
+        }, {});
       })
+
       .addCase(getUserSettingsAsync.rejected, (state) => {
         state.isLoading = false;
       })
@@ -378,20 +393,17 @@ const userSlice = createSlice({
       })
       .addCase(getCompanyInfoAsync.fulfilled, (state, action) => {
         state.isLoading = false;
+        const companyInfo = action.payload.data || [];
 
-        const companyInfoMap = {
-          companyBSCAddress: "WALLET_ADDRESS",
-          companyUSDTAddress: "USDT_ADDRESS",
-        };
-
-        state.companyInfo = (action.payload.data || []).reduce((acc, item) => {
-          const key = companyInfoMap[item.label];
+        state.companyInfo = companyInfo.reduce((acc, item) => {
+          const key = labelToConstant(item.label);
           if (key) {
             acc[key] = item.value || "";
           }
           return acc;
-        }, { WALLET_ADDRESS: "", USDT_ADDRESS: "" });
+        }, {});
       })
+
       .addCase(getCompanyInfoAsync.rejected, (state) => {
         state.isLoading = false;
       });

@@ -28,13 +28,13 @@ import { INCOME_FIELDS } from "../../constants/appConstants";
 import Confetti from "react-confetti";
 // import { Icon } from '@iconify/react/dist/iconify.js';
 import { ICON } from "../../constants/icons";
-import { getCompanyInfoAsync } from "../../feature/user/userSlice";
+import { getCompanyInfoAsync, getUserSettingsAsync } from "../../feature/user/userSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
   const { userWallet } = useSelector((state) => state.wallet);
-  const { companyInfo } = useSelector((state) => state.user);
+  const { companyInfo,userSettings } = useSelector((state) => state.user);
   const {
     transactions,
     incomeTransactions = [],
@@ -73,6 +73,7 @@ const Dashboard = () => {
           dispatch(getUserWalletAsync(loggedInUser?._id));
         }
         dispatch(getCompanyInfoAsync());
+        dispatch(getUserSettingsAsync());
       } catch (error) {
         toast.error(error || "Server Failed...");
       }
@@ -128,7 +129,8 @@ const Dashboard = () => {
       }, 0)
     : 0;
 
-    console.log("companyInfo",companyInfo)
+    console.log("companyInfo",companyInfo);
+    console.log("userSettings",userSettings);
   return (
     <MasterLayout>
       <Breadcrumb title="dashboard"></Breadcrumb>

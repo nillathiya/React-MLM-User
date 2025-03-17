@@ -16,7 +16,7 @@ import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyTransactionAsync } from "../../feature/transaction/transactionSlice";
 import { getWalletBalance } from "../../utils/walletUtils";
-import { getTokens } from "../../utils/tokens"; // Import the new token utility
+import { getTokens } from "../../utils/tokens";
 
 const AddFund = () => {
   const dispatch = useDispatch();
@@ -38,12 +38,12 @@ const AddFund = () => {
 
   // Get tokens based on chainId
   const tokens = getTokens(chainId);
-  const faltToken=tokens.flatMap((group) => group.items);
+  const faltToken = tokens.flatMap((group) => group.items);
 
   // Fetch live balances for each token at the top level
   const usdtBalance = useReadContract({
     abi,
-    address:faltToken.find((token)=>token.name==="USDT")?.address,
+    address: faltToken.find((token) => token.name === "USDT")?.address,
     functionName: "balanceOf",
     args: [address],
     enabled: !!address,
@@ -51,7 +51,7 @@ const AddFund = () => {
 
   const usdcBalance = useReadContract({
     abi,
-    address: faltToken.find((token)=>token.name==="USDC")?.address,
+    address: faltToken.find((token) => token.name === "USDC")?.address,
     functionName: "balanceOf",
     args: [address],
     enabled: !!address,
@@ -65,12 +65,9 @@ const AddFund = () => {
     }))
   );
 
-
-  console.log("tokens", tokens);
-  console.log("faltToken", faltToken);
-  console.log("tokenBalances", tokenBalances);
-
-  console.log(faltToken.find((token)=>token.name==="USDT")?.address)
+  // console.log("tokens", tokens);
+  // console.log("faltToken", faltToken);
+  // console.log("tokenBalances", tokenBalances);
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
@@ -116,6 +113,14 @@ const AddFund = () => {
       }
     } else {
       toast.error("Unable to verify token balance. Please try again.");
+      return;
+    }
+
+    if (
+      !companyInfo.WALLET_ADDRESS ||
+      companyInfo.WALLET_ADDRESS.length !== 42
+    ) {
+      toast.error("Invalid recipient wallet address.");
       return;
     }
 
@@ -185,9 +190,6 @@ const AddFund = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  console.log("chainId", chainId);
-  console.log("tokens", tokens);
 
   return (
     <MasterLayout>

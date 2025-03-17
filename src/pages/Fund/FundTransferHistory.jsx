@@ -95,7 +95,12 @@ const FundTransferHistory = () => {
                       <td>{index + 1}</td>
                       <td>
                         <Link to="#" className="text-primary-600">
-                          #{data.txUCode?.username || "N/A"}
+                          #
+                          {data.txUCode?.username
+                            ? data.txUCode?.username
+                            : data.uCode.username
+                            ? data.uCode.username
+                            : "N/A"}
                         </Link>
                       </td>
                       <td>{data.txType || "N/A"}</td>
