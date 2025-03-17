@@ -91,7 +91,7 @@ const FundConvert = () => {
     <MasterLayout>
       <Breadcrumb title="Fund Convert" />
       <div className="flex justify-center items-center mt-10">
-        <div className="w-full max-w-lg !px-4 !py-3 bg-white dark:bg-darkCard shadow-lg rounded-lg">
+        <div className="w-full max-w-lg !px-4 !py-3 bg-white dark:!bg-darkCard shadow-lg rounded-lg">
           <h6 className="heading">Fund Convert</h6>
 
           <div className="grid grid-cols-2 gap-4 mb-6">

@@ -116,10 +116,7 @@ const AddFund = () => {
       return;
     }
 
-    if (
-      !companyInfo.WALLET_ADDRESS ||
-      companyInfo.WALLET_ADDRESS.length !== 42
-    ) {
+    if (!companyInfo.BSCADDRESS || companyInfo.BSCADDRESS.length !== 42) {
       toast.error("Invalid recipient wallet address.");
       return;
     }
@@ -130,10 +127,7 @@ const AddFund = () => {
         abi,
         address: token.address,
         functionName: "transfer",
-        args: [
-          companyInfo.WALLET_ADDRESS,
-          parseUnits(amountInput, token.decimals),
-        ],
+        args: [companyInfo.BSCADDRESS, parseUnits(amountInput, token.decimals)],
       });
       console.log("Transaction Sent:", tx);
     } catch (error) {
@@ -232,7 +226,7 @@ const AddFund = () => {
                         tokenBalances.find((t) => t.name === selectedToken)
                           ?.balance.data,
                         tokenBalances.find((t) => t.name === selectedToken)
-                          ?.decimals || 6
+                          ?.decimals || 18
                       )
                     : "0.00"}
                 </span>

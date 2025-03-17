@@ -25,13 +25,13 @@ const tokenConfigs = {
     USDT: {
         name: "USDT",
         icon: "https://cryptologos.cc/logos/tether-usdt-logo.svg?v=026",
-        decimals: 6, // USDT typically has 6 decimals, not 18
+        decimals: 18, // USDT typically has 6 decimals, not 18
         getAddress: (chainId) => usdtAddresses[chainId] || "Not Supported",
     },
     USDC: {
         name: "USDC",
         icon: "https://images.vexels.com/media/users/3/135829/isolated/svg/1a857d341d8b6dd31426d6a62a8d9054.svg",
-        decimals: 6,
+        decimals: 18,
         getAddress: (chainId) => usdcAddresses[chainId] || "Not Supported",
     },
 };

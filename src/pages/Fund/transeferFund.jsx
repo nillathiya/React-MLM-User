@@ -110,7 +110,7 @@ const TransferFund = () => {
     <MasterLayout>
       <Breadcrumb title="Transfer Fund" />
       <div className="flex justify-center items-center mt-10">
-        <div className="w-full max-w-lg !px-4 !py-3 bg-white dark:bg-darkCard shadow-lg rounded-lg">
+        <div className="w-full max-w-lg !px-4 !py-3 bg-white dark:!bg-darkCard shadow-lg rounded-lg">
           <h6 className="heading">Fund Transfer</h6>
           {/* Wallet Balance Display */}
           <div className="grid grid-cols-2 gap-4 !mb-6">
