@@ -13,6 +13,7 @@ import { formatDate } from "../../utils/dateUtils.js";
 
 const AddFundHistory = () => {
   const addFundHistory = useSelector(selectAddFundHistory);
+  const {companyInfo}=useSelector((state) => state.user);
   const loading = useSelector(selectTransactionLoading);
 
   useEffect(() => {
@@ -93,7 +94,7 @@ const AddFundHistory = () => {
                       </td>
                       <td>{data.txType || "N/A"}</td>
                       <td>{data.debitCredit || "N/A"}</td>
-                      <td>{data.amount || "N/A"}</td>
+                      <td>{companyInfo.CURRENCY}{data.amount || "N/A"}</td>
                       <td>{data.remark || "N/A"}</td>
                       <td>{formatDate(data.createdAt)}</td>
                     </tr>

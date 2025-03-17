@@ -14,6 +14,7 @@ import { formatDate } from "../../utils/dateUtils.js";
 const Orders = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.auth);
+  const { companyInfo } = useSelector((state) => state.user);
   const { userOrders, loading } = useSelector((state) => state.orders);
   const [calculatingTotalPackageAmount, setCalculatingTotalPackageAmount] =
     useState(true);
@@ -86,7 +87,8 @@ const Orders = () => {
             />
           ) : (
             <p className="text-gray-900 dark:text-gray-100 font-semibold text-lg">
-              ${totalPackageAmount}
+              {companyInfo.CURRENCY}
+              {totalPackageAmount}
             </p>
           )}
         </div>
@@ -95,56 +97,59 @@ const Orders = () => {
       <div className="card basic-data-table">
         <div className="card-body">
           <div className="table-responsive">
-          <table
-            className="table bordered-table mb-0"
-            ref={tableRef}
-            id="dataTable"
-            data-page-length={DEFAULT_PER_PAGE_ITEMS}
-          >
-            <thead>
-              <tr>
-                <th scope="col">S.L</th>
-                <th scope="col">Package amount</th>
-                <th scope="col">Package Date</th>
-                <th scope="col">Package Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                [...Array(5)].map((_, index) => (
-                  <tr key={index}>
-                    <td>
-                      <Skeleton width="50px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="120px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="100px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="150px" height="20px" />
-                    </td>
-                  </tr>
-                ))
-              ) : userOrders.length > 0 ? (
-                userOrders.map((order, index) => (
-                  <tr key={order._id || index}>
-                    <td>{index + 1}</td>
-                    <td>{order.amount}</td>
-                    <td>{formatDate(order.createdAt)}</td>
-                    <td>{order.status === 1 ? "Running" : "Outdated"}</td>
-                  </tr>
-                ))
-              ) : (
+            <table
+              className="table bordered-table mb-0"
+              ref={tableRef}
+              id="dataTable"
+              data-page-length={DEFAULT_PER_PAGE_ITEMS}
+            >
+              <thead>
                 <tr>
-                  <td colSpan="4" className="text-center">
-                    User Orders Not Found
-                  </td>
+                  <th scope="col">S.L</th>
+                  <th scope="col">Package amount</th>
+                  <th scope="col">Package Date</th>
+                  <th scope="col">Package Status</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {loading ? (
+                  [...Array(5)].map((_, index) => (
+                    <tr key={index}>
+                      <td>
+                        <Skeleton width="50px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="120px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="100px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="150px" height="20px" />
+                      </td>
+                    </tr>
+                  ))
+                ) : userOrders.length > 0 ? (
+                  userOrders.map((order, index) => (
+                    <tr key={order._id || index}>
+                      <td>{index + 1}</td>
+                      <td>
+                        {companyInfo.CURRENCY}
+                        {order.amount}
+                      </td>
+                      <td>{formatDate(order.createdAt)}</td>
+                      <td>{order.status === 1 ? "Running" : "Outdated"}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center">
+                      User Orders Not Found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

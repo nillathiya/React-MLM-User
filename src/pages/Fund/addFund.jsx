@@ -201,7 +201,8 @@ const AddFund = () => {
             <div className="wallet-box wallet-fund">
               <p className="wallet-title">Fund Wallet</p>
               <span className="wallet-balance">
-                ${getWalletBalance(userWallet, "fund_wallet")}
+                {companyInfo.CURRENCY}
+                {getWalletBalance(userWallet, "fund_wallet")}
               </span>
             </div>
           </div>
@@ -241,7 +242,10 @@ const AddFund = () => {
                 className="input-field flex items-center cursor-pointer"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <FaDollarSign className="token-icon text-gray-500 mr-2" />
+                <span className="token-icon text-gray-500 mr-2">
+                  {" "}
+                  {companyInfo.CURRENCY}
+                </span>
                 <span>
                   {selectedToken === "token" ? "Select Token" : selectedToken}
                 </span>

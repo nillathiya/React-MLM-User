@@ -16,7 +16,7 @@ const TransferFund = () => {
   const [userActiveStatus, setUserActiveStatus] = useState(null);
 
   const { userWallet } = useSelector((state) => state.wallet);
-  const { userSettings } = useSelector((state) => state.user);
+  const { userSettings, companyInfo } = useSelector((state) => state.user);
 
   // Handle wallet types parsing
   const TRANSFER_WALLETS_TYPE = React.useMemo(() => {
@@ -117,14 +117,16 @@ const TransferFund = () => {
             <div className="wallet-box wallet-main">
               <p className="wallet-title">Main Wallet</p>
               <span className="wallet-balance">
-                ${getWalletBalance(userWallet, "main_wallet")}
+                {companyInfo.CURRENCY}
+                {getWalletBalance(userWallet, "main_wallet")}
               </span>
             </div>
 
             <div className="wallet-box wallet-fund">
               <p className="wallet-title">Fund Wallet</p>
               <span className="wallet-balance">
-                ${getWalletBalance(userWallet, "fund_wallet")}
+                {companyInfo.CURRENCY}
+                {getWalletBalance(userWallet, "fund_wallet")}
               </span>
             </div>
           </div>

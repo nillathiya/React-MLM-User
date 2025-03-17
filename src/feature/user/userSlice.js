@@ -209,9 +209,13 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     clearCompanyInfo: (state) => {
-      state.companyInfo = clearObject(state.companyInfo);
+      state.companyInfo = {};
     },
+    clearUserSettings: (state) => {
+      state.userSettings = {};
+    }
   },
+
   extraReducers: (builder) => {
     builder
       // Register New User
@@ -411,7 +415,7 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { clearCompanyInfo } = userSlice.actions;
+export const { clearCompanyInfo,clearUserSettings } = userSlice.actions;
 // Selectors
 export const selectUser = (state) => state.users.user;
 export const selectUsers = (state) => state.users.users;

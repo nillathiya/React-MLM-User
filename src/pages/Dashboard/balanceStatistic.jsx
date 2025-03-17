@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 
 const BalanceStatistic = () => {
   const { incomeTransactions } = useSelector((state) => state.transaction);
+  const {companyInfo}=useSelector((state)=>state.user);
   const [filter, setFilter] = useState(DAYS_FILTER_OPTIONS[0]);
 
   const today = new Date();
@@ -96,12 +97,12 @@ const BalanceStatistic = () => {
         blur: 1,
         opacity: 0.7,
       },
-      formatter: (val) => val.toLocaleString() + " $",
+      formatter: (val) => val.toLocaleString() + `${companyInfo.CURRENCY}`,
     },
     stroke: { show: true, width: 2, colors: ["#fff"] },
     tooltip: {
       theme: "dark",
-      y: { formatter: (value) => "$" + value.toLocaleString() },
+      y: { formatter: (value) => `${companyInfo.CURRENCY}` + value.toLocaleString() },
     },
     xaxis: {
       categories: chartLabels,
@@ -116,11 +117,11 @@ const BalanceStatistic = () => {
     },
     yaxis: {
       title: {
-        text: "Income ($)",
+        text: "Income ({companyInfo.CURRENCY})",
         style: { fontSize: "14px", fontWeight: "bold" },
       },
       labels: {
-        formatter: (value) => "$" + value.toLocaleString(),
+        formatter: (value) => `${companyInfo.CURRENCY}` + value.toLocaleString(),
         style: {
           fontSize: "12px",
         },

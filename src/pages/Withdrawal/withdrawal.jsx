@@ -13,7 +13,7 @@ import { safeParseJSON } from "../../utils/common";
 const Withdrawal = () => {
   const dispatch = useDispatch();
   const { userWallet } = useSelector((state) => state.wallet);
-  const { userSettings } = useSelector((state) => state.user);
+  const { userSettings,companyInfo } = useSelector((state) => state.user);
 
   const {
     register,
@@ -109,13 +109,13 @@ const Withdrawal = () => {
           <div className="withdrawal_inner_section">
             <div className="withdrawal_payout_amount wallet-box wallet-main">
               <h6>
-                PAYOUT PAID AMOUNT<span> $</span>
+                PAYOUT PAID AMOUNT<span>{companyInfo.CURRENCY}</span>
               </h6>
               <h4>0</h4>
             </div>
             <div className="withdrawal_payout_Minimum_amount wallet-box wallet-fund">
               <p className="minimum_payout_amount">Minimum payout amount</p>
-              <h6>${MIN_WITHDRAWAL_LIMIT.toFixed(2)}</h6>
+              <h6>{companyInfo.CURRENCY}{MIN_WITHDRAWAL_LIMIT.toFixed(2)}</h6>
             </div>
           </div>
           <div className="withdrawal_condition mt-4">
@@ -136,7 +136,7 @@ const Withdrawal = () => {
               <p className="mb-0">
                 Main Wallet:
                 <span className="text-green-600 font-medium">
-                  ${getWalletBalance(userWallet, "main_wallet")?.toFixed(2) || "0.00"}
+                {companyInfo.CURRENCY}{getWalletBalance(userWallet, "main_wallet")?.toFixed(2) || "0.00"}
                 </span>
               </p>
             </div>
@@ -196,7 +196,7 @@ const Withdrawal = () => {
                 />
                 {amount && selectedWalletType && (
                   <p className="text-sm text-gray-600 dark:text-darkText mt-1">
-                    Available: ${(getWalletBalance(userWallet, selectedWalletType) || 0).toFixed(2)}
+                    Available: {companyInfo.CURRENCY}{(getWalletBalance(userWallet, selectedWalletType) || 0).toFixed(2)}
                   </p>
                 )}
                 {errors.amount && (

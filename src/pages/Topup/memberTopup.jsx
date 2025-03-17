@@ -22,7 +22,7 @@ const MemberTopup = () => {
   const { userWallet } = useSelector((state) => state.wallet);
   const { pinDetails } = useSelector((state) => state.topUp);
   const [loading, setLoading] = useState(false);
-  const { userSettings } = useSelector((state) => state.user);
+  const { userSettings, companyInfo } = useSelector((state) => state.user);
 
   const INVEST_WALLETS = safeParseJSON(userSettings.INVEST_WALLETS);
   console.log("INVEST_WALLETS", INVEST_WALLETS);
@@ -123,7 +123,8 @@ const MemberTopup = () => {
               <div className="wallet-box wallet-fund">
                 <p className="wallet-title">{Object.values(INVEST_WALLETS)}</p>
                 <span className="wallet-balance">
-                  ${getWalletBalance(userWallet, Object.keys(INVEST_WALLETS))}
+                  {companyInfo.CURRENCY}
+                  {getWalletBalance(userWallet, Object.keys(INVEST_WALLETS))}
                 </span>
               </div>
             </div>
@@ -168,7 +169,7 @@ const MemberTopup = () => {
                   {pinDetails.length > 0 &&
                     pinDetails?.map((pinDetail) => (
                       <option key={pinDetail._id} value={pinDetail._id}>
-                        {`${pinDetail.pinType} ($${pinDetail.pinRate})`}
+                        {`${pinDetail.pinType} (${companyInfo.CURRENCY}${pinDetail.pinRate})`}
                       </option>
                     ))}
                 </select>

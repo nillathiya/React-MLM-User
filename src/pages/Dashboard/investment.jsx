@@ -6,6 +6,7 @@ const Investment = () => {
   const { userOrders = [], loading: ordersLoading } = useSelector(
     (state) => state.orders
   );
+  const {companyInfo}=useSelector((state)=>state.user);
   const {
     incomeTransactions = [],
     incomeTransactionsLoading,
@@ -119,7 +120,7 @@ const Investment = () => {
         <p className="text-gray-700 dark:text-gray-300 text-md flex justify-center items-center">
           Total Investment:{" "}
           <span className="font-semibold text-blue-500 ml-2">
-            ${totalInvestment.toLocaleString()}
+          {companyInfo.CURRENCY}{totalInvestment.toLocaleString()}
           </span>
         </p>
         <div className="relative flex justify-center items-center mt-10 w-full max-w-[500px] h-[220px] mx-auto">

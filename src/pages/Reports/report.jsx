@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 const Report = () => {
   const { incomeTransactions } = useSelector((state) => state.transaction);
   const { currentUser } = useSelector((state) => state.auth);
+  const { companyInfo } = useSelector((state) => state.user);
   const [filter, setFilter] = useState("overall");
 
   const today = new Date();
@@ -59,11 +60,11 @@ const Report = () => {
   const incomeData = [
     ...Object.entries(incomeSummary).map(([key, value]) => ({
       key: INCOME_FIELDS[key],
-      value: `$${value.toFixed(2)}`,
+      value: `${companyInfo.CURRENCY}${value.toFixed(2)}`,
     })),
     {
       key: "Total Income",
-      value: `$${totalIncome.toFixed(2)}`,
+      value: `${companyInfo.CURRENCY}${totalIncome.toFixed(2)}`,
     },
   ];
 
@@ -102,7 +103,7 @@ const Report = () => {
               </div>
               <div className="!bg-white dark:!bg-gray-800 !p-4 rounded-lg !shadow-md text-center">
                 <p className="font-semibold">
-                  Total Income: ${totalIncome.toFixed(2)}
+                  Total Income: {companyInfo.CURRENCY}{totalIncome.toFixed(2)}
                 </p>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { formatDate } from "../../utils/dateUtils";
 
 const NewCustomerList = () => {
   const { incomeTransactions } = useSelector((state) => state.transaction);
+  const { companyInfo } = useSelector((state) => state.user);
 
   const selectTopFiveIncomeTransactions = Array.isArray(incomeTransactions)
     ? incomeTransactions.slice(0, 5)
@@ -64,7 +65,10 @@ const NewCustomerList = () => {
                     </div>
                   </td> */}
                   <td className="text-center capitalize">{tx.source}</td>
-                  <td className="text-center">${tx.amount}</td>
+                  <td className="text-center">
+                    {companyInfo.CURRENCY}
+                    {tx.amount}
+                  </td>
                   <td className="text-center">{formatDate(tx.createdAt)}</td>
                   {/* <td className="text-center">
                     <span className="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">

@@ -23,6 +23,7 @@ const WithdrawalReports = () => {
   const { loading: fetchUserFundWithdrawalHistoryLoading } = useSelector(
     (state) => state.withdrawal
   );
+  const {companyInfo}=useSelector((state)=>state.user);
   const userFundWithdrwalHistory = useSelector(selectUserFundWithdrwalHistory);
   const loading = useSelector(selectTransactionLoading);
   const tableRef = useRef(null);
@@ -93,17 +94,17 @@ const WithdrawalReports = () => {
             <div className=" withdrwal_detail mt-3 position-relative z-1 py-32 text-center px-3 w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
               <div className="d-flex justify-content-between">
                 <h6 className=" p-3">Total Withdrawal</h6>
-                <p className=" p-3">${formattedUserTotalWithdrawal}</p>
+                <p className=" p-3">{companyInfo.CURRENCY}{formattedUserTotalWithdrawal}</p>
               </div>
               <hr className="" />
               <div className="d-flex justify-content-between">
                 <h6 className=" p-3">Pending Withdrawal</h6>
-                <p className=" p-3">${formattedUserPendingWithdrawal}</p>
+                <p className=" p-3">{companyInfo.CURRENCY}{formattedUserPendingWithdrawal}</p>
               </div>
               <hr className="" />
               <div className="d-flex justify-content-between">
                 <h6 className=" p-3">Reject Withdrawal</h6>
-                <p className=" p-3">${formattedUserRejectedWithdrawal}</p>
+                <p className=" p-3">{companyInfo.CURRENCY}{formattedUserRejectedWithdrawal}</p>
               </div>
             </div>
           </div>
@@ -137,10 +138,10 @@ const WithdrawalReports = () => {
               <thead>
                 <tr>
                   <th scope="col">S.L</th>
-                  <th scope="col">Amount ($)</th>
-                  <th scope="col">Charges ($)</th>
-                  <th scope="col">Withdrawal Pool ($)</th>
-                  <th scope="col">Payable Amount ($)</th>
+                  <th scope="col">Amount ({companyInfo.CURRENCY})</th>
+                  <th scope="col">Charges ({companyInfo.CURRENCY})</th>
+                  <th scope="col">Withdrawal Pool ({companyInfo.CURRENCY})</th>
+                  <th scope="col">Payable Amount ({companyInfo.CURRENCY})</th>
                   <th scope="col">Status</th>
                   <th scope="col">Reason</th>
                   <th scope="col">Date</th>
@@ -183,7 +184,7 @@ const WithdrawalReports = () => {
                     <tr key={data._id}>
                       <td>{index + 1}</td>
                       <td>
-                        $
+                      {companyInfo.CURRENCY}
                         {(
                           data.amount ??
                           0 + data.txCharge ??
@@ -191,9 +192,9 @@ const WithdrawalReports = () => {
                           0
                         ).toFixed(2)}
                       </td>
-                      <td>{data.txCharge}</td>
-                      <td>{data.wPool}</td>
-                      <td>{data.amount}</td>
+                      <td>{companyInfo.CURRENCY}{data.txCharge}</td>
+                      <td>{companyInfo.CURRENCY}{data.wPool}</td>
+                      <td>{companyInfo.CURRENCY}{data.amount}</td>
                       <td
                         className={`status-cell ${
                           data.status === 0

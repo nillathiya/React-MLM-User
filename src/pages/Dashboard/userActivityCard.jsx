@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 const UserActivityCard = () => {
   const dispatch = useDispatch();
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
+  const { companyInfo } = useSelector((state) => state.user);
   const { userOrders = [], loading: userOrdersLoading } = useSelector(
     (state) => state.orders
   );
@@ -96,7 +97,11 @@ const UserActivityCard = () => {
                       className="block mx-auto mt-1"
                     />
                   ) : (
-                    <h6 className="fw-semibold mt-2">${totalPackageAmount}</h6>
+                    <h6 className="fw-semibold mt-2">
+                      {" "}
+                      {companyInfo.CURRENCY}
+                      {totalPackageAmount}
+                    </h6>
                   )}
                 </div>
               </div>
@@ -127,7 +132,8 @@ const UserActivityCard = () => {
                     />
                   ) : (
                     <h6 className="fw-semibold mt-2">
-                      ${totalDailyStackReward}
+                      {companyInfo.CURRENCY}
+                      {totalDailyStackReward}
                     </h6>
                   )}
                 </div>
@@ -159,7 +165,8 @@ const UserActivityCard = () => {
                     />
                   ) : (
                     <h6 className="fw-semibold mt-2">
-                      ${totalStackSponserReward}
+                      {companyInfo.CURRENCY}
+                      {totalStackSponserReward}
                     </h6>
                   )}
                 </div>
@@ -191,7 +198,8 @@ const UserActivityCard = () => {
                     />
                   ) : (
                     <h6 className="fw-semibold mt-2">
-                      ${totalTeamPerformanceReward}
+                      {companyInfo.CURRENCY}
+                      {totalTeamPerformanceReward}
                     </h6>
                   )}
                 </div>
@@ -222,7 +230,11 @@ const UserActivityCard = () => {
                       className="block mx-auto mt-1"
                     />
                   ) : (
-                    <h6 className="fw-semibold mt-2">${totalReward}</h6>
+                    <h6 className="fw-semibold mt-2">
+                      {" "}
+                      {companyInfo.CURRENCY}
+                      {totalReward}
+                    </h6>
                   )}
                 </div>
               </div>
@@ -253,7 +265,8 @@ const UserActivityCard = () => {
                     />
                   ) : (
                     <h6 className="fw-semibold mt-2">
-                      ${totalTeamDevelopmentReward}
+                      {companyInfo.CURRENCY}
+                      {totalTeamDevelopmentReward}
                     </h6>
                   )}
                 </div>

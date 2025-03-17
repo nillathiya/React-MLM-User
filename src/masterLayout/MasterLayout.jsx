@@ -7,6 +7,7 @@ import { ICON } from "../constants/icons";
 import Profile from "./profile";
 import { useDispatch } from "react-redux";
 import { clearUserExists, clearUser } from "../feature/auth/authSlice";
+import { clearCompanyInfo, clearUserSettings } from "../feature/user/userSlice";
 import { clearUserWallet } from "../feature/wallet/walletSlice";
 import { clearAllFundTransactions } from "../feature/transaction/transactionSlice";
 import { useSelector } from "react-redux";
@@ -132,6 +133,8 @@ const MasterLayout = ({ children }) => {
     await dispatch(clearUserExists());
     await dispatch(clearUserWallet());
     await dispatch(clearAllFundTransactions());
+    await dispatch(clearCompanyInfo());
+    await dispatch(clearUserSettings());
     await navigate("/");
     window.location.reload();
   };

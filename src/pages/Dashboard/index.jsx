@@ -28,13 +28,16 @@ import { INCOME_FIELDS } from "../../constants/appConstants";
 import Confetti from "react-confetti";
 // import { Icon } from '@iconify/react/dist/iconify.js';
 import { ICON } from "../../constants/icons";
-import { getCompanyInfoAsync, getUserSettingsAsync } from "../../feature/user/userSlice";
+import {
+  getCompanyInfoAsync,
+  getUserSettingsAsync,
+} from "../../feature/user/userSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
   const { userWallet } = useSelector((state) => state.wallet);
-  const { companyInfo,userSettings } = useSelector((state) => state.user);
+  const { companyInfo, userSettings } = useSelector((state) => state.user);
   const {
     transactions,
     incomeTransactions = [],
@@ -46,7 +49,7 @@ const Dashboard = () => {
   const [copySuccess, setCopySuccess] = useState(false);
   const referralLink = `${window.location.origin}?ref=${loggedInUser?.username}`;
   const [showConfetti, setShowConfetti] = useState(false);
-  const confettiRef = useRef(null); // Reference for the div
+  const confettiRef = useRef(null);
 
   const userRank = loggedInUser.myRank || 0;
   useEffect(() => {
@@ -70,10 +73,14 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         if (!userWallet) {
-          dispatch(getUserWalletAsync(loggedInUser?._id));
+          await dispatch(getUserWalletAsync(loggedInUser?._id)).unwrap();
         }
-        dispatch(getCompanyInfoAsync());
-        dispatch(getUserSettingsAsync());
+        if (!companyInfo) {
+          await dispatch(getCompanyInfoAsync()).unwrap();
+        }
+        if (!userSettings) {
+          await dispatch(getUserSettingsAsync()).unwrap();
+        }
       } catch (error) {
         toast.error(error || "Server Failed...");
       }
@@ -129,8 +136,6 @@ const Dashboard = () => {
       }, 0)
     : 0;
 
-    console.log("companyInfo",companyInfo);
-    console.log("userSettings",userSettings);
   return (
     <MasterLayout>
       <Breadcrumb title="dashboard"></Breadcrumb>
@@ -164,7 +169,8 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
-                            ${getWalletBalance(userWallet, "main_wallet")}
+                            {companyInfo.CURRENCY}
+                            {getWalletBalance(userWallet, "main_wallet")}
                           </h6>
                         </div>
                       </div>
@@ -179,7 +185,8 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
-                            ${getWalletBalance(userWallet, "fund_wallet")}
+                            {companyInfo.CURRENCY}
+                            {getWalletBalance(userWallet, "fund_wallet")}
                           </h6>
                         </div>
                       </div>
@@ -196,7 +203,8 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
-                            ${totalIncome}
+                            {companyInfo.CURRENCY}
+                            {totalIncome}
                           </h6>
                         </div>
                       </div>
@@ -211,7 +219,8 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
-                            ${formattedUserTotalWithdrawal}
+                            {companyInfo.CURRENCY}
+                            {formattedUserTotalWithdrawal}
                           </h6>
                         </div>
                       </div>

@@ -22,6 +22,7 @@ const IncomeReports = () => {
   const { incomeTransactions = [], incomeTransactionsLoading } = useSelector(
     (state) => state.transaction
   );
+  const { companyInfo } = useSelector((state) => state.user);
 
   // Fetch transactions when source changes
   useEffect(() => {
@@ -93,7 +94,8 @@ const IncomeReports = () => {
                 Total Income
               </h6>
               <p className="text-xl font-bold text-green-600 dark:text-green-400">
-                ${totalIncome}
+                {companyInfo.CURRENCY}
+                {totalIncome}
               </p>
             </div>
 
@@ -103,7 +105,8 @@ const IncomeReports = () => {
                 Payable Income
               </h6>
               <p className="text-xl font-bold text-red-500 dark:text-red-400">
-                ${totalPayableIncome}
+                {companyInfo.CURRENCY}
+                {totalPayableIncome}
               </p>
             </div>
           </div>
@@ -129,84 +132,90 @@ const IncomeReports = () => {
 
         <div className="card-body">
           <div className="table-responsive">
-          <table
-            ref={tableRef}
-            className="table bordered-table mb-0"
-            id="dataTable"
-            data-page-length={DEFAULT_PER_PAGE_ITEMS}
-          >
-            <thead>
-              <tr>
-                <th>S.L</th>
-                <th>User</th>
-                <th>Amount($)</th>
-                <th>Charge($)</th>
-                <th>Remark</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {incomeTransactionsLoading ? (
-                [...Array(5)].map((_, index) => (
-                  <tr key={index}>
-                    <td>
-                      <Skeleton width="50px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="120px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="100px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="150px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="80px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="60px" height="20px" />
-                    </td>
-                    <td>
-                      <Skeleton width="90px" height="20px" />
-                    </td>
-                  </tr>
-                ))
-              ) : incomeTransactionFilterData.length > 0 ? (
-                incomeTransactionFilterData.map((data, index) => (
-                  <tr key={data._id}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {data.uCode?.username || "N/A"}
-                      {data.uCode?.name ? ` (${data.uCode.name})` : ""}
-                    </td>
+            <table
+              ref={tableRef}
+              className="table bordered-table mb-0"
+              id="dataTable"
+              data-page-length={DEFAULT_PER_PAGE_ITEMS}
+            >
+              <thead>
+                <tr>
+                  <th>S.L</th>
+                  <th>User</th>
+                  <th>Amount({companyInfo.CURRENCY})</th>
+                  <th>Charge({companyInfo.CURRENCY})</th>
+                  <th>Remark</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {incomeTransactionsLoading ? (
+                  [...Array(5)].map((_, index) => (
+                    <tr key={index}>
+                      <td>
+                        <Skeleton width="50px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="120px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="100px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="150px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="80px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="60px" height="20px" />
+                      </td>
+                      <td>
+                        <Skeleton width="90px" height="20px" />
+                      </td>
+                    </tr>
+                  ))
+                ) : incomeTransactionFilterData.length > 0 ? (
+                  incomeTransactionFilterData.map((data, index) => (
+                    <tr key={data._id}>
+                      <td>{index + 1}</td>
+                      <td>
+                        {data.uCode?.username || "N/A"}
+                        {data.uCode?.name ? ` (${data.uCode.name})` : ""}
+                      </td>
 
-                    <td>${data.amount}</td>
-                    <td>${data.charge}</td>
-                    <td>{data.remark}</td>
-                    <td
-                      className={`rounded-md font-semibold text-center
+                      <td>
+                        {companyInfo.CURRENCY}
+                        {data.amount}
+                      </td>
+                      <td>
+                        {companyInfo.CURRENCY}
+                        {data.charge || 0}
+                      </td>
+                      <td>{data.remark}</td>
+                      <td
+                        className={`rounded-md font-semibold text-center
                         ${
                           data.status === 0
                             ? " !text-yellow-700"
                             : " !text-green-700"
                         }`}
-                    >
-                      {data.status === 0 ? "Pending" : "Confirmed"}
+                      >
+                        {data.status === 0 ? "Pending" : "Confirmed"}
+                      </td>
+                      <td>{formatDate(data.createdAt)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center">
+                      {`No transactions found for ${source || "all sources"}`}
                     </td>
-                    <td>{formatDate(data.createdAt)}</td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="text-center">
-                    {`No transactions found for ${source || "all sources"}`}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

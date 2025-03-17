@@ -15,7 +15,7 @@ import { safeParseJSON } from "../../utils/common";
 const FundConvert = () => {
   const dispatch = useDispatch();
   const { userWallet } = useSelector((state) => state.wallet);
-  const { userSettings } = useSelector((state) => state.user);
+  const { userSettings, companyInfo } = useSelector((state) => state.user);
 
   const { FROM_WALLETS_TYPES, TO_WALLETS_TYPES } = React.useMemo(() => {
     const parsedFromWallets = safeParseJSON(userSettings?.CONVERT_FROM_WALLETS);
@@ -98,7 +98,7 @@ const FundConvert = () => {
             <div className="wallet-box wallet-main">
               <p className="wallet-title">Main Wallet</p>
               <span className="wallet-balance">
-                $
+                {companyInfo.CURRENCY}
                 {getWalletBalance(userWallet, "main_wallet")?.toFixed(2) ||
                   "0.00"}
               </span>
@@ -106,7 +106,7 @@ const FundConvert = () => {
             <div className="wallet-box wallet-fund">
               <p className="wallet-title">Fund Wallet</p>
               <span className="wallet-balance">
-                $
+                {companyInfo.CURRENCY}
                 {getWalletBalance(userWallet, "fund_wallet")?.toFixed(2) ||
                   "0.00"}
               </span>
@@ -197,7 +197,7 @@ const FundConvert = () => {
               />
               {fromWalletType && amount && (
                 <p className="text-sm text-gray-600 dark:text-darkText mt-1">
-                  Available: $
+                  Available: {companyInfo.CURRENCY}
                   {getWalletBalance(userWallet, fromWalletType)?.toFixed(2) ||
                     "0.00"}
                 </p>

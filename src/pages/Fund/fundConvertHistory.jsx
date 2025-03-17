@@ -14,6 +14,7 @@ import { DEFAULT_PER_PAGE_ITEMS } from "../../constants/appConstants";
 
 const FundConvertHistory = () => {
   const userFundConvertHistory = useSelector(selectUserFundConvertHistory);
+  const { companyInfo } = useSelector((state) => state.user);
   const loading = useSelector(selectTransactionLoading);
   const tableRef = useRef(null);
 
@@ -100,7 +101,10 @@ const FundConvertHistory = () => {
                       </td>
                       <td>{data.txType || "N/A"}</td>
                       <td>{data.debitCredit || "N/A"}</td>
-                      <td>{data.amount || "N/A"}</td>
+                      <td>
+                        {companyInfo.CURRENCY}
+                        {data.amount || "N/A"}
+                      </td>
                       <td>{data.remark || "N/A"}</td>
                       <td>{formatDate(data.createdAt)}</td>
                     </tr>

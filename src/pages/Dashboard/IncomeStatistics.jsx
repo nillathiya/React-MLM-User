@@ -7,6 +7,7 @@ import {
 
 const IncomeStatistics = () => {
   const { incomeTransactions } = useSelector((state) => state.transaction);
+  const { companyInfo } = useSelector((state) => state.user);
   const [filter, setFilter] = useState("overall");
 
   const today = new Date();
@@ -123,7 +124,8 @@ const IncomeStatistics = () => {
                 />
                 <span className="text-secondary-light">{item.key}</span>
                 <span className="text-primary-light fw-semibold">
-                  ${item.value.toFixed(2)}
+                  {companyInfo.CURRENCY}
+                  {item.value.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -131,7 +133,8 @@ const IncomeStatistics = () => {
 
           {/* Total Income */}
           <div className="mt-3 text-primary-light fw-bold text-lg">
-            Total Income: ${totalIncome.toFixed(2)}
+            Total Income: {companyInfo.CURRENCY}
+            {totalIncome.toFixed(2)}
           </div>
         </div>
       </div>
