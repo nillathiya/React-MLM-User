@@ -24,8 +24,11 @@ const MasterLayout = ({ children }) => {
   const { data, error, status } = useEnsName({ address });
   const { disconnect } = useDisconnect();
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
+  const { companyInfo } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
+  console.log("companyInfo", companyInfo);
+  const companyLogo = companyInfo.LOGO;
   useEffect(() => {
     const resetActiveLinks = () => {
       document
@@ -163,7 +166,8 @@ const MasterLayout = ({ children }) => {
 
         <div>
           <Link to="/" className="sidebar-logo">
-            <img
+            <img src={`${API_URL}${companyLogo}`} width={130} height={500} />
+            {/* <img
               src="/assets/images/logo.png"
               alt="site logo"
               className="light-logo"
@@ -177,7 +181,7 @@ const MasterLayout = ({ children }) => {
               src="/assets/images/logo-icon.png"
               alt="site logo"
               className="logo-icon"
-            />
+            /> */}
           </Link>
         </div>
 

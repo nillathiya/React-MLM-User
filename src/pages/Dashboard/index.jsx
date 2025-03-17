@@ -75,10 +75,10 @@ const Dashboard = () => {
         if (!userWallet) {
           await dispatch(getUserWalletAsync(loggedInUser?._id)).unwrap();
         }
-        if (!companyInfo) {
+        if (!companyInfo || Object.keys(companyInfo).length === 0) {
           await dispatch(getCompanyInfoAsync()).unwrap();
-        }
-        if (!userSettings) {
+        }        
+        if (!userSettings|| Object.keys(userSettings).length === 0) {
           await dispatch(getUserSettingsAsync()).unwrap();
         }
       } catch (error) {

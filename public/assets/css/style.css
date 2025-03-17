@@ -15474,7 +15474,7 @@ td.fc-header-center {
 }
 
 .sidebar-logo {
-  height: 4.5rem;
+  height: 5.5rem;
   padding: 0.875rem 1rem;
   border-inline-end: 1px solid var(--neutral-200);
   border-block-end: 1px solid var(--neutral-200);
@@ -15484,7 +15484,7 @@ td.fc-header-center {
 }
 
 .sidebar-logo img {
-  max-height: 3.4375rem;
+  max-height: 5.5rem;
 }
 
 .sidebar-logo img.dark-logo {
