@@ -13,7 +13,7 @@ import { safeParseJSON } from "../../utils/common";
 const Withdrawal = () => {
   const dispatch = useDispatch();
   const { userWallet } = useSelector((state) => state.wallet);
-  const { userSettings,companyInfo } = useSelector((state) => state.user);
+  const { userSettings, companyInfo } = useSelector((state) => state.user);
 
   const {
     register,
@@ -31,11 +31,15 @@ const Withdrawal = () => {
     WITHDRAWAL_WALLETS,
     WD_DAYS,
   } = React.useMemo(() => {
-    const parsedWithdrawalWallet = safeParseJSON(userSettings?.WITHDRAWAL_WALLETS);
+    const parsedWithdrawalWallet = safeParseJSON(
+      userSettings?.WITHDRAWAL_WALLETS
+    );
     const parsedWithdrawalDays = safeParseJSON(userSettings?.WD_DAYS);
     return {
-      MIN_WITHDRAWAL_LIMIT: Number(safeParseJSON(userSettings?.MIN_WITHDRAWAL_LIMIT)) || 0,
-      MAX_WITHDRAWAL_LIMIT: Number(safeParseJSON(userSettings?.MAX_WITHDRAWAL_LIMIT)) || Infinity,
+      MIN_WITHDRAWAL_LIMIT:
+        Number(safeParseJSON(userSettings?.MIN_WITHDRAWAL_LIMIT)) || 0,
+      MAX_WITHDRAWAL_LIMIT:
+        Number(safeParseJSON(userSettings?.MAX_WITHDRAWAL_LIMIT)) || Infinity,
       WITHDRAWAL_WALLETS: Array.isArray(parsedWithdrawalWallet)
         ? parsedWithdrawalWallet
         : parsedWithdrawalWallet
@@ -57,7 +61,9 @@ const Withdrawal = () => {
   const isWithdrawalDayAllowed = () => {
     if (WD_DAYS.length === 0) return true;
     const currentDay = new Date().toLocaleString("en-US", { weekday: "long" });
-    return WD_DAYS.map((day) => day.toLowerCase()).includes(currentDay.toLowerCase());
+    return WD_DAYS.map((day) => day.toLowerCase()).includes(
+      currentDay.toLowerCase()
+    );
   };
 
   const handleFormSubmit = async (data) => {
@@ -72,11 +78,16 @@ const Withdrawal = () => {
     try {
       if (!isWithdrawalDayAllowed()) {
         throw new Error(
-          `Withdrawals are only allowed on: ${WD_DAYS.join(", ")}. Today is ${new Date().toLocaleString("en-US", { weekday: "long" })}`
+          `Withdrawals are only allowed on: ${WD_DAYS.join(
+            ", "
+          )}. Today is ${new Date().toLocaleString("en-US", {
+            weekday: "long",
+          })}`
         );
       }
 
-      const walletBalance = getWalletBalance(userWallet, formData.walletType) || 0;
+      const walletBalance =
+        getWalletBalance(userWallet, formData.walletType) || 0;
       if (formData.amount > walletBalance) {
         throw new Error("Insufficient balance in selected wallet");
       }
@@ -105,7 +116,7 @@ const Withdrawal = () => {
       <Breadcrumb title="Withdrawal" />
       <div className="flex flex-col md:flex-row items-center justify-center mt-10 gap-6 withdrawal_response">
         {/* Withdrawal Info Section */}
-        <div className="w-full max-w-lg bg-white dark:bg-darkCard shadow-lg rounded-lg p-6">
+        <div className="w-full max-w-lg bg-white dark:bg-darkCard shadow-lg rounded-lg !p-6">
           <div className="withdrawal_inner_section">
             <div className="withdrawal_payout_amount wallet-box wallet-main">
               <h6>
@@ -115,10 +126,13 @@ const Withdrawal = () => {
             </div>
             <div className="withdrawal_payout_Minimum_amount wallet-box wallet-fund">
               <p className="minimum_payout_amount">Minimum payout amount</p>
-              <h6>{companyInfo.CURRENCY}{MIN_WITHDRAWAL_LIMIT.toFixed(2)}</h6>
+              <h6>
+                {companyInfo.CURRENCY}
+                {MIN_WITHDRAWAL_LIMIT.toFixed(2)}
+              </h6>
             </div>
           </div>
-          <div className="withdrawal_condition mt-4">
+          <div className="withdrawal_condition !mt-4">
             <p className="minimum_amount">Withdrawal Conditions</p>
             <p className="all_available font-bold">
               {WD_DAYS.length > 0
@@ -136,12 +150,17 @@ const Withdrawal = () => {
               <p className="mb-0">
                 Main Wallet:
                 <span className="text-green-600 font-medium">
-                {companyInfo.CURRENCY}{getWalletBalance(userWallet, "main_wallet")?.toFixed(2) || "0.00"}
+                  {companyInfo.CURRENCY}
+                  {getWalletBalance(userWallet, "main_wallet")?.toFixed(2) ||
+                    "0.00"}
                 </span>
               </p>
             </div>
 
-            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+            <form
+              onSubmit={handleSubmit(handleFormSubmit)}
+              className="space-y-4"
+            >
               <div>
                 <label className="block text-gray-700 dark:text-darkText font-medium mb-1">
                   Select Withdrawal Wallet
@@ -188,27 +207,39 @@ const Withdrawal = () => {
                     max: {
                       value: Math.min(
                         MAX_WITHDRAWAL_LIMIT,
-                        getWalletBalance(userWallet, selectedWalletType || "main_wallet") || 0
+                        getWalletBalance(
+                          userWallet,
+                          selectedWalletType || "main_wallet"
+                        ) || 0
                       ),
-                      message: "Amount exceeds available balance or maximum limit",
+                      message:
+                        "Amount exceeds available balance or maximum limit",
                     },
                   })}
                 />
                 {amount && selectedWalletType && (
                   <p className="text-sm text-gray-600 dark:text-darkText mt-1">
-                    Available: {companyInfo.CURRENCY}{(getWalletBalance(userWallet, selectedWalletType) || 0).toFixed(2)}
+                    Available: {companyInfo.CURRENCY}
+                    {(
+                      getWalletBalance(userWallet, selectedWalletType) || 0
+                    ).toFixed(2)}
                   </p>
                 )}
                 {errors.amount && (
-                  <p className="text-red-500 text-sm mt-1">{errors.amount.message}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.amount.message}
+                  </p>
                 )}
               </div>
 
               <button
                 type="submit"
                 className="w-full p-3 bg-darkPrimary text-white rounded-lg hover:bg-opacity-90 
-                  disabled:bg-gray-400 disabled:cursor-not-allowed withdrawal_btn"
-                disabled={isSubmitting || (WD_DAYS.length > 0 && !isWithdrawalDayAllowed())}
+                  disabled:bg-gray-400 disabled:cursor-not-allowed withdrawal_btn text-center"
+                disabled={
+                  isSubmitting ||
+                  (WD_DAYS.length > 0 && !isWithdrawalDayAllowed())
+                }
               >
                 {isSubmitting ? "Processing..." : "Submit Withdrawal"}
               </button>
