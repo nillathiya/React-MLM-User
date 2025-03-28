@@ -24,7 +24,7 @@ const Withdrawal = () => {
 
   const amount = watch("amount");
   const selectedWalletType = watch("walletType");
-
+  console.log(userSettings);
   const {
     MIN_WITHDRAWAL_LIMIT,
     MAX_WITHDRAWAL_LIMIT,

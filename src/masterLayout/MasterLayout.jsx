@@ -136,6 +136,8 @@ const MasterLayout = ({ children }) => {
 
   const handleLogout = async () => {
     // await disconnect();
+    document.cookie = `userToken_${loggedInUser._id}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+
     await dispatch(userLogoutAsync());
     await dispatch(clearUser());
     await dispatch(clearUserExists());

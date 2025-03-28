@@ -10,11 +10,14 @@ export const labelToConstant = (label) => {
 
 export const safeParseJSON = (str) => {
     try {
+        if (typeof str !== 'string' || !str) {
+            return [];
+        }
         return JSON.parse(str);
     } catch {
-        if(str.includes(",")){
-            return str.split(",").map((item)=>item.trim());
+        if (typeof str === 'string' && str.includes(',')) {
+            return str.split(',').map((item) => item.trim());
         }
-        return str;
+        return typeof str === 'string' ? str : [];
     }
 };
