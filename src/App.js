@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate, useSearchParams } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import RouteScrollToTop from "./helper/RouteScrollToTop";
 import ErrorPage from "./pages/ErrorPage";
 import Dashboard from "./pages/Dashboard";
@@ -32,6 +32,8 @@ import ChatProfileLayer from "./pages/Supports/ChatProfileLayer";
 import FundTransferHistory from "./pages/Fund/FundTransferHistory";
 import IncomeReports from "./pages/IncomeReports";
 import ViewProfile from "./pages/Users/ViewProfile";
+import { useEffect } from "react";
+import { setNavigate } from "./store/store";
 
 // console.log(process.env.REACT_APP_API_URL)
 

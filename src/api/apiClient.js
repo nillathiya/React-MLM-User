@@ -16,18 +16,30 @@ apiClient.interceptors.response.use(
     // console.log("error", error);
     // Handle 401 Unauthorized errors (e.g., session expiration)
     if (error.response && error.response.status === 401) {
-      // alert('Your session has expired. Please log in again.');
+      alert('Your session has expired. Please log in again.');
 
       try {
+        console.warn('Session expired, logging out user...');
         // // Lazy-load store and actions to prevent circular dependencies
-        // const { store } = await import('../store/store');
-        // const { clearUser, clearUserExists } = await import('../feature/auth/authSlice');
+        const { store } = await import('../store/store');
+        const { clearUser, clearUserExists, userLogoutAsync } = await import('../feature/auth/authSlice');
+        const { clearUserWallet, clearCompanyInfo, clearUserSettings } = await import('../feature/user/userSlice');
+        const { clearAllFundTransactions } = await import('../feature/transaction/transactionSlice');
 
-        // await store.dispatch(clearUser());
-        // await store.dispatch(clearUserExists());
+        const dispatch = store.dispatch;
 
-        // window.location.reload();
-        // window.location.href = '/';
+        await Promise.all([
+          dispatch(userLogoutAsync()),
+          dispatch(clearUser()),
+          dispatch(clearUserExists()),
+          dispatch(clearUserWallet()),
+          dispatch(clearAllFundTransactions()),
+          dispatch(clearCompanyInfo()),
+          dispatch(clearUserSettings()),
+        ]);
+
+        window.location.href = '/';
+
       } catch (err) {
         console.error('Error during 401 handling:', err);
       }

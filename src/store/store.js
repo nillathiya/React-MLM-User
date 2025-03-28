@@ -60,7 +60,7 @@ const userPersistConfig = {
     key: "user",
     storage,
     transforms: [encryptTransform],
-    whitelist: ['userSettings','companyInfo']
+    whitelist: ['userSettings', 'companyInfo']
 }
 
 // Apply persistence

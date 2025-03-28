@@ -6,7 +6,11 @@ import { useAccount, useDisconnect, useEnsName } from "wagmi";
 import { ICON } from "../constants/icons";
 import Profile from "./profile";
 import { useDispatch } from "react-redux";
-import { clearUserExists, clearUser } from "../feature/auth/authSlice";
+import {
+  clearUserExists,
+  clearUser,
+  userLogoutAsync,
+} from "../feature/auth/authSlice";
 import { clearCompanyInfo, clearUserSettings } from "../feature/user/userSlice";
 import { clearUserWallet } from "../feature/wallet/walletSlice";
 import { clearAllFundTransactions } from "../feature/transaction/transactionSlice";
@@ -132,6 +136,7 @@ const MasterLayout = ({ children }) => {
 
   const handleLogout = async () => {
     // await disconnect();
+    await dispatch(userLogoutAsync());
     await dispatch(clearUser());
     await dispatch(clearUserExists());
     await dispatch(clearUserWallet());

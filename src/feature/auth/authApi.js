@@ -40,3 +40,14 @@ export const verifyTokenLogin = async (token) => {
   }
 };
 
+export const userLogout = async (token) => {
+  try {
+    const response = await apiClient.post(ROUTES.AUTH.USER_LOGOUT);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || 'An error occurred.');
+    }
+    throw new Error('User logout failed. Please try again later.');
+  }
+};

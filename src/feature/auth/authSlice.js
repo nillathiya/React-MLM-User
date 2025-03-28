@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userLogin, checkWallet, verifyTokenLogin } from "./authApi";
+import { userLogin, checkWallet, verifyTokenLogin, userLogout } from "./authApi";
 import { updateUserProfileAsync } from "../user/userSlice";
 
 const initialState = {
@@ -58,6 +58,21 @@ export const verifyTokenLoginAsync = createAsyncThunk(
   }
 );
 
+export const userLogoutAsync = createAsyncThunk(
+  "auth/userLogout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await userLogout();
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+);
 
 // Define the slice
 const authSlice = createSlice({
@@ -127,6 +142,19 @@ const authSlice = createSlice({
         state.updateUserProfileAsync = true;
       })
       .addCase(verifyTokenLoginAsync.rejected, (state) => {
+        state.loading = false;
+      })
+      // userLogoutAsync
+      .addCase(userLogoutAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(userLogoutAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = null;
+        state.isLoggedIn = false;
+        state.loginByAdmin = false;
+      })
+      .addCase(userLogoutAsync.rejected, (state) => {
         state.loading = false;
       })
   },
