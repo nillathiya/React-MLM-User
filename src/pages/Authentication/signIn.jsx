@@ -62,7 +62,16 @@ const SignIn = () => {
     setConnectWalletModal(false);
     try {
       if (userExists) {
-        await dispatch(userLoginAsync({ wallet: address })).unwrap();
+        const result = await dispatch(
+          userLoginAsync({ wallet: address })
+        ).unwrap();
+        console.log("result", result);
+        if (result.status === "success") {
+          localStorage.setItem(
+            `userToken_${result.data.user._id}`,
+            result.data.token
+          );
+        }
       } else {
         await dispatch(
           registerNewUserAsync({
