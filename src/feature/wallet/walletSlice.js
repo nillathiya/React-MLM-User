@@ -103,14 +103,10 @@ const walletSlice = createSlice({
             return;
           }
 
-          const skipKeys = ["_id", "uCode", "username", "createdAt", "updatedAt", "__v"];
+          // const skipKeys = ["_id", "uCode", "username", "createdAt", "updatedAt", "__v"];
 
 
-          state.userWallet = Object.fromEntries(
-            Object.entries(decryptedWallet)
-              .filter(([key]) => !skipKeys.includes(key))
-              .map(([key, value]) => [WalletMapping[key] || key, value])
-          );
+          state.userWallet = decryptedWallet;
 
 
         } catch (error) {

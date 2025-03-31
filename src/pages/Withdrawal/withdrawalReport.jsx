@@ -17,7 +17,7 @@ import { ICON } from "../../constants/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useDispatch } from "react-redux";
 import ExportToExcel from "../../components/common/ExportToExcel/index.jsx";
-import { FUND_TX_TYPE } from "../../utils/constatnt/transactionType.js";
+import { FUND_TX_TYPE } from "../../utils/constant";
 
 const WithdrawalReports = () => {
   const dispatch = useDispatch();

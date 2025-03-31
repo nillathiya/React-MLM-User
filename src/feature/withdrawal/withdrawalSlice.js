@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addTransaction, addTransactionByTransactionType } from "../transaction/transactionSlice";
 import { userFundWithdrawal, fetchUserFundWithdrawalHistory } from "./withdrawalApi";
 import { getUserWalletAsync } from "../wallet/walletSlice";
-import {FUND_TX_TYPE} from "../../utils/constatnt"
+import {FUND_TX_TYPE} from "../../utils/constant"
 const initialState = {
     loading: false,
     error: null,

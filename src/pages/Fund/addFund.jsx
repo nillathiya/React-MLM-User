@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { verifyTransactionAsync } from "../../feature/transaction/transactionSlice";
 import { getWalletBalance } from "../../utils/walletUtils";
 import { getTokens } from "../../utils/tokens";
-import { getUserWalletAsync } from "../../feature/wallet/walletSlice";
+import { getUserWalletAsync,addAmountToWallet } from "../../feature/wallet/walletSlice";
 
 const AddFund = () => {
   const dispatch = useDispatch();
@@ -170,6 +170,7 @@ const AddFund = () => {
           toast.dismiss(loadingToastId);
           if (result.status === "success") {
             toast.success("Funds added successfully!");
+            addAmountToWallet("fund_wallet",amountInput);
           } else {
             toast.error("Transaction verification failed.");
           }
@@ -184,7 +185,7 @@ const AddFund = () => {
     };
 
     verifyTransaction();
-  }, [isConfirmed, txHash, address, amountInput, dispatch]);
+  }, [isConfirmed]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
