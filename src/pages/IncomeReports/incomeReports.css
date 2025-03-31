@@ -1,0 +1,14 @@
+.daily_income{
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 25px;
+    height: 80px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-family: sans-serif;
+}
+.daily_total_income, .daily_payable_income{
+    text-align: center;
+}

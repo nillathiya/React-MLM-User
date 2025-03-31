@@ -1,0 +1,70 @@
+.topup_sec {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  /* Form Container Styling */
+  .topup-form {
+    height: auto;
+    position: absolute;
+    top: 18%;
+    padding: 30px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 7px 7px 21px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+  }
+  .select-field {
+    width: 100%;
+    height: 40px;
+    padding: 7px 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #d6d6d6;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 15px;
+  }
+  
+  /* .input-field {
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  } */
+  .topup_wallet_section{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .topup_wallet_show{
+    color: black;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .topup-wallet-btn {
+    width: 25%;
+    height: 35px;
+    padding: 7px 12px;
+    text-align: center;
+    background-color: #0041b1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }

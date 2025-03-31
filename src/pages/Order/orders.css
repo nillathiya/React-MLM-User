@@ -1,0 +1,27 @@
+.Total_ammount {
+  display: flex;
+  justify-content: center;
+  padding: 15px 25px;
+  height: 80px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  font-family: sans-serif;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Light Mode */
+.Total_ammount {
+  background: rgb(220, 220, 220);
+  color: rgb(0, 0, 0);
+}
+
+/* Dark Mode */
+html.dark .Total_ammount {
+  background: rgb(40, 44, 52);
+  color: rgb(255, 255, 255);
+}
+.daily_total_income,
+.daily_payable_income {
+  text-align: center;
+  font-weight: bold;
+}

@@ -12443,16 +12443,8 @@ h6,
   flex-wrap: wrap;
   align-items: center;
   gap: 0.9375rem;
+  justify-content: start;
 }
-
-.basic-data-table .dt-layout-row .dt-search {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.9375rem;
-  justify-content: flex-end;
-}
-
 .basic-data-table .dt-layout-row .dt-search .dt-input {
   color: var(--text-secondary-light) !important;
   height: 2.5rem;
@@ -13023,6 +13015,7 @@ select option {
 
 /* === form css end === */
 /* === card css start === */
+
 .card {
   background-color: var(--white);
   border-radius: 8px;
@@ -13062,7 +13055,7 @@ select option {
   background-color: var(--primary-600);
   border-radius: 100px;
   left: -1px;
-  top: 24px;
+  top: 10px;
   box-shadow: 2px 1px 7px 0px rgba(29, 128, 252, 0.6);
 }
 
@@ -15481,7 +15474,7 @@ td.fc-header-center {
 }
 
 .sidebar-logo {
-  height: 4.5rem;
+  height: 5.5rem;
   padding: 0.875rem 1rem;
   border-inline-end: 1px solid var(--neutral-200);
   border-block-end: 1px solid var(--neutral-200);
@@ -15491,7 +15484,7 @@ td.fc-header-center {
 }
 
 .sidebar-logo img {
-  max-height: 3.4375rem;
+  max-height: 5.5rem;
 }
 
 .sidebar-logo img.dark-logo {
@@ -15568,6 +15561,7 @@ td.fc-header-center {
 .sidebar-menu li.dropdown.dropdown-open > a {
   background-color: var(--brand);
   color: #fff;
+  margin-top: 1px;
 }
 
 .sidebar-menu li.dropdown.open > a:hover,
@@ -15585,7 +15579,10 @@ td.fc-header-center {
 .sidebar-menu li.dropdown.open .sidebar-submenu {
   display: block;
 }
-
+.mainroute {
+  background-color: #007bff !important; /* Example styling */
+  color: white !important;
+}
 .sidebar-menu li > a.active-page {
   background-color: var(--brand);
   color: #fff;
@@ -15656,6 +15653,7 @@ td.fc-header-center {
   background-color: var(--button-secondary);
   color: var(--text-primary-light);
 }
+
 
 .sidebar-menu .sidebar-submenu li a {
   padding: 0.4375rem 0.75rem;

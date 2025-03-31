@@ -5399,6 +5399,8 @@ const useReactApexChart = () => {
     },
   };
 
+ 
+
   let balanceStatisticsSeries = [
     {
       name: "Net Profit",

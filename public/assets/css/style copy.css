@@ -11132,13 +11132,7 @@ h6,
   gap: 0.9375rem;
 }
 
-.basic-data-table .dt-layout-row .dt-search {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.9375rem;
-  justify-content: flex-end;
-}
+
 
 .basic-data-table .dt-layout-row .dt-search .dt-input {
   color: var(--text-secondary-light) !important;

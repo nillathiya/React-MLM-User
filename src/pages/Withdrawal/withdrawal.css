@@ -1,0 +1,239 @@
+.withdrwal_main {
+  display: flex;
+}
+.withdrawal_pauout_section {
+  width: 100%;
+  max-width: 700px;
+  background: linear-gradient(
+    270deg,
+    rgb(233, 224, 255) 0%,
+    rgb(246, 242, 255) 100%
+  );
+}
+.withdrawal_inner_section {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  color: black;
+}
+.withdrawal_payout_amount h6 {
+  font-size: 15px !important;
+  font-weight: 700;
+  display: flex;
+  color: rgb(70, 123, 160);
+}
+.withdrawal_payout_amount h6 span {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background-color: white;
+  margin-left: 10px;
+  font-size: 18px;
+  margin-top: -7px;
+  padding-top: 5px;
+}
+
+.withdrawal_payout_amount h4 {
+  font-size: 30px !important;
+  font-weight: 700;
+  margin-top: 10px;
+  color: rgb(70, 123, 160);
+}
+.minimum_payout_Minimum_amount {
+  margin-left: 10px !important;
+}
+.minimum_payout_amount {
+  font-size: 15px !important;
+  font-weight: 700;
+}
+.withdrawal_payout_Minimum_amount h6 {
+  font-size: 30px !important;
+  font-weight: 700;
+  margin-top: 10px;
+  color: rgb(26, 66, 53);
+}
+
+.withdrawal_condition {
+  margin-top: 40px;
+}
+.withdrawal_condition .minimum_amount {
+  font-size: 25px;
+  font-weight: 700;
+  text-decoration: underline;
+  color: #455868;
+}
+.withdrwal_show_payment {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  font-size: 30px;
+  font-weight: bold;
+}
+.withdrawal_minimunm_payout {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.withdrawal_pauout_request {
+  margin-left: 20px;
+  width: 100%;
+  max-width: 700px;
+}
+.card_payout_header {
+  border-radius: 15px;
+  padding: 10px;
+}
+.payout_amount_input {
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin: 10px 0px;
+  color: rgb(22, 22, 22);
+  background-color: rgb(240, 240, 240);
+}
+.withdrawal_btn {
+  background-color: rgb(45, 161, 103);
+  padding: 5px;
+  color: white;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* withdrwal report section */
+.withdrawal_report {
+  position: relative;
+  width: 50%;
+}
+.withdrwal_detail {
+  padding: 10px !important;
+  color: black;
+  border-radius: 10px;
+  font-weight: 600;
+  font-family: "Inter";
+}
+.export_btn {
+  width: 150px;
+  border: none;
+  border: 1px solid gray;
+  background-color: rgb(46, 5, 94);
+  font-weight: bold;
+  padding: 5px;
+  color: white;
+  text-align: center;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  margin-left: 77%;
+}
+
+/* Make the table responsive */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Make sure table doesn't shrink */
+table {
+  min-width: 800px;
+  width: 100%;
+}
+
+/* Status colors */
+.status-cell {
+  border-radius: 5px;
+  font-weight: 600;
+  text-align: center;
+  padding: 5px;
+}
+
+.status-cell.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-cell.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-cell.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+@media (max-width: 768px) {
+  .withdrawal_response {
+    flex-direction: column;
+  }
+  .responsive_request_section {
+    margin-bottom: 35px;
+  }
+  .withdrawal_report {
+    width: 100%;
+  }
+  table {
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 8px;
+  }
+}
+@media (max-width: 480px) {
+  .withdrwal_main {
+    display: block !important;
+  }
+  .minimum_payout_amount {
+    font-size: 13px !important;
+  }
+  .minimum_amount {
+    font-size: 13px !important;
+  }
+  .all_available {
+    font-size: 11px;
+  }
+  .withdrawal_pauout_request {
+    margin-left: 0px;
+  }
+  .withdrwal_show_payment {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: white;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .responseve_paid_section {
+    width: 100%;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 6px;
+  }
+}
+
+@media (max-width: 320px) {
+  .withdrwal_main {
+    display: block !important;
+  }
+  .minimum_payout_amount {
+    font-size: 12px !important;
+  }
+  .minimum_amount {
+    font-size: 12px !important;
+  }
+  .all_available {
+    font-size: 11px;
+  }
+  .withdrawal_pauout_request {
+    margin-left: 0px;
+  }
+}

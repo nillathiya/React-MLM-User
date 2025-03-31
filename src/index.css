@@ -1,0 +1,175 @@
+/* @import 'bootstrap/dist/css/bootstrap.min.css'; */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Global styles */
+  body {
+  }
+}
+
+@layer components {
+  /* Custom reusable components */
+  .profile-container {
+    @apply flex flex-col items-center justify-center rounded-lg w-full max-w-sm mx-auto p-4 overflow-hidden;
+  }
+
+  .profile-container img {
+    @apply w-20 h-20 rounded-full border-2 border-gray-300;
+  }
+
+  .dropdown-item {
+    @apply px-4 py-2 text-black hover:bg-gray-100 hover:text-blue-700;
+  }
+
+  .container {
+    @apply mx-auto px-4 max-w-screen-lg;
+  }
+
+  .error-message {
+    @apply text-red-500 text-xs sm:text-sm;
+  }
+
+  /* Headings */
+  .heading {
+    @apply font-bold text-gray-600 dark:text-darkText text-center mb-6 
+           text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
+  }
+  .heading-uppercase {
+    @apply font-bold uppercase text-gray-600 dark:text-darkText text-center mb-6 
+    text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
+  }
+
+  .text-responsive-bold {
+    @apply text-xs sm:text-sm md:text-base font-bold;
+  }
+  .text-responsive-medium {
+    @apply text-xs sm:text-sm md:text-base font-medium;
+  }
+  .text-responsive-semibold {
+    @apply text-sm sm:text-base md:text-lg font-semibold;
+  }
+
+  /* Box */
+  .box-blue {
+    @apply px-3 py-2 sm:px-4 sm:py-3 
+           bg-blue-100 dark:bg-blue-800 
+           text-blue-900 dark:text-blue-200 
+           rounded-lg shadow-md text-center;
+  }
+  .box-green {
+    @apply px-3 py-2 sm:px-4 sm:py-3 bg-green-100 dark:bg-green-800 text-green-900 dark:text-green-200 rounded-lg shadow-md text-center;
+  }
+
+  /* Card */
+  .card-responsive {
+    @apply w-full max-w-md sm:max-w-lg 
+           bg-white dark:bg-darkCard 
+           shadow-lg rounded-lg 
+           p-4 sm:p-6;
+  }
+
+  /* For Buttons */
+  .btn-primary {
+    @apply w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 
+           text-white font-semibold py-3 px-6 rounded-lg transition-all 
+           disabled:opacity-50 disabled:cursor-not-allowed text-center;
+  }
+
+  .btn-secondary {
+    @apply w-full bg-gray-500 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-800 
+           text-white font-semibold py-3 px-6 rounded-lg transition-all 
+           disabled:opacity-50 disabled:cursor-not-allowed text-center;
+  }
+
+  .btn-disabled {
+    @apply w-full bg-gray-300 dark:bg-gray-700 text-gray-500 font-semibold py-3 px-6 rounded-lg transition-all  cursor-not-allowed opacity-50 text-center;
+  }
+
+  .btn-darkPrimary {
+    @apply w-full p-2 sm:p-3 bg-darkPrimary text-white rounded-lg 
+           hover:bg-opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed 
+           text-sm sm:text-base md:text-lg text-center;
+  }
+
+  /* For Wallet */
+  /* Base styles with responsive adjustments */
+  .wallet-box {
+    @apply px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 rounded-lg shadow-md text-center;
+  }
+
+  .wallet-main {
+    @apply bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-blue-200;
+  }
+
+  .wallet-fund {
+    @apply bg-green-100 dark:bg-green-800 text-green-900 dark:text-green-200;
+  }
+
+  .wallet-title {
+    @apply text-base sm:text-lg md:text-xl font-semibold;
+  }
+
+  .wallet-balance {
+    @apply text-xs sm:text-sm md:text-base lg:text-lg font-bold flex flex-wrap items-center justify-center;
+  }
+
+  .currency {
+    @apply shrink-0; /* Prevents currency symbol from shrinking */
+  }
+
+  .amount {
+    @apply break-words; /* Allows the amount to break and wrap */
+  }
+  /* input-field */
+  .input-field {
+    @apply w-full p-2 sm:p-3 border border-gray-300 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText text-sm sm:text-base focus:ring-2 focus:ring-darkPrimary;
+  }
+
+  .input-label {
+    @apply block text-gray-700 dark:text-darkText text-sm sm:text-base md:text-lg font-medium mb-1;
+  }
+
+  .react-tel-input {
+    @apply w-full border border-gray-300 rounded-md bg-white text-gray-900 dark:bg-darkCard dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-darkPrimary !important;
+  }
+
+  .react-tel-input .flag-dropdown {
+    @apply bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg;
+  }
+  .react-tel-input .country-list {
+    @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md shadow-lg;
+    @apply max-h-60 overflow-y-auto; /* Ensures scrolling */
+  }
+
+  .react-tel-input .country {
+    @apply px-3 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700;
+  }
+
+  /* Selected Country (Flag Dropdown Button) */
+  .react-tel-input .selected-flag {
+    @apply bg-gray-200 dark:bg-gray-700 text-black dark:text-white 
+         px-3 py-2 border border-gray-300 dark:border-gray-600 
+         rounded-md shadow-md cursor-pointer;
+  }
+
+  /* Add hover effect for selected country */
+  .react-tel-input .selected-flag:hover {
+    @apply bg-gray-300 dark:bg-gray-600;
+  }
+
+  /* Selected Country inside the Dropdown */
+  .react-tel-input .country.highlight {
+    @apply bg-blue-500 dark:bg-blue-600 text-white font-semibold;
+  }
+
+  /* Hover Effect on Countries */
+  .react-tel-input .country:hover {
+    @apply bg-gray-200 dark:bg-gray-700 text-black dark:text-white;
+  }
+}
+
+@layer utilities {
+  /* Custom utility classes */
+}
