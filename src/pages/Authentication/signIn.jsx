@@ -35,8 +35,14 @@ const SignIn = () => {
   const verifyTokenLogin = async (token) => {
     setLoading(true);
     try {
-      await dispatch(verifyTokenLoginAsync(token)).unwrap();
-      console.log("dwehdkqwehdiqwe");
+      const result = await dispatch(verifyTokenLoginAsync(token)).unwrap();
+      console.log("result", result);
+      if (result.status === "success" || result.statusCode === 200) {
+        localStorage.setItem(
+          `userToken_${result.data.user._id}`,
+          result.data.token
+        );
+      }
       navigate("/dashboard");
     } catch (error) {
       toast.error(error || "Token validation failed");

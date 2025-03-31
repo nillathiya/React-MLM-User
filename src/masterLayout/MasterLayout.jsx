@@ -31,7 +31,6 @@ const MasterLayout = ({ children }) => {
   const { companyInfo } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  console.log("companyInfo", companyInfo);
   const companyLogo = companyInfo.LOGO;
   useEffect(() => {
     const resetActiveLinks = () => {

@@ -24,7 +24,6 @@ export const setupApiInterceptors = (store) => {
       if (loggedInUser && loggedInUser._id) {
         const userToken = getUserToken(loggedInUser._id);
         if (userToken) {
-          console.log("userToken Found!")
           config.headers.Authorization = `Bearer ${userToken}`;
         }
       }
