@@ -6,7 +6,6 @@ export const getUserWallet = async (userId) => {
     try {
         const response = await apiClient.post(
             ROUTES.WALLET.USER_WALLET,
-            { userId },
         );
         return response.data;
     } catch (error) {

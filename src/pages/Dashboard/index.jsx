@@ -77,10 +77,9 @@ const Dashboard = () => {
         }
         if (!companyInfo || Object.keys(companyInfo).length === 0) {
           await dispatch(getCompanyInfoAsync()).unwrap();
-        }        
-        if (!userSettings|| Object.keys(userSettings).length === 0) {
-          await dispatch(getUserSettingsAsync()).unwrap();
         }
+
+        await dispatch(getUserSettingsAsync()).unwrap();
       } catch (error) {
         toast.error(error || "Server Failed...");
       }
@@ -89,7 +88,7 @@ const Dashboard = () => {
     if (loggedInUser?._id) {
       fetchData();
     }
-  }, [userWallet, loggedInUser?._id, dispatch]);
+  }, []);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -108,12 +107,7 @@ const Dashboard = () => {
       }
     };
     fetchTransactions();
-  }, [
-    transactions.length,
-    incomeTransactions.length,
-    loggedInUser?._id,
-    dispatch,
-  ]);
+  }, []);
 
   const formattedUserTotalWithdrawal = useMemo(() => {
     return parseFloat(
@@ -136,6 +130,7 @@ const Dashboard = () => {
       }, 0)
     : 0;
 
+  console.log("formattedUserTotalWithdrawal", formattedUserTotalWithdrawal);
   return (
     <MasterLayout>
       <Breadcrumb title="dashboard"></Breadcrumb>
@@ -252,9 +247,12 @@ const Dashboard = () => {
                       type="text"
                       value={referralLink}
                       readOnly
-                      className="copy-input"
+                      className="copy-input !text-gray-900"
                     />
-                    <button className="copy-btn" onClick={handleCopy}>
+                    <button
+                      className="copy-btn !text-green-900"
+                      onClick={handleCopy}
+                    >
                       Copy Link
                     </button>
                   </div>

@@ -45,7 +45,7 @@ export const getFundTransactionsByUser = async () => {
     }
 };
 
-export const getIncomeTransactionsByUser = async ({source}) => {
+export const getIncomeTransactionsByUser = async ({ source }) => {
     try {
         const response = await apiClient.post(
             ROUTES.TRANSACTION.INCOME.GET_BY_USER(source));

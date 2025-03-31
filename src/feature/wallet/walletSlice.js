@@ -10,9 +10,9 @@ const initialState = {
 
 export const getUserWalletAsync = createAsyncThunk(
   'wallet/getUserWallet',
-  async (userId, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const data = await getUserWallet(userId);
+      const data = await getUserWallet();
       return data;
     } catch (error) {
       if (error instanceof Error) {

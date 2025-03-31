@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { verifyTransaction, getFundTransactionsByUser, userFundTransfer, userConvertFunds, getTransactionsByUser, getIncomeTransactionsByUser } from './transactionApi';
 import CryptoJS from "crypto-js";
+import { FUND_TX_TYPE } from "../../utils/constant";
 
 const initialState = {
   loading: false,
-  incomeTransactionsLoading:false,
+  incomeTransactionsLoading: false,
   transactions: [],
   incomeTransactions: [],
 };
@@ -173,7 +174,14 @@ const transactionSlice = createSlice({
       })
       .addCase(userConvertFundsAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.transactions.push(action.payload.data);
+        const newTransaction = action.payload.data;
+        const index = state.transactions.findIndex((tx) => tx._id === newTransaction._id);
+
+        if (index === -1) {
+          state.transactions.push(newTransaction);
+        } else {
+          state.transactions[index] = newTransaction;
+        }
       })
       .addCase(userConvertFundsAsync.rejected, (state, action) => {
         state.loading = false;
@@ -236,16 +244,16 @@ const transactionSlice = createSlice({
 export const { addTransaction, clearAllFundTransactions, addTransactionByTransactionType } = transactionSlice.actions;
 
 export const selectAddFundHistory = (state) =>
-  state.transaction.transactions.filter((tx) => tx.txType === "user_add_fund");
+  state.transaction.transactions.filter((tx) => tx.txType === FUND_TX_TYPE.FUND_ADD);
 
 export const selectUserFundTransfer = (state) =>
-  state.transaction.transactions.filter((tx) => tx.txType === "user_fund_transfer");
+  state.transaction.transactions.filter((tx) => tx.txType === FUND_TX_TYPE.FUND_TRANSFER);
 
 export const selectUserFundConvertHistory = (state) =>
-  state.transaction.transactions.filter((tx) => tx.txType === "user_fund_convert");
+  state.transaction.transactions.filter((tx) => tx.txType === FUND_TX_TYPE.FUND_CONVERT);
 
 export const selectUserFundWithdrwalHistory = (state) =>
-  state.transaction.transactions.filter((tx) => tx.txType === "user_fund_withdrawal");
+  state.transaction.transactions.filter((tx) => tx.txType === FUND_TX_TYPE.FUND_WITHDRAWAL);
 
 export const selectTransactionLoading = (state) => state.transaction.loading
 export default transactionSlice.reducer;

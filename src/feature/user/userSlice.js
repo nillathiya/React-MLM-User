@@ -25,7 +25,7 @@ const initialState = {
   newsThumbnails: [],
   latestNews: [],
   rankSettings: [],
-  userSettings: {},
+  userSettings: [],
   isLoading: false,
   pagination: null,
   companyInfo: {},
@@ -368,24 +368,7 @@ const userSlice = createSlice({
       })
       .addCase(getUserSettingsAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        const settings = action.payload.data || [];
-
-        console.log("userSettings", settings);
-
-        // Mapping slugs to constant values
-        const userSettingMap = {};
-        settings.forEach((setting) => {
-          userSettingMap[setting.slug] = slugToConstant(setting.slug);
-        });
-
-        // Reducing settings into a structured object
-        state.userSettings = settings.reduce((acc, item) => {
-          const key = userSettingMap[item.slug];
-          if (key) {
-            acc[key] = item.value || "";
-          }
-          return acc;
-        }, {});
+        state.userSettings = action.payload.data || [];
       })
 
       .addCase(getUserSettingsAsync.rejected, (state) => {
@@ -415,7 +398,7 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { clearCompanyInfo,clearUserSettings } = userSlice.actions;
+export const { clearCompanyInfo, clearUserSettings } = userSlice.actions;
 // Selectors
 export const selectUser = (state) => state.users.user;
 export const selectUsers = (state) => state.users.users;

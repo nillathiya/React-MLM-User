@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { verifyTransactionAsync } from "../../feature/transaction/transactionSlice";
 import { getWalletBalance } from "../../utils/walletUtils";
 import { getTokens } from "../../utils/tokens";
+import { getUserWalletAsync } from "../../feature/wallet/walletSlice";
 
 const AddFund = () => {
   const dispatch = useDispatch();
@@ -31,10 +32,25 @@ const AddFund = () => {
   const dropdownRef = useRef(null);
   const { userWallet } = useSelector((state) => state.wallet);
   const { companyInfo } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(true);
 
   const { writeContractAsync, data: txHash, isLoading } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await dispatch(getUserWalletAsync());
+      } catch (error) {
+        console.log(error || "Server Error, Please try again");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [dispatch]);
 
   // Get tokens based on chainId
   const tokens = getTokens(chainId);
@@ -64,10 +80,6 @@ const AddFund = () => {
       balance: token.name === "USDT" ? usdtBalance : usdcBalance,
     }))
   );
-
-  // console.log("tokens", tokens);
-  // console.log("faltToken", faltToken);
-  // console.log("tokenBalances", tokenBalances);
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
@@ -100,7 +112,6 @@ const AddFund = () => {
       return;
     }
 
-    // Check if amount exceeds token balance
     const balanceData = token.balance.data;
     if (balanceData) {
       const balance = parseFloat(formatUnits(balanceData, token.decimals));
@@ -185,138 +196,165 @@ const AddFund = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Skeleton Loader Component
+  const SkeletonLoader = () => (
+    <div className="animate-pulse">
+      <div className="grid grid-cols-2 gap-4 !mb-6">
+        <div className="wallet-box bg-gray-200 dark:bg-gray-700 h-20 rounded-lg"></div>
+      </div>
+      <div className="space-y-4">
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+      </div>
+    </div>
+  );
+
   return (
     <MasterLayout>
       <Breadcrumb title="Add Fund" />
       <div className="flex justify-center items-center mt-10">
         <div className="w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
           <h6 className="heading">Add Fund</h6>
-          <div className="grid grid-cols-2 gap-4 !mb-6">
-            <div className="wallet-box wallet-fund">
-              <p className="wallet-title">Fund Wallet</p>
-              <span className="wallet-balance">
-                {companyInfo.CURRENCY}
-                {getWalletBalance(userWallet, "fund_wallet")}
-              </span>
-            </div>
-          </div>
-
-          <div>
-            {/* Amount Input */}
-            <div className="">
-              <label>Amount</label>
-              <input
-                type="text"
-                placeholder="0.00"
-                className="input-field"
-                value={amountInput}
-                onChange={handleAmountChange}
-              />
-            </div>
-
-            {/* Token Dropdown */}
-            <div className="flex flex-col relative mt-3" ref={dropdownRef}>
-              <label className="flex justify-between mb-2">
-                Token
-                <span className="balance">
-                  Balance:{" "}
-                  {tokenBalances.find((t) => t.name === selectedToken)?.balance
-                    .data
-                    ? formatUnits(
-                        tokenBalances.find((t) => t.name === selectedToken)
-                          ?.balance.data,
-                        tokenBalances.find((t) => t.name === selectedToken)
-                          ?.decimals || 18
-                      )
-                    : "0.00"}
-                </span>
-              </label>
-
-              <div
-                className="input-field flex items-center cursor-pointer"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <span className="token-icon text-gray-500 mr-2">
-                  {" "}
-                  {companyInfo.CURRENCY}
-                </span>
-                <span>
-                  {selectedToken === "token" ? "Select Token" : selectedToken}
-                </span>
+          {loading ? (
+            <SkeletonLoader />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 !mb-6">
+                <div className="wallet-box wallet-fund">
+                  <p className="wallet-title">Fund Wallet</p>
+                  <span className="wallet-balance flex flex-wrap items-center justify-center">
+                    <span className="currency mr-1">
+                      {companyInfo.CURRENCY}
+                    </span>
+                    <span className="amount">
+                      {getWalletBalance(userWallet, "fund_wallet")}
+                    </span>
+                  </span>
+                </div>
               </div>
 
-              {isDropdownOpen && (
-                <ul className="absolute bg-white dark:bg-darkCard w-full max-h-52 overflow-y-auto rounded shadow-md z-10 border border-gray-300 dark:border-darkBorder mt-1">
-                  {tokens.map((group) => (
-                    <div key={group.category}>
-                      <li className="px-3 py-1 text-gray-600 dark:text-gray-200 text-sm font-semibold bg-gray-100 dark:bg-darkSecondary">
-                        {group.category}
-                      </li>
-                      {group.items.map((token) => {
-                        const balanceData = tokenBalances.find(
-                          (t) => t.name === token.name
-                        )?.balance;
-                        return (
-                          <li
-                            key={token.name}
-                            className="flex items-center cursor-pointer p-2 w-full hover:bg-gray-200 dark:bg-darkTertiary dark:hover:bg-gray-500"
-                            onClick={() => {
-                              setSelectedToken(token.name);
-                              setIsDropdownOpen(false);
-                            }}
-                          >
-                            <div className="flex items-center justify-between w-full">
-                              <div className="flex items-center">
-                                <img
-                                  src={token.icon}
-                                  alt={token.name}
-                                  className="w-6 h-6 rounded-full bg-white dark:bg-gray-800 object-cover mr-2"
-                                />
-                                <span className="text-gray-700 dark:text-gray-200">
-                                  {token.name}
-                                </span>
-                              </div>
-                              <span className="font-medium text-gray-500 dark:text-gray-400">
-                                {balanceData?.data
-                                  ? formatUnits(
-                                      balanceData.data,
-                                      token.decimals
-                                    )
-                                  : "0.00"}
-                              </span>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
+              <div>
+                {/* Amount Input */}
+                <div className="">
+                  <label>Amount</label>
+                  <input
+                    type="text"
+                    placeholder="0.00"
+                    className="input-field"
+                    value={amountInput}
+                    onChange={handleAmountChange}
+                  />
+                </div>
 
-          {/* Send Button */}
-          <button
-            className={`mt-3 ${amountInput ? "btn-primary" : "btn-disabled"}`}
-            disabled={
-              isLoading ||
-              !amountInput ||
-              isConfirming ||
-              transactionVerificationLoading ||
-              isMetaMaskOpen
-            }
-            onClick={handleFundTransfer}
-          >
-            {isMetaMaskOpen
-              ? "Waiting for Confirmation..."
-              : isLoading
-              ? "Sending..."
-              : isConfirming
-              ? "Confirming..."
-              : transactionVerificationLoading
-              ? "Verifying..."
-              : "Send"}
-          </button>
+                {/* Token Dropdown */}
+                <div className="flex flex-col relative mt-3" ref={dropdownRef}>
+                  <label className="flex justify-between mb-2">
+                    Token
+                    <span className="balance">
+                      Balance:{" "}
+                      {tokenBalances.find((t) => t.name === selectedToken)
+                        ?.balance.data
+                        ? formatUnits(
+                            tokenBalances.find((t) => t.name === selectedToken)
+                              ?.balance.data,
+                            tokenBalances.find((t) => t.name === selectedToken)
+                              ?.decimals || 18
+                          )
+                        : "0.00"}
+                    </span>
+                  </label>
+
+                  <div
+                    className="input-field flex items-center cursor-pointer"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    <span className="token-icon text-gray-500 mr-2">
+                      {companyInfo.CURRENCY}
+                    </span>
+                    <span>
+                      {selectedToken === "token"
+                        ? "Select Token"
+                        : selectedToken}
+                    </span>
+                  </div>
+
+                  {isDropdownOpen && (
+                    <ul className="absolute bg-white dark:bg-darkCard w-full max-h-52 overflow-y-auto rounded shadow-md z-10 border border-gray-300 dark:border-darkBorder mt-1">
+                      {tokens.map((group) => (
+                        <div key={group.category}>
+                          <li className="px-3 py-1 text-gray-600 dark:text-gray-200 text-sm font-semibold bg-gray-100 dark:bg-darkSecondary">
+                            {group.category}
+                          </li>
+                          {group.items.map((token) => {
+                            const balanceData = tokenBalances.find(
+                              (t) => t.name === token.name
+                            )?.balance;
+                            return (
+                              <li
+                                key={token.name}
+                                className="flex items-center cursor-pointer p-2 w-full hover:bg-gray-200 dark:bg-darkTertiary dark:hover:bg-gray-500"
+                                onClick={() => {
+                                  setSelectedToken(token.name);
+                                  setIsDropdownOpen(false);
+                                }}
+                              >
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center">
+                                    <img
+                                      src={token.icon}
+                                      alt={token.name}
+                                      className="w-6 h-6 rounded-full bg-white dark:bg-gray-800 object-cover mr-2"
+                                    />
+                                    <span className="text-gray-700 dark:text-gray-200">
+                                      {token.name}
+                                    </span>
+                                  </div>
+                                  <span className="font-medium text-gray-500 dark:text-gray-400">
+                                    {balanceData?.data
+                                      ? formatUnits(
+                                          balanceData.data,
+                                          token.decimals
+                                        )
+                                      : "0.00"}
+                                  </span>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              {/* Send Button */}
+              <button
+                className={`mt-3 ${
+                  amountInput ? "btn-primary" : "btn-disabled"
+                }`}
+                disabled={
+                  isLoading ||
+                  !amountInput ||
+                  isConfirming ||
+                  transactionVerificationLoading ||
+                  isMetaMaskOpen
+                }
+                onClick={handleFundTransfer}
+              >
+                {isMetaMaskOpen
+                  ? "Waiting for Confirmation..."
+                  : isLoading
+                  ? "Sending..."
+                  : isConfirming
+                  ? "Confirming..."
+                  : transactionVerificationLoading
+                  ? "Verifying..."
+                  : "Send"}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </MasterLayout>

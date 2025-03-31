@@ -126,6 +126,7 @@ const authSlice = createSlice({
       })
       .addCase(updateUserProfileAsync.fulfilled, (state, action) => {
         state.loading = false;
+        console.log("User updated...")
         state.currentUser = action.payload.data;
       })
       .addCase(updateUserProfileAsync.rejected, (state) => {

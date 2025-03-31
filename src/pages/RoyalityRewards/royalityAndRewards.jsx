@@ -8,26 +8,17 @@ import {
   getUserRankAndTeamMetricsAsync,
   updateUserProfileAsync,
 } from "../../feature/user/userSlice";
-import { RANK_FIELDS } from "../../constants/appConstants";
 
 const RoyalityAndRewards = () => {
   const dispatch = useDispatch();
-  const { rankSettings = [], isLoading } = useSelector((state) => state.user);
+  const {
+    rankData = {},
+    rankSettings = [],
+    isLoading,
+  } = useSelector((state) => state.user); // Default rankData to empty object
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
 
   const userRank = loggedInUser?.myRank || 0;
-
-  // Static User Data (Example)
-  const rankData = {
-    myRank: 0,
-    directBusines: 5000,
-    directTeam: 2000,
-    rank: 2,
-    selfBusiness: 50000,
-    teamBusiness: 50,
-    teamSize: 200,
-    rewards: 600,
-  };
 
   useEffect(() => {
     dispatch(getRankSettingsAsync());
@@ -40,16 +31,21 @@ const RoyalityAndRewards = () => {
     [rankSettings]
   );
 
-  // Determine user level
+  // Determine user level based on all criteria
   const userLevel = useMemo(() => {
     for (let level = 0; level < maxRows; level++) {
-      const allCriteriaMet = Object.keys(RANK_FIELDS).every((rankKey) => {
-        const mappedSlug = RANK_FIELDS[rankKey];
-        if (!mappedSlug) return true;
+      const allCriteriaMet = rankSettings.every((setting) => {
+        const userValue = rankData[setting.slug] || 0; // Default to 0 if slug not in rankData
+        const requiredValue = parseFloat(setting.value[level]) || 0;
 
-        const userValue = rankData[rankKey] || 0;
-        const requiredValue =
-          rankSettings.find((d) => d.slug === mappedSlug)?.value[level] || 0;
+        // Skip if value is not a requirement (outcomes rather than criteria)
+        if (
+          setting.slug === "rank" ||
+          setting.slug === "months" ||
+          setting.slug === "reward"
+        ) {
+          return true;
+        }
 
         return userValue >= requiredValue;
       });
@@ -59,27 +55,37 @@ const RoyalityAndRewards = () => {
     return maxRows;
   }, [rankSettings, rankData, maxRows]);
 
-  // Update user rank if different (Fixed the off-by-one issue)
+  // Update user rank if different
   useEffect(() => {
+    console.log("userLevel", userLevel);
     if (userRank !== userLevel + 1) {
-      // Fix: Adjust for zero-based indexing
-      dispatch(updateUserProfileAsync({ rank: userLevel + 1 })) // Fix here
+      dispatch(updateUserProfileAsync({ rank: userLevel + 1 }))
         .unwrap()
         .then(() => toast.success("User rank updated successfully"))
         .catch(() => toast.error("Failed to update rank"));
     }
   }, [userRank, userLevel, dispatch]);
 
-  // Get user progress for table rows
-  const getUserProgress = (rankKey, levelIndex) => {
-    const mappedSlug = RANK_FIELDS[rankKey];
-    if (!mappedSlug) return "N/A";
-
-    const userValue = rankData[rankKey] || 0;
+  // Get user progress for table cells
+  const getUserProgress = (slug, levelIndex) => {
+    const userValue = rankData[slug] || 0; // Explicitly default to 0 if not in rankData
     const requiredValue =
-      rankSettings.find((d) => d.slug === mappedSlug)?.value[levelIndex] || 0;
+      rankSettings.find((d) => d.slug === slug)?.value[levelIndex] || 0;
 
-    return `${userValue} / ${requiredValue}`;
+    // Format differently for different types
+    switch (slug) {
+      case "rank":
+        return userValue === 0
+          ? requiredValue
+          : `${userValue}/${requiredValue}`;
+      case "reward":
+      case "self_business":
+      case "direct_business":
+      case "total_team_business":
+        return `${userValue.toLocaleString()} / ${requiredValue.toLocaleString()}`;
+      default:
+        return `${userValue} / ${requiredValue}`;
+    }
   };
 
   return (
@@ -90,6 +96,10 @@ const RoyalityAndRewards = () => {
           {isLoading ? (
             <div className="text-center text-gray-600 dark:text-gray-300 py-6">
               Loading...
+            </div>
+          ) : rankSettings.length === 0 ? (
+            <div className="text-center text-gray-600 dark:text-gray-300 py-6">
+              No rank settings available
             </div>
           ) : (
             <table className="min-w-full border border-gray-300 dark:border-gray-700">
@@ -107,9 +117,9 @@ const RoyalityAndRewards = () => {
 
               <tbody className="bg-gray-200 dark:!bg-gray-700">
                 {Array.from({ length: maxRows }).map((_, level) => {
-                  const isAchieved = level < userLevel || level === maxRows - 1; // Ensure last level is marked as achieved
-                  const isRunning =
-                    level === userLevel && level !== maxRows - 1; // Running only if not at max level
+                  const isAchieved = level < userLevel;
+                  const isRunning = level === userLevel;
+                  const isNext = level > userLevel;
 
                   return (
                     <tr
@@ -119,26 +129,22 @@ const RoyalityAndRewards = () => {
                           ? "!bg-yellow-200 dark:!bg-yellow-600 !font-bold"
                           : isAchieved
                           ? "!bg-green-200 dark:!bg-green-600 !text-gray-900"
-                          : ""
+                          : "!bg-gray-100 dark:!bg-gray-800"
                       }`}
                     >
-                      {/* Level Column */}
                       <td className="border p-3 font-bold !text-gray-900 dark:!text-white">
-                        {`Level ${level + 1}`}{" "}
-                        {/* Fix: Show user-friendly level */}
+                        Level {level + 1}
                       </td>
 
-                      {/* Rank Progress Columns */}
-                      {Object.keys(RANK_FIELDS).map((rankKey, index) => (
+                      {rankSettings.map((setting) => (
                         <td
-                          key={index}
+                          key={setting.slug}
                           className="border p-3 !text-gray-900 dark:!text-gray-200 whitespace-nowrap"
                         >
-                          {getUserProgress(rankKey, level)}
+                          {getUserProgress(setting.slug, level)}
                         </td>
                       ))}
 
-                      {/* Status Column */}
                       <td className="border p-3 !text-gray-900 dark:!text-gray-200 font-bold">
                         {isAchieved
                           ? "Level Achieved ✅"

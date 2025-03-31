@@ -10,13 +10,3 @@ export const INCOME_FIELDS = {
   reward: "Reward",
   royalty: "Team Development Reward",
 };
-
-
-export const RANK_FIELDS = {
-  selfBusiness: "self-business",
-  directTeam: "direct-team",
-  directBusines: "direct-business",
-  teamSize: "total-team-size",
-  teamBusiness: "total-team-business",
-  rewards: "rewards",
-}

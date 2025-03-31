@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addTransaction, addTransactionByTransactionType } from "../transaction/transactionSlice";
 import { userFundWithdrawal, fetchUserFundWithdrawalHistory } from "./withdrawalApi";
 import { getUserWalletAsync } from "../wallet/walletSlice";
-
+import {FUND_TX_TYPE} from "../../utils/constatnt"
 const initialState = {
     loading: false,
     error: null,
@@ -32,7 +32,7 @@ export const fetchUserFundWithdrawalHistoryAsync = createAsyncThunk(
             if (data?.data) {
                 dispatch(
                     addTransactionByTransactionType({
-                        txType: "user_fund_withdrawal",
+                        txType:FUND_TX_TYPE.FUND_WITHDRAWAL,
                         data: data.data,
                     })
                 );

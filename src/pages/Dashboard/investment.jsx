@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import { selectUserFundWithdrwalHistory } from "../../feature/transaction/transactionSlice";
 
 const Investment = () => {
   const { userOrders = [], loading: ordersLoading } = useSelector(
     (state) => state.orders
   );
-  const {companyInfo}=useSelector((state)=>state.user);
+  const { companyInfo } = useSelector((state) => state.user);
   const {
     incomeTransactions = [],
     incomeTransactionsLoading,
     loading: transactionLoading,
-    selectUserFundWithdrwalHistory: userFundWithdrawal = [],
   } = useSelector((state) => state.transaction);
+
+  const userFundWithdrwalHistory =
+    useSelector(selectUserFundWithdrwalHistory) || [];
 
   const [filter, setFilter] = useState("Today");
 
@@ -55,11 +58,16 @@ const Investment = () => {
 
   const netIncome =
     incomeTransactions?.reduce((acc, tx) => acc + tx.amount, 0) || 0;
-  const totalFundWithdrawal =
-    userFundWithdrawal?.reduce(
-      (acc, tx) => (tx.status === 1 ? acc + tx.amount : acc),
-      0
-    ) || 0;
+
+  const totalFundWithdrawal = parseFloat(
+    userFundWithdrwalHistory
+      .reduce((acc, { status, amount, txCharge, wPool }) => {
+        const totalAmount = (amount ?? 0) + (txCharge ?? 0) + (wPool ?? 0);
+        if (status === 1) acc += totalAmount;
+        return acc;
+      }, 0)
+      .toFixed(2)
+  );
 
   const totalActivity = totalInvestment + netIncome + totalFundWithdrawal;
 
@@ -120,7 +128,8 @@ const Investment = () => {
         <p className="text-gray-700 dark:text-gray-300 text-md flex justify-center items-center">
           Total Investment:{" "}
           <span className="font-semibold text-blue-500 ml-2">
-          {companyInfo.CURRENCY}{totalInvestment.toLocaleString()}
+            {companyInfo.CURRENCY}
+            {totalInvestment.toLocaleString()}
           </span>
         </p>
         <div className="relative flex justify-center items-center mt-10 w-full max-w-[500px] h-[220px] mx-auto">

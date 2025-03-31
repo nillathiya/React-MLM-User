@@ -273,7 +273,7 @@ const ChatMessageLayer = () => {
                       name="statusFilter"
                       value={statusFilter}
                       onChange={handleFilterChanges}
-                      className="ticket_filter_select border border-gray-300 dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                      className="ticket_filter_select border border-gray-300 dark:border-gray-600 !p-2 rounded-md bg-white dark:!bg-gray-800 text-gray-700 dark:text-gray-300"
                     >
                       <option value="open">Open</option>
                       <option value="completed">Completed</option>
@@ -363,7 +363,7 @@ const ChatMessageLayer = () => {
                             e.target.value
                           )
                         }
-                        className="status_dropdown border border-gray-300 dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 w-full"
+                        className="status_dropdown border border-gray-300 dark:border-gray-600 !p-2 rounded-md bg-white dark:!bg-gray-800 text-gray-700 dark:text-gray-300 w-full"
                       >
                         <option value="open">Open</option>
                         <option value="completed">Completed</option>

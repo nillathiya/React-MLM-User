@@ -11,9 +11,11 @@ import {
   getPinDetailsAsync,
 } from "../../feature/topup/topUpSlice";
 import Loader from "../../components/common/Loader";
-import { removeAmountFromWallet } from "../../feature/wallet/walletSlice";
+import {
+  getUserWalletAsync,
+  removeAmountFromWallet,
+} from "../../feature/wallet/walletSlice";
 import { checkUsernameAsync } from "../../feature/user/userSlice";
-import { safeParseJSON } from "../../utils/common";
 
 const MemberTopup = () => {
   const [usernameValid, setUsernameValid] = useState(null);
@@ -22,10 +24,14 @@ const MemberTopup = () => {
   const { userWallet } = useSelector((state) => state.wallet);
   const { pinDetails } = useSelector((state) => state.topUp);
   const [loading, setLoading] = useState(false);
-  const { userSettings, companyInfo } = useSelector((state) => state.user);
+  const { userSettings = [], companyInfo } = useSelector((state) => state.user);
 
-  const INVEST_WALLETS = safeParseJSON(userSettings.INVEST_WALLETS);
-  console.log("INVEST_WALLETS", INVEST_WALLETS);
+  const INVESTMENT_WALLET =
+    userSettings.find(
+      (setting) =>
+        setting.title === "Investment" && setting.slug === "investment_wallet"
+    )?.value[0] || {};
+
   const {
     register,
     handleSubmit,
@@ -35,20 +41,21 @@ const MemberTopup = () => {
     formState: { errors, isSubmitting },
   } = useForm({ mode: "onBlur" });
 
-  const username = watch("username"); // Watch username field
+  const username = watch("username");
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
         dispatch(getPinDetailsAsync());
+        dispatch(getUserWalletAsync());
       } catch (error) {
         toast.error(error || "An Unexpected error");
       } finally {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [dispatch]);
 
   // Function to check username validity
   useEffect(() => {
@@ -92,13 +99,13 @@ const MemberTopup = () => {
 
     const formData = {
       ...data,
-      txType: "purchase",
+      txType: userActiveStatus == 0 ? "purchase" : "repurchase",
     };
     try {
       await dispatch(createTopUpAsync(formData)).unwrap();
       await dispatch(
         removeAmountFromWallet({
-          walletType: Object.keys(INVEST_WALLETS),
+          walletType: INVESTMENT_WALLET.key,
           amount: data.amount,
         })
       );
@@ -108,23 +115,42 @@ const MemberTopup = () => {
     }
   };
 
+  // Skeleton Loader Component
+  const SkeletonLoader = () => (
+    <div className="animate-pulse w-full max-w-lg px-4 py-3 bg-white dark:bg-darkCard shadow-lg rounded-lg">
+      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-6"></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+      </div>
+      <div className="space-y-4">
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+      </div>
+    </div>
+  );
+
   return (
     <MasterLayout>
       <Breadcrumb title="member Topup"></Breadcrumb>
       <div className="flex justify-center items-center">
         {loading ? (
           <>
-            <Loader loader="ClipLoader" size={50} color="blue" />
+            <SkeletonLoader />{" "}
           </>
         ) : (
           <div className="w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
             <h6 className="heading">TopUp Form</h6>
             <div className="grid grid-cols-2 gap-4 !mb-6">
               <div className="wallet-box wallet-fund">
-                <p className="wallet-title">{Object.values(INVEST_WALLETS)}</p>
+                <p className="wallet-title">
+                  {INVESTMENT_WALLET?.label || "Investment Wallet"}
+                </p>
                 <span className="wallet-balance">
                   {companyInfo.CURRENCY}
-                  {getWalletBalance(userWallet, Object.keys(INVEST_WALLETS))}
+                  {getWalletBalance(userWallet, INVESTMENT_WALLET.key) ||
+                    "0.00"}
                 </span>
               </div>
             </div>

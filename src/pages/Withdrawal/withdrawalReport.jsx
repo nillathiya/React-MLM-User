@@ -17,13 +17,14 @@ import { ICON } from "../../constants/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useDispatch } from "react-redux";
 import ExportToExcel from "../../components/common/ExportToExcel/index.jsx";
+import { FUND_TX_TYPE } from "../../utils/constatnt/transactionType.js";
 
 const WithdrawalReports = () => {
   const dispatch = useDispatch();
   const { loading: fetchUserFundWithdrawalHistoryLoading } = useSelector(
     (state) => state.withdrawal
   );
-  const {companyInfo}=useSelector((state)=>state.user);
+  const { companyInfo } = useSelector((state) => state.user);
   const userFundWithdrwalHistory = useSelector(selectUserFundWithdrwalHistory);
   const loading = useSelector(selectTransactionLoading);
   const tableRef = useRef(null);
@@ -54,7 +55,11 @@ const WithdrawalReports = () => {
   ]);
 
   const handleRefresh = () => {
-    dispatch(fetchUserFundWithdrawalHistoryAsync());
+    dispatch(
+      fetchUserFundWithdrawalHistoryAsync({
+        txType: FUND_TX_TYPE.FUND_WITHDRAWAL,
+      })
+    );
   };
 
   const { userTotalWithdrawal, userPendingWithdrawal, userRejectedWithdrawal } =
@@ -94,17 +99,26 @@ const WithdrawalReports = () => {
             <div className=" withdrwal_detail mt-3 position-relative z-1 py-32 text-center px-3 w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
               <div className="d-flex justify-content-between">
                 <h6 className=" p-3">Total Withdrawal</h6>
-                <p className=" p-3">{companyInfo.CURRENCY}{formattedUserTotalWithdrawal}</p>
+                <p className=" p-3">
+                  {companyInfo.CURRENCY}
+                  {formattedUserTotalWithdrawal}
+                </p>
               </div>
               <hr className="" />
               <div className="d-flex justify-content-between">
                 <h6 className=" p-3">Pending Withdrawal</h6>
-                <p className=" p-3">{companyInfo.CURRENCY}{formattedUserPendingWithdrawal}</p>
+                <p className=" p-3">
+                  {companyInfo.CURRENCY}
+                  {formattedUserPendingWithdrawal}
+                </p>
               </div>
               <hr className="" />
               <div className="d-flex justify-content-between">
                 <h6 className=" p-3">Reject Withdrawal</h6>
-                <p className=" p-3">{companyInfo.CURRENCY}{formattedUserRejectedWithdrawal}</p>
+                <p className=" p-3">
+                  {companyInfo.CURRENCY}
+                  {formattedUserRejectedWithdrawal}
+                </p>
               </div>
             </div>
           </div>
@@ -112,7 +126,7 @@ const WithdrawalReports = () => {
       </div>
       <div className="card basic-data-table mt-5">
         <div className="px-6 py-3 border-b-2 text-gray-600 flex justify-between items-center">
-          <h5 className="card-title mb-0 " style={{marginLeft:"20px"}}>
+          <h5 className="card-title mb-0 " style={{ marginLeft: "20px" }}>
             User Fund Withdrawal History Table
           </h5>
 
@@ -184,7 +198,7 @@ const WithdrawalReports = () => {
                     <tr key={data._id}>
                       <td>{index + 1}</td>
                       <td>
-                      {companyInfo.CURRENCY}
+                        {companyInfo.CURRENCY}
                         {(
                           data.amount ??
                           0 + data.txCharge ??
@@ -192,9 +206,18 @@ const WithdrawalReports = () => {
                           0
                         ).toFixed(2)}
                       </td>
-                      <td>{companyInfo.CURRENCY}{data.txCharge}</td>
-                      <td>{companyInfo.CURRENCY}{data.wPool}</td>
-                      <td>{companyInfo.CURRENCY}{data.amount}</td>
+                      <td>
+                        {companyInfo.CURRENCY}
+                        {data.txCharge}
+                      </td>
+                      <td>
+                        {companyInfo.CURRENCY}
+                        {data.wPool}
+                      </td>
+                      <td>
+                        {companyInfo.CURRENCY}
+                        {data.amount}
+                      </td>
                       <td
                         className={`status-cell ${
                           data.status === 0

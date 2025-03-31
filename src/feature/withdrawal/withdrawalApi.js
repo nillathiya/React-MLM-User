@@ -15,10 +15,10 @@ export const userFundWithdrawal = async (formData) => {
     }
 };
 
-export const fetchUserFundWithdrawalHistory = async () => {
+export const fetchUserFundWithdrawalHistory = async (formData) => {
     try {
         const response = await apiClient.post(
-            ROUTES.WITHDRAWAL.GET_USER_FUND_WITHDRAWAL);
+            ROUTES.WITHDRAWAL.GET_USER_FUND_WITHDRAWAL,formData);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {

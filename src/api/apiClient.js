@@ -6,7 +6,6 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Keep if your backend requires cookies for auth
 });
 
 // Utility to get user token from localStorage
@@ -25,6 +24,7 @@ export const setupApiInterceptors = (store) => {
       if (loggedInUser && loggedInUser._id) {
         const userToken = getUserToken(loggedInUser._id);
         if (userToken) {
+          console.log("userToken Found!")
           config.headers.Authorization = `Bearer ${userToken}`;
         }
       }
@@ -94,4 +94,4 @@ export const initializeInterceptors = async () => {
 };
 
 // Optional: Call initializeInterceptors immediately (if store is ready)
-// initializeInterceptors();
+initializeInterceptors();

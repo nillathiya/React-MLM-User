@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,33 +7,42 @@ import { userConvertFundsAsync } from "../../feature/transaction/transactionSlic
 import {
   removeAmountFromWallet,
   addAmountToWallet,
+  getUserWalletAsync,
 } from "../../feature/wallet/walletSlice";
 import toast from "react-hot-toast";
 import { getWalletBalance } from "../../utils/walletUtils";
-import { safeParseJSON } from "../../utils/common";
+import { FUND_TX_TYPE } from "../../utils/constant";
+import { useNavigate } from "react-router-dom";
 
 const FundConvert = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userWallet } = useSelector((state) => state.wallet);
+  const { userWallet, loading: walletLoading } = useSelector(
+    (state) => state.wallet
+  ); // Add loading from wallet slice
   const { userSettings, companyInfo } = useSelector((state) => state.user);
 
-  const { FROM_WALLETS_TYPES, TO_WALLETS_TYPES } = React.useMemo(() => {
-    const parsedFromWallets = safeParseJSON(userSettings?.CONVERT_FROM_WALLETS);
-    const parsedToWallets = safeParseJSON(userSettings?.CONVERT_TO_WALLETS);
-
-    return {
-      FROM_WALLETS_TYPES: Array.isArray(parsedFromWallets)
-        ? parsedFromWallets
-        : parsedFromWallets
-        ? [parsedFromWallets]
-        : [],
-      TO_WALLETS_TYPES: Array.isArray(parsedToWallets)
-        ? parsedToWallets
-        : parsedToWallets
-        ? [parsedToWallets]
-        : [],
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await dispatch(getUserWalletAsync());
+      } catch (error) {
+        console.log(error || "Server Error, Please try again");
+      }
     };
-  }, [userSettings?.CONVERT_FROM_WALLETS, userSettings?.CONVERT_TO_WALLETS]);
+    fetchData();
+  }, [dispatch]);
+
+  const FUND_CONVERT_FROM_WALLETS =
+    userSettings.find(
+      (setting) =>
+        setting.title === "Fund" && setting.slug === "fund_convert_from_wallets"
+    )?.value || [];
+  const FUND_CONVERT_TO_WALLETS =
+    userSettings.find(
+      (setting) =>
+        setting.title === "Fund" && setting.slug === "fund_convert_to_wallets"
+    )?.value || [];
 
   const {
     register,
@@ -48,12 +57,11 @@ const FundConvert = () => {
   const handleFormSubmit = async (data) => {
     const formData = {
       ...data,
-      amount: Number(data.amount), // Ensure amount is a number
-      txType: "user_fund_convert",
+      amount: Number(data.amount),
+      txType: FUND_TX_TYPE.FUND_CONVERT,
     };
 
     try {
-      // Prevent converting to the same wallet
       if (formData.fromWalletType === formData.walletType) {
         toast.error("Cannot convert to the same wallet");
         return;
@@ -80,12 +88,29 @@ const FundConvert = () => {
         })
       );
       toast.success("Funds Successfully Converted");
+      navigate("/fund/fund-convert-history");
     } catch (error) {
       toast.error(
         error?.message || "Fund conversion failed. Please try again."
       );
     }
   };
+
+  // Skeleton Loader Component
+  const SkeletonLoader = () => (
+    <div className="animate-pulse">
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="wallet-box bg-gray-200 dark:bg-darkBorder h-20 rounded-lg"></div>
+        <div className="wallet-box bg-gray-200 dark:bg-darkBorder h-20 rounded-lg"></div>
+      </div>
+      <div className="space-y-6">
+        <div className="h-10 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
+        <div className="h-10 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
+        <div className="h-10 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
+        <div className="h-12 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
+      </div>
+    </div>
+  );
 
   return (
     <MasterLayout>
@@ -94,130 +119,138 @@ const FundConvert = () => {
         <div className="w-full max-w-lg !px-4 !py-3 bg-white dark:!bg-darkCard shadow-lg rounded-lg">
           <h6 className="heading">Fund Convert</h6>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="wallet-box wallet-main">
-              <p className="wallet-title">Main Wallet</p>
-              <span className="wallet-balance">
-                {companyInfo.CURRENCY}
-                {getWalletBalance(userWallet, "main_wallet")?.toFixed(2) ||
-                  "0.00"}
-              </span>
-            </div>
-            <div className="wallet-box wallet-fund">
-              <p className="wallet-title">Fund Wallet</p>
-              <span className="wallet-balance">
-                {companyInfo.CURRENCY}
-                {getWalletBalance(userWallet, "fund_wallet")?.toFixed(2) ||
-                  "0.00"}
-              </span>
-            </div>
-          </div>
+          {walletLoading ? (
+            <SkeletonLoader />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="wallet-box wallet-main">
+                  <p className="wallet-title">Main Wallet</p>
+                  <span className="wallet-balance">
+                    {companyInfo.CURRENCY}
+                    {getWalletBalance(userWallet, "main_wallet")?.toFixed(2) ||
+                      "0.00"}
+                  </span>
+                </div>
+                <div className="wallet-box wallet-fund">
+                  <p className="wallet-title">Fund Wallet</p>
+                  <span className="wallet-balance">
+                    {companyInfo.CURRENCY}
+                    {getWalletBalance(userWallet, "fund_wallet")?.toFixed(2) ||
+                      "0.00"}
+                  </span>
+                </div>
+              </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit(handleFormSubmit)}>
-            <div>
-              <label className="block text-gray-700 dark:text-darkText font-medium mb-1">
-                Select From Wallet
-              </label>
-              <select
-                {...register("fromWalletType", {
-                  required: "Please select a source wallet",
-                })}
-                className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
-                  bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
+              <form
+                className="space-y-6"
+                onSubmit={handleSubmit(handleFormSubmit)}
               >
-                <option value="">Select Wallet</option>
-                {FROM_WALLETS_TYPES.map((walletObj, index) =>
-                  Object.entries(walletObj).map(([key, value]) => (
-                    <option key={`${key}-${index}`} value={key}>
-                      {value}
-                    </option>
-                  ))
-                )}
-              </select>
-              {errors.fromWalletType && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.fromWalletType.message}
-                </p>
-              )}
-            </div>
+                <div>
+                  <label className="block text-gray-700 dark:text-darkText font-medium mb-1">
+                    Select From Wallet
+                  </label>
+                  <select
+                    {...register("fromWalletType", {
+                      required: "Please select a source wallet",
+                    })}
+                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
+                      bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
+                  >
+                    <option value="">Select Wallet</option>
+                    {FUND_CONVERT_FROM_WALLETS.map((wallet) => (
+                      <option key={wallet.key} value={wallet.key}>
+                        {wallet.label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.fromWalletType && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.fromWalletType.message}
+                    </p>
+                  )}
+                </div>
 
-            <div>
-              <label className="block text-gray-700 dark:text-darkText font-medium mb-1">
-                Select To Wallet
-              </label>
-              <select
-                {...register("walletType", {
-                  required: "Please select a destination wallet",
-                  validate: (value) =>
-                    value !== fromWalletType || "Cannot select the same wallet",
-                })}
-                className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
-                  bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
-              >
-                <option value="">Select Wallet</option>
-                {TO_WALLETS_TYPES.map((walletObj, index) =>
-                  Object.entries(walletObj).map(([key, value]) => (
-                    <option key={`${key}-${index}`} value={key}>
-                      {value}
-                    </option>
-                  ))
-                )}
-              </select>
-              {errors.walletType && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.walletType.message}
-                </p>
-              )}
-            </div>
+                <div>
+                  <label className="block text-gray-700 dark:text-darkText font-medium mb-1">
+                    Select To Wallet
+                  </label>
+                  <select
+                    {...register("walletType", {
+                      required: "Please select a destination wallet",
+                      validate: (value) =>
+                        value !== fromWalletType ||
+                        "Cannot select the same wallet",
+                    })}
+                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
+                      bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
+                  >
+                    <option value="">Select Wallet</option>
+                    {FUND_CONVERT_TO_WALLETS.map((wallet) => (
+                      <option key={wallet.key} value={wallet.key}>
+                        {wallet.label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.walletType && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.walletType.message}
+                    </p>
+                  )}
+                </div>
 
-            <div>
-              <label className="block text-gray-700 dark:text-darkText font-medium mb-1">
-                Enter Amount
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Enter Amount"
-                {...register("amount", {
-                  required: "Amount is required",
-                  min: {
-                    value: 0.01,
-                    message: "Amount must be greater than 0",
-                  },
-                  validate: (value) => {
-                    const balance =
-                      getWalletBalance(userWallet, fromWalletType) || 0;
-                    return (
-                      Number(value) <= balance || "Insufficient wallet balance"
-                    );
-                  },
-                })}
-                className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
-                  bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
-              />
-              {fromWalletType && amount && (
-                <p className="text-sm text-gray-600 dark:text-darkText mt-1">
-                  Available: {companyInfo.CURRENCY}
-                  {getWalletBalance(userWallet, fromWalletType)?.toFixed(2) ||
-                    "0.00"}
-                </p>
-              )}
-              {errors.amount && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.amount.message}
-                </p>
-              )}
-            </div>
+                <div>
+                  <label className="block text-gray-700 dark:text-darkText font-medium mb-1">
+                    Enter Amount
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Enter Amount"
+                    {...register("amount", {
+                      required: "Amount is required",
+                      min: {
+                        value: 0.01,
+                        message: "Amount must be greater than 0",
+                      },
+                      validate: (value) => {
+                        const balance =
+                          getWalletBalance(userWallet, fromWalletType) || 0;
+                        return (
+                          Number(value) <= balance ||
+                          "Insufficient wallet balance"
+                        );
+                      },
+                    })}
+                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
+                      bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
+                  />
+                  {fromWalletType && amount && (
+                    <p className="text-sm text-gray-600 dark:text-darkText mt-1">
+                      Available: {companyInfo.CURRENCY}
+                      {getWalletBalance(userWallet, fromWalletType)?.toFixed(
+                        2
+                      ) || "0.00"}
+                    </p>
+                  )}
+                  {errors.amount && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.amount.message}
+                    </p>
+                  )}
+                </div>
 
-            <button
-              type="submit"
-              className="w-full p-3 bg-darkPrimary text-white rounded-lg hover:bg-opacity-90 
-                disabled:bg-gray-400 disabled:cursor-not-allowed text-center"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Processing..." : "Convert"}
-            </button>
-          </form>
+                <button
+                  type="submit"
+                  className="w-full p-3 bg-darkPrimary text-white rounded-lg hover:bg-opacity-90 
+                    disabled:bg-gray-400 disabled:cursor-not-allowed text-center"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Processing..." : "Convert"}
+                </button>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </MasterLayout>

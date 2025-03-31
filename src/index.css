@@ -28,7 +28,7 @@
   }
 
   .error-message {
-    @apply text-red-500 text-sm;
+    @apply text-red-500 text-xs sm:text-sm;
   }
 
   /* Headings */
@@ -39,6 +39,35 @@
   .heading-uppercase {
     @apply font-bold uppercase text-gray-600 dark:text-darkText text-center mb-6 
     text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
+  }
+
+  .text-responsive-bold {
+    @apply text-xs sm:text-sm md:text-base font-bold;
+  }
+  .text-responsive-medium {
+    @apply text-xs sm:text-sm md:text-base font-medium;
+  }
+  .text-responsive-semibold {
+    @apply text-sm sm:text-base md:text-lg font-semibold;
+  }
+
+  /* Box */
+  .box-blue {
+    @apply px-3 py-2 sm:px-4 sm:py-3 
+           bg-blue-100 dark:bg-blue-800 
+           text-blue-900 dark:text-blue-200 
+           rounded-lg shadow-md text-center;
+  }
+  .box-green {
+    @apply px-3 py-2 sm:px-4 sm:py-3 bg-green-100 dark:bg-green-800 text-green-900 dark:text-green-200 rounded-lg shadow-md text-center;
+  }
+
+  /* Card */
+  .card-responsive {
+    @apply w-full max-w-md sm:max-w-lg 
+           bg-white dark:bg-darkCard 
+           shadow-lg rounded-lg 
+           p-4 sm:p-6;
   }
 
   /* For Buttons */
@@ -58,9 +87,16 @@
     @apply w-full bg-gray-300 dark:bg-gray-700 text-gray-500 font-semibold py-3 px-6 rounded-lg transition-all  cursor-not-allowed opacity-50 text-center;
   }
 
+  .btn-darkPrimary {
+    @apply w-full p-2 sm:p-3 bg-darkPrimary text-white rounded-lg 
+           hover:bg-opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed 
+           text-sm sm:text-base md:text-lg text-center;
+  }
+
   /* For Wallet */
+  /* Base styles with responsive adjustments */
   .wallet-box {
-    @apply px-4 py-3 rounded-lg shadow-md text-center;
+    @apply px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 rounded-lg shadow-md text-center;
   }
 
   .wallet-main {
@@ -72,18 +108,27 @@
   }
 
   .wallet-title {
-    @apply text-lg font-semibold;
+    @apply text-base sm:text-lg md:text-xl font-semibold;
   }
 
   .wallet-balance {
-    @apply text-xl font-bold;
+    @apply text-xs sm:text-sm md:text-base lg:text-lg font-bold flex flex-wrap items-center justify-center;
   }
 
+  .currency {
+    @apply shrink-0; /* Prevents currency symbol from shrinking */
+  }
+
+  .amount {
+    @apply break-words; /* Allows the amount to break and wrap */
+  }
   /* input-field */
   .input-field {
-    @apply w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder 
-           rounded-lg bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText 
-           focus:ring-2 focus:ring-darkPrimary;
+    @apply w-full p-2 sm:p-3 border border-gray-300 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText text-sm sm:text-base focus:ring-2 focus:ring-darkPrimary;
+  }
+
+  .input-label {
+    @apply block text-gray-700 dark:text-darkText text-sm sm:text-base md:text-lg font-medium mb-1;
   }
 
   .react-tel-input {
