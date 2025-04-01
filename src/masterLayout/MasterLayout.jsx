@@ -29,6 +29,8 @@ const MasterLayout = ({ children }) => {
   const { disconnect } = useDisconnect();
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
   const { companyInfo } = useSelector((state) => state.user);
+  const [isCopied, setIsCopied] = useState(false);
+
   const navigate = useNavigate();
 
   const companyLogo = companyInfo.LOGO;
@@ -146,6 +148,13 @@ const MasterLayout = ({ children }) => {
   };
   const handleChild = (status) => {
     setIsWalletConnected(status);
+  };
+
+  const handleCopy = (data) => {
+    navigator.clipboard.writeText(data).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    });
   };
 
   return (
@@ -849,6 +858,21 @@ const MasterLayout = ({ children }) => {
                             <p>Your wallet is connected!</p>
                           )} */}
                           {loggedInUser.username ? loggedInUser.username : ""}
+                          <button
+                            onClick={()=>handleCopy(
+                              loggedInUser.username ? loggedInUser.username : ""
+                            )}
+                          >
+                            <Icon
+                              icon={ICON.COPY}
+                              className="text-xl text-gray-600"
+                            />
+                          </button>
+                          {isCopied && (
+                            <span className="ml-2 text-green-500 text-sm">
+                              Copied!
+                            </span>
+                          )}
                         </h6>
                         <span className="text-secondary-light fw-medium text-sm">
                           User

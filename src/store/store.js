@@ -46,7 +46,7 @@ const walletPersistConfig = {
     key: "wallet",
     storage,
     transforms: [encryptTransform],
-    whitelist: ["userWallet"],
+    whitelist: ["userWallet","walletSettings"],
 };
 
 const authPersistConfig = {

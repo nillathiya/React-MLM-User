@@ -199,11 +199,11 @@ const WithdrawalReports = () => {
                       <td>{index + 1}</td>
                       <td>
                         {companyInfo.CURRENCY}
+
                         {(
-                          data.amount ??
-                          0 + data.txCharge ??
-                          0 + data.wPool ??
-                          0
+                          (data.amount ?? 0) +
+                          (data.txCharge ?? 0) +
+                          (data.wPool ?? 0)
                         ).toFixed(2)}
                       </td>
                       <td>

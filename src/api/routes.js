@@ -41,7 +41,8 @@ export const ROUTES = {
   },
   WALLET: {
     CREATE: `${API_URL}/api/wallet/create`,
-    USER_WALLET: `${API_URL}/api/wallet/user`
+    USER_WALLET: `${API_URL}/api/wallet/user`,
+    GET_WALLET_SETTINGS: `${API_URL}/api/wallet-settings`,
   },
   PIN_DETAILS: {
     GET_ALL: `${API_URL}/api/pin-detail/get`

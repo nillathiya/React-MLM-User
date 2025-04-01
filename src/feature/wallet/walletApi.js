@@ -31,6 +31,20 @@ export const createUserWallet = async (userId) => {
     }
 };
 
+export const getWalletSettings = async () => {
+    try {
+        const response = await apiClient.post(
+            ROUTES.WALLET.GET_WALLET_SETTINGS);
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw new Error(error.response?.data?.message || 'An error occurred.');
+        }
+        throw new Error('Get User wallet Settings failed. Please try again later.');
+    }
+};
+
+
 
 
 

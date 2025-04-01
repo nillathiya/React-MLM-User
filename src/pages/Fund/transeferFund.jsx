@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast";
 import { FUND_TX_TYPE } from "../../utils/constant";
 import { useNavigate } from "react-router-dom";
+import { getNameBySlugFromWalletSetting } from "../../utils/common";
 
 const TransferFund = () => {
   const navigate = useNavigate("");
@@ -20,7 +21,7 @@ const TransferFund = () => {
   const [usernameValid, setUsernameValid] = useState(null);
   const [userActiveStatus, setUserActiveStatus] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { userWallet } = useSelector((state) => state.wallet);
+  const { userWallet, walletSettings } = useSelector((state) => state.wallet);
   const { userSettings, companyInfo } = useSelector((state) => state.user);
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
 
@@ -44,6 +45,10 @@ const TransferFund = () => {
         setting.title === "Fund" && setting.slug === "fund_transfer_wallets"
     )?.value || [];
 
+  const walletOptions = FUND_TRANSFER_WALLETS.map((wallet) => ({
+    key: wallet,
+    label: getNameBySlugFromWalletSetting(walletSettings, wallet),
+  }));
   const {
     register,
     handleSubmit,
@@ -104,7 +109,7 @@ const TransferFund = () => {
     try {
       const formData = {
         ...data,
-        walletType: data.walletType || "fund_wallet",
+        walletType: data.walletType,
         txType: FUND_TX_TYPE.FUND_TRANSFER,
       };
 
@@ -207,7 +212,7 @@ const TransferFund = () => {
                     })}
                   >
                     <option value="">Select Wallet</option>
-                    {FUND_TRANSFER_WALLETS.map((wallet) => (
+                    {walletOptions.map((wallet) => (
                       <option key={wallet.key} value={wallet.key}>
                         {wallet.label}
                       </option>

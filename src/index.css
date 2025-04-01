@@ -28,7 +28,7 @@
   }
 
   .error-message {
-    @apply text-red-500 text-xs sm:text-sm;
+    @apply text-xs sm:text-sm md:text-base text-red-500;
   }
 
   /* Headings */
@@ -49,6 +49,9 @@
   }
   .text-responsive-semibold {
     @apply text-sm sm:text-base md:text-lg font-semibold;
+  }
+  .text-gray-responsive-bold {
+    @apply text-base sm:text-lg md:text-xl font-bold text-gray-700 dark:text-darkText;
   }
 
   /* Box */

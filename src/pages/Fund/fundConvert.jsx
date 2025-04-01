@@ -13,13 +13,16 @@ import toast from "react-hot-toast";
 import { getWalletBalance } from "../../utils/walletUtils";
 import { FUND_TX_TYPE } from "../../utils/constant";
 import { useNavigate } from "react-router-dom";
+import { getNameBySlugFromWalletSetting } from "../../utils/common";
 
 const FundConvert = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userWallet, loading: walletLoading } = useSelector(
-    (state) => state.wallet
-  ); // Add loading from wallet slice
+  const {
+    userWallet,
+    loading: walletLoading,
+    walletSettings,
+  } = useSelector((state) => state.wallet); // Add loading from wallet slice
   const { userSettings, companyInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -44,6 +47,14 @@ const FundConvert = () => {
         setting.title === "Fund" && setting.slug === "fund_convert_to_wallets"
     )?.value || [];
 
+  const walletFromOptions = FUND_CONVERT_FROM_WALLETS.map((wallet) => ({
+    key: wallet,
+    label: getNameBySlugFromWalletSetting(walletSettings, wallet),
+  }));
+  const walletToOptions = FUND_CONVERT_TO_WALLETS.map((wallet) => ({
+    key: wallet,
+    label: getNameBySlugFromWalletSetting(walletSettings, wallet),
+  }));
   const {
     register,
     handleSubmit,
@@ -158,7 +169,7 @@ const FundConvert = () => {
                       bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
                   >
                     <option value="">Select Wallet</option>
-                    {FUND_CONVERT_FROM_WALLETS.map((wallet) => (
+                    {walletFromOptions.map((wallet) => (
                       <option key={wallet.key} value={wallet.key}>
                         {wallet.label}
                       </option>
@@ -186,7 +197,7 @@ const FundConvert = () => {
                       bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
                   >
                     <option value="">Select Wallet</option>
-                    {FUND_CONVERT_TO_WALLETS.map((wallet) => (
+                    {walletToOptions.map((wallet) => (
                       <option key={wallet.key} value={wallet.key}>
                         {wallet.label}
                       </option>

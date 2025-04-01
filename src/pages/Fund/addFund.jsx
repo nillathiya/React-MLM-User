@@ -17,7 +17,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { verifyTransactionAsync } from "../../feature/transaction/transactionSlice";
 import { getWalletBalance } from "../../utils/walletUtils";
 import { getTokens } from "../../utils/tokens";
-import { getUserWalletAsync,addAmountToWallet } from "../../feature/wallet/walletSlice";
+import {
+  getUserWalletAsync,
+  addAmountToWallet,
+} from "../../feature/wallet/walletSlice";
+import { getNameBySlugFromWalletSetting } from "../../utils/common";
 
 const AddFund = () => {
   const dispatch = useDispatch();
@@ -30,14 +34,24 @@ const AddFund = () => {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const dropdownRef = useRef(null);
-  const { userWallet } = useSelector((state) => state.wallet);
-  const { companyInfo } = useSelector((state) => state.user);
+  const { userWallet, walletSettings } = useSelector((state) => state.wallet);
+  const { companyInfo, userSettings } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
 
   const { writeContractAsync, data: txHash, isLoading } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
+  const addFundWalletType = userSettings.find(
+    (setting) =>
+      setting.title === "Investment" && setting.slug === "add_fund_wallet"
+  ).value;
+  const addFundWalletName = getNameBySlugFromWalletSetting(
+    walletSettings,
+    addFundWalletType
+  );
+  // console.log("addFundWalletType", addFundWalletType);
+  // console.log("addFundWalletName", addFundWalletName);
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -168,9 +182,14 @@ const AddFund = () => {
           console.log("Verification Result:", result);
 
           toast.dismiss(loadingToastId);
-          if (result.status === "success") {
+          if (result.status === "success" || result.statusCode === 200) {
+            await dispatch(
+              addAmountToWallet({
+                walletType: addFundWalletType,
+                amount: amountInput,
+              })
+            );
             toast.success("Funds added successfully!");
-            addAmountToWallet("fund_wallet",amountInput);
           } else {
             toast.error("Transaction verification failed.");
           }
@@ -223,13 +242,15 @@ const AddFund = () => {
             <>
               <div className="grid grid-cols-2 gap-4 !mb-6">
                 <div className="wallet-box wallet-fund">
-                  <p className="wallet-title">Fund Wallet</p>
+                  <p className="wallet-title">
+                    {addFundWalletName || "Add Fund Wallet"}{" "}
+                  </p>
                   <span className="wallet-balance flex flex-wrap items-center justify-center">
                     <span className="currency mr-1">
                       {companyInfo.CURRENCY}
                     </span>
                     <span className="amount">
-                      {getWalletBalance(userWallet, "fund_wallet")}
+                      {getWalletBalance(userWallet, addFundWalletType)}
                     </span>
                   </span>
                 </div>

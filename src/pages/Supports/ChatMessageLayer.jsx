@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import "./support.css";
 import { useSelector } from "react-redux";
 
-const API_URL = "http://192.168.29.191:5000";
+const API_URL = process.env.REACT_APP_API_URL;
 const socket = io(API_URL, { transports: ["websocket", "polling"] });
 const ChatMessageLayer = () => {
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
@@ -181,7 +181,7 @@ const ChatMessageLayer = () => {
     }
   };
   const sendMessage = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!input.trim() || !selectedTicket) return;
     if (selectedTicket.status === "completed") {
       return toast.error("Cannot send messages in a closed/completed ticket");
@@ -394,10 +394,11 @@ const ChatMessageLayer = () => {
                       type="text"
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                      onKeyDown={(e) => e.key === "Enter" && sendMessage(e)}
                       name="chatMessage"
                       placeholder="Write message"
                     />
+
                     <div className="chat-message-box-action">
                       <button
                         type="submit"

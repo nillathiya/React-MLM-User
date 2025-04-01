@@ -21,3 +21,18 @@ export const safeParseJSON = (str) => {
         return typeof str === 'string' ? str : [];
     }
 };
+
+const cache = new WeakMap();
+export const getNameBySlugFromWalletSetting = (walletSettings, slug) => {
+    if (!Array.isArray(walletSettings) || !slug) {
+        return slug || 'Unknown Wallet';
+    }
+
+    let walletMap = cache.get(walletSettings);
+    if (!walletMap) {
+        walletMap = new Map(walletSettings.map(setting => [setting.slug, setting.name]));
+        cache.set(walletSettings, walletMap);
+    }
+
+    return walletMap.get(slug) || slug || 'Unknown Wallet';
+};

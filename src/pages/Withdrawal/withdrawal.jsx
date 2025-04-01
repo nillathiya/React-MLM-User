@@ -8,28 +8,46 @@ import toast from "react-hot-toast";
 import { userFundWithdrawalAsync } from "../../feature/withdrawal/withdrawalSlice";
 import { removeAmountFromWallet } from "../../feature/wallet/walletSlice";
 import { FUND_TX_TYPE } from "../../utils/constant";
+import { getNameBySlugFromWalletSetting } from "../../utils/common";
 
 const Withdrawal = () => {
   const dispatch = useDispatch();
-  const { userSettings = [], companyInfo } = useSelector((state) => state.user); // Default to empty array if undefined
-  const {userWallet}=useSelector((state)=>state.wallet)
+  const { userSettings = [], companyInfo } = useSelector((state) => state.user);
+  const { userWallet, walletSettings } = useSelector((state) => state.wallet);
 
   const FUND_WITHDRAWAL_WALLETS = Array.isArray(userSettings)
     ? userSettings.find(
         (setting) =>
-          setting?.title === "Fund" && setting?.slug === "fund_withdrawal_wallets"
+          setting?.title === "Withdrawal" &&
+          setting?.slug === "withdrawal_wallets"
       )?.value || []
     : [];
 
   const FUND_WITHDRAWAL_DAYS = Array.isArray(userSettings)
-    ? (userSettings.find(
+    ? userSettings.find(
         (setting) =>
-          setting?.title === "Fund" && setting?.slug === "fund_withdrawal_days"
-      )?.value || []).filter((day) => day?.status) || []
+          setting?.title === "Withdrawal" && setting?.slug === "withdrawal_days"
+      )?.value || []
     : [];
 
-  const MIN_WITHDRAWAL_LIMIT = 10;
-  const MAX_WITHDRAWAL_LIMIT = 1000;
+  // console.log("FUND_WITHDRAWAL_DAYS", FUND_WITHDRAWAL_DAYS);
+
+  const withdrawalWalletOptions = FUND_WITHDRAWAL_WALLETS.map((wallet) => ({
+    key: wallet,
+    label: getNameBySlugFromWalletSetting(walletSettings, wallet),
+  }));
+  const MIN_WITHDRAWAL_LIMIT =
+    userSettings.find(
+      (setting) =>
+        setting.title === "Withdrawal" &&
+        setting.slug === "min_withdrawal_limit"
+    )?.value || 0;
+  const MAX_WITHDRAWAL_LIMIT =
+    userSettings.find(
+      (setting) =>
+        setting.title === "Withdrawal" &&
+        setting.slug === "max_withdrawal_limit"
+    )?.value || 0;
 
   const {
     register,
@@ -46,9 +64,7 @@ const Withdrawal = () => {
     const currentDay = new Date()
       .toLocaleString("en-US", { weekday: "long" })
       .toLowerCase();
-    return FUND_WITHDRAWAL_DAYS.some(
-      (day) => day?.label?.toLowerCase() === currentDay
-    );
+    return FUND_WITHDRAWAL_DAYS.some((day) => day.toLowerCase() === currentDay);
   };
 
   const handleFormSubmit = async (data) => {
@@ -115,7 +131,7 @@ const Withdrawal = () => {
             <p className="text-responsive-bold">
               {FUND_WITHDRAWAL_DAYS.length > 0
                 ? `Available on: ${FUND_WITHDRAWAL_DAYS.map(
-                    (day) => day?.label || ""
+                    (day) => day || ""
                   ).join(", ")}`
                 : "All Withdrawals Available 24x7"}
             </p>
@@ -134,7 +150,9 @@ const Withdrawal = () => {
                   Withdrawal Wallet Balance:
                   <span className="wallet-balance text-green-700 !ml-1">
                     {companyInfo?.CURRENCY || "$"}
-                    {getWalletBalance(userWallet, selectedWalletType)?.toFixed(2) || "0.00"}
+                    {getWalletBalance(userWallet, selectedWalletType)?.toFixed(
+                      2
+                    ) || "0.00"}
                   </span>
                 </p>
               </div>
@@ -154,7 +172,7 @@ const Withdrawal = () => {
                     className="input-field"
                   >
                     <option value="">Select Wallet</option>
-                    {FUND_WITHDRAWAL_WALLETS.map((wallet) => (
+                    {withdrawalWalletOptions.map((wallet) => (
                       <option key={wallet?.key} value={wallet?.key}>
                         {wallet?.label || ""}
                       </option>
@@ -198,7 +216,9 @@ const Withdrawal = () => {
                   {amount && selectedWalletType && (
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-darkText mt-1">
                       Available: {companyInfo?.CURRENCY || "$"}
-                      {(getWalletBalance(userWallet, selectedWalletType) || 0).toFixed(2)}
+                      {(
+                        getWalletBalance(userWallet, selectedWalletType) || 0
+                      ).toFixed(2)}
                     </p>
                   )}
                   {errors.amount && (
@@ -219,15 +239,15 @@ const Withdrawal = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full max-w-md sm:max-w-lg bg-white dark:bg-darkCard shadow-lg rounded-lg p-4 sm:p-6 text-center">
-            <h6 className="text-base sm:text-lg md:text-xl font-bold text-gray-700 dark:text-darkText">
+          <div className="card-responsive text-center">
+            <h6 className="text-gray-responsive-bold">
               Withdrawal Not Available Today
             </h6>
-            <p className="text-xs sm:text-sm md:text-base text-red-500 mt-2">
+            <p className="error-message mt-2">
               Withdrawals are only allowed on:{" "}
-              {FUND_WITHDRAWAL_DAYS.map((day) => day?.label || "").join(", ")}
+              {FUND_WITHDRAWAL_DAYS.map((day) => day).join(", ")}
             </p>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-darkText mt-1">
+            <p className="text-xs sm:text-sm !text-gray-600 dark:!pointer-events-none dark:!text-darkText mt-1">
               Today is {new Date().toLocaleString("en-US", { weekday: "long" })}
             </p>
           </div>

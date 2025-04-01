@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import ExportToExcel from "../../components/common/ExportToExcel";
@@ -7,12 +7,30 @@ import {
   INCOME_FIELDS,
 } from "../../constants/appConstants";
 import { useSelector } from "react-redux";
+import { getIncomeTransactionsByUserAsync } from "../../feature/transaction/transactionSlice";
+import { useDispatch } from "react-redux";
+import { toast } from "react-hot-toast";
+import Skeleton from "../../helper/Skeleton/Skeleton";
 
 const Report = () => {
-  const { incomeTransactions } = useSelector((state) => state.transaction);
+  const dispatch = useDispatch();
+  const { incomeTransactions, incomeTransactionsLoading } = useSelector(
+    (state) => state.transaction
+  );
   const { currentUser } = useSelector((state) => state.auth);
   const { companyInfo } = useSelector((state) => state.user);
   const [filter, setFilter] = useState("overall");
+
+  useEffect(() => {
+    const fetchUserIncomeTransaction = async () => {
+      try {
+        await dispatch(getIncomeTransactionsByUserAsync({})).unwrap();
+      } catch (error) {
+        toast.error(error || "Server Error,Please try later");
+      }
+    };
+    fetchUserIncomeTransaction();
+  }, []);
 
   const today = new Date();
   const startOfToday = new Date(today.setHours(0, 0, 0, 0));
@@ -68,6 +86,27 @@ const Report = () => {
     },
   ];
 
+  // Skeleton loading component
+  const LoadingSkeleton = () => (
+    <div className="space-y-4">
+      {/* User Info Skeleton */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 !mb-6">
+        <Skeleton className="!h-20 !w-full !rounded-lg" />
+        <Skeleton className="!h-20 !w-full !rounded-lg" />
+      </div>
+
+      {/* Export Button Skeleton */}
+      <div className="flex justify-end !mb-6">
+        <Skeleton className="!h-10 !w-32 !rounded-lg" />
+      </div>
+
+      {/* Income Data Skeleton */}
+      {[...Array(5)].map((_, index) => (
+        <Skeleton key={index} className="!h-20 !w-full !rounded-lg" />
+      ))}
+    </div>
+  );
+
   return (
     <MasterLayout>
       <Breadcrumb title="Income Report" />
@@ -88,54 +127,62 @@ const Report = () => {
                       ? "!bg-blue-600 !text-white"
                       : "!bg-white dark:!bg-gray-800 !text-gray-900 dark:!text-gray-300 hover:!bg-gray-200 dark:!hover:bg-gray-700"
                   }`}
+                  disabled={incomeTransactionsLoading}
                 >
                   {option.charAt(0).toUpperCase() + option.slice(1)}
                 </button>
               ))}
             </div>
 
-            {/* User Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 !mb-6">
-              <div className="!bg-white dark:!bg-gray-800 !p-4 rounded-lg !shadow-md text-center">
-                <p className="font-semibold">
-                  User: {currentUser?.username || ""}
-                </p>
-              </div>
-              <div className="!bg-white dark:!bg-gray-800 !p-4 rounded-lg !shadow-md text-center">
-                <p className="font-semibold">
-                  Total Income: {companyInfo.CURRENCY}{totalIncome.toFixed(2)}
-                </p>
-              </div>
-            </div>
-
-            {/* Export Button */}
-            <div className="flex justify-end !mb-6">
-              <ExportToExcel
-                data={incomeData}
-                fileName={`${filter}_income_report`}
-              />
-            </div>
-
-            {/* Key-Value Data Display */}
-            <div className="space-y-4">
-              {incomeData.map((item, index) => (
-                <div
-                  key={index}
-                  className={`!p-4 !bg-white dark:!bg-gray-800 !rounded-lg !shadow-md border !border-gray-300 dark:!border-gray-700 ${
-                    item.key === "Total Income"
-                      ? "!bg-blue-500 !text-white"
-                      : ""
-                  }`}
-                >
-                  <p className="text-sm font-semibold !text-gray-700 dark:!text-gray-300">
-                    {item.key}
-                  </p>
-                  <p className="text-lg font-bold !text-gray-900 dark:!text-white">
-                    {item.value}
-                  </p>
+            {incomeTransactionsLoading ? (
+              <LoadingSkeleton />
+            ) : (
+              <>
+                {/* User Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 !mb-6">
+                  <div className="!bg-white dark:!bg-gray-800 !p-4 rounded-lg !shadow-md text-center">
+                    <p className="font-semibold">
+                      User: {currentUser?.username || ""}
+                    </p>
+                  </div>
+                  <div className="!bg-white dark:!bg-gray-800 !p-4 rounded-lg !shadow-md text-center">
+                    <p className="font-semibold">
+                      Total Income: {companyInfo.CURRENCY}
+                      {totalIncome.toFixed(2)}
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
+
+                {/* Export Button */}
+                <div className="flex justify-end !mb-6">
+                  <ExportToExcel
+                    data={incomeData}
+                    fileName={`${filter}_income_report`}
+                  />
+                </div>
+
+                {/* Key-Value Data Display */}
+                <div className="space-y-4">
+                  {incomeData.map((item, index) => (
+                    <div
+                      key={index}
+                      className={`!p-4 !bg-white dark:!bg-gray-800 !rounded-lg !shadow-md border !border-gray-300 dark:!border-gray-700 ${
+                        item.key === "Total Income"
+                          ? "!bg-blue-500 !text-white"
+                          : ""
+                      }`}
+                    >
+                      <p className="text-sm font-semibold !text-gray-700 dark:!text-gray-300">
+                        {item.key}
+                      </p>
+                      <p className="text-lg font-bold !text-gray-900 dark:!text-white">
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

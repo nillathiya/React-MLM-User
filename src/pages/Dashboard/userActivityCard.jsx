@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserOrdersAsync } from "../../feature/order/orderSlice";
 import Skeleton from "../../helper/Skeleton/Skeleton";
 import toast from "react-hot-toast";
 
 const UserActivityCard = () => {
   const dispatch = useDispatch();
-  const { currentUser: loggedInUser } = useSelector((state) => state.auth);
   const { companyInfo } = useSelector((state) => state.user);
   const { userOrders = [], loading: userOrdersLoading } = useSelector(
     (state) => state.orders
@@ -14,22 +12,6 @@ const UserActivityCard = () => {
   const { incomeTransactions = [], incomeTransactionsLoading } = useSelector(
     (state) => state.transaction
   );
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (userOrders.length === 0) {
-          await dispatch(getUserOrdersAsync(loggedInUser?._id)).unwrap();
-        }
-      } catch (error) {
-        toast.error(error.message || "Server Failed...");
-      }
-    };
-
-    if (loggedInUser?._id) {
-      fetchData();
-    }
-  }, [loggedInUser, userOrders.length, dispatch]);
-
   // Calculating user total package amount
   const totalPackageAmount = userOrders.reduce((acc, order) => {
     if (order.status === 1) acc += order.amount;

@@ -16,22 +16,29 @@ import {
   removeAmountFromWallet,
 } from "../../feature/wallet/walletSlice";
 import { checkUsernameAsync } from "../../feature/user/userSlice";
+import { getNameBySlugFromWalletSetting } from "../../utils/common";
 
 const MemberTopup = () => {
   const [usernameValid, setUsernameValid] = useState(null);
   const [userActiveStatus, setUserActiveStatus] = useState(null);
   const dispatch = useDispatch();
-  const { userWallet } = useSelector((state) => state.wallet);
+  const { userWallet, walletSettings } = useSelector((state) => state.wallet);
   const { pinDetails } = useSelector((state) => state.topUp);
   const [loading, setLoading] = useState(false);
   const { userSettings = [], companyInfo } = useSelector((state) => state.user);
 
-  const INVESTMENT_WALLET =
+  const investmentWalletType =
     userSettings.find(
       (setting) =>
-        setting.title === "Investment" && setting.slug === "investment_wallet"
-    )?.value[0] || {};
+        setting.title === "Investment" && setting.slug === "topup_fund_wallet"
+    )?.value || {};
+  const investmentWalletName = getNameBySlugFromWalletSetting(
+    walletSettings,
+    investmentWalletType
+  );
 
+  console.log("investmentWalletType", investmentWalletType);
+  console.log("investmentWalletName", investmentWalletName);
   const {
     register,
     handleSubmit,
@@ -105,7 +112,7 @@ const MemberTopup = () => {
       await dispatch(createTopUpAsync(formData)).unwrap();
       await dispatch(
         removeAmountFromWallet({
-          walletType: INVESTMENT_WALLET.key,
+          walletType: investmentWalletType,
           amount: data.amount,
         })
       );
@@ -145,12 +152,11 @@ const MemberTopup = () => {
             <div className="grid grid-cols-2 gap-4 !mb-6">
               <div className="wallet-box wallet-fund">
                 <p className="wallet-title">
-                  {INVESTMENT_WALLET?.label || "Investment Wallet"}
+                  {investmentWalletName || "Investment Wallet"}
                 </p>
                 <span className="wallet-balance">
                   {companyInfo.CURRENCY}
-                  {getWalletBalance(userWallet, INVESTMENT_WALLET.key) ||
-                    "0.00"}
+                  {getWalletBalance(userWallet, investmentWalletType) || "0.00"}
                 </span>
               </div>
             </div>

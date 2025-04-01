@@ -82,15 +82,12 @@ export const setupApiInterceptors = (store) => {
   );
 };
 
-// Export a function to initialize interceptors manually if needed
-export const initializeInterceptors = async () => {
+// Do NOT call initializeInterceptors here
+// Export it for manual initialization elsewhere
+export const initializeInterceptors = async (store) => {
   try {
-    const { store } = await import('../store/store');
     setupApiInterceptors(store);
   } catch (error) {
     console.error('Failed to initialize Axios interceptors:', error);
   }
 };
-
-// Optional: Call initializeInterceptors immediately (if store is ready)
-initializeInterceptors();

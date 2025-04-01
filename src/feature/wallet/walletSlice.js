@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserWallet, createUserWallet } from "./walletApi";
+import { getUserWallet, createUserWallet, getWalletSettings } from "./walletApi";
 import { WalletMapping } from "../../constants/wallet";
 import CryptoJS from "crypto-js";
 
 const initialState = {
   address: null,
   userWallet: null,
+  walletSettings: [],
 };
 
 export const getUserWalletAsync = createAsyncThunk(
@@ -40,7 +41,21 @@ export const createUserWalletAsync = createAsyncThunk(
   },
 );
 
-
+export const getWalletSettingsAsync = createAsyncThunk(
+  'wallet/getWalletSettings',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getWalletSettings();
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue('An unknown error occurred');
+      }
+    }
+  },
+);
 
 const walletSlice = createSlice({
   name: "wallet",
@@ -51,6 +66,7 @@ const walletSlice = createSlice({
       state.address = action.payload;
     },
     addAmountToWallet: (state, action) => {
+      console.log("action payload",action.payload);
       const { walletType, amount } = action.payload;
       if (walletType && amount > 0) {
         state.userWallet[walletType] = (state.userWallet[walletType] || 0) + parseFloat(amount);
@@ -124,6 +140,17 @@ const walletSlice = createSlice({
         state.loading = false;
       })
       .addCase(createUserWalletAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      // getWalletSettingsAsync
+      .addCase(getWalletSettingsAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getWalletSettingsAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.walletSettings = action.payload.data
+      })
+      .addCase(getWalletSettingsAsync.rejected, (state, action) => {
         state.loading = false;
       })
   }

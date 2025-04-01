@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userLogin, checkWallet, verifyTokenLogin, userLogout } from "./authApi";
 import { updateUserProfileAsync } from "../user/userSlice";
 
 const initialState = {
@@ -14,6 +13,7 @@ export const userLoginAsync = createAsyncThunk(
   "auth/userLogin",
   async (formData, { rejectWithValue }) => {
     try {
+      const { userLogin } = await import("./authApi");
       const data = await userLogin(formData);
       return data;
     } catch (error) {
@@ -30,6 +30,7 @@ export const checkWalletAsync = createAsyncThunk(
   "auth/checkWallet",
   async (formData, { rejectWithValue }) => {
     try {
+      const { checkWallet } = await import("./authApi");
       const data = await checkWallet(formData);
       return data;
     } catch (error) {
@@ -46,6 +47,7 @@ export const verifyTokenLoginAsync = createAsyncThunk(
   "auth/verifyTokenLogin",
   async (token, { rejectWithValue }) => {
     try {
+      const { verifyTokenLogin } = await import("./authApi");
       const data = await verifyTokenLogin(token);
       return data;
     } catch (error) {
@@ -62,6 +64,7 @@ export const userLogoutAsync = createAsyncThunk(
   "auth/userLogout",
   async (_, { rejectWithValue }) => {
     try {
+      const { userLogout } = await import("./authApi");
       const data = await userLogout();
       return data;
     } catch (error) {
@@ -104,8 +107,12 @@ const authSlice = createSlice({
         state.loading = false;
         state.currentUser = action.payload.data.user;
         state.isLoggedIn = true;
+        // Store token in localStorage if returned
+        if (action.payload.data.token) {
+          localStorage.setItem(`userToken_${action.payload.data.user._id}`, action.payload.data.token);
+        }
       })
-      .addCase(userLoginAsync.rejected, (state, action) => {
+      .addCase(userLoginAsync.rejected, (state) => {
         state.loading = false;
       })
 
@@ -115,9 +122,9 @@ const authSlice = createSlice({
       })
       .addCase(checkWalletAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.userExists = action.payload.data.exists
+        state.userExists = action.payload.data.exists;
       })
-      .addCase(checkWalletAsync.rejected, (state, action) => {
+      .addCase(checkWalletAsync.rejected, (state) => {
         state.loading = false;
       })
       // updateUserProfileAsync
@@ -126,7 +133,7 @@ const authSlice = createSlice({
       })
       .addCase(updateUserProfileAsync.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("User updated...")
+        console.log("User updated...");
         state.currentUser = action.payload.data;
       })
       .addCase(updateUserProfileAsync.rejected, (state) => {
@@ -140,7 +147,11 @@ const authSlice = createSlice({
         state.loading = false;
         state.currentUser = action.payload.data.user;
         state.isLoggedIn = true;
-        state.updateUserProfileAsync = true;
+        // Remove or fix this line if unintended
+        // state.updateUserProfileAsync = true;
+        if (action.payload.data.token) {
+          localStorage.setItem(`userToken_${action.payload.data.user._id}`, action.payload.data.token);
+        }
       })
       .addCase(verifyTokenLoginAsync.rejected, (state) => {
         state.loading = false;
@@ -149,7 +160,7 @@ const authSlice = createSlice({
       .addCase(userLogoutAsync.pending, (state) => {
         state.loading = true;
       })
-      .addCase(userLogoutAsync.fulfilled, (state, action) => {
+      .addCase(userLogoutAsync.fulfilled, (state) => {
         state.loading = false;
         state.currentUser = null;
         state.isLoggedIn = false;
@@ -157,7 +168,7 @@ const authSlice = createSlice({
       })
       .addCase(userLogoutAsync.rejected, (state) => {
         state.loading = false;
-      })
+      });
   },
 });
 

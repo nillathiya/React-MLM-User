@@ -14,7 +14,10 @@ import IncomeStatistics from "./IncomeStatistics";
 import Investment from "./investment";
 import NewCustomerList from "./newCustomerList";
 import { useDispatch } from "react-redux";
-import { getUserWalletAsync } from "../../feature/wallet/walletSlice";
+import {
+  getUserWalletAsync,
+  getWalletSettingsAsync,
+} from "../../feature/wallet/walletSlice";
 import { useSelector } from "react-redux";
 import {
   getFundTransactionsByUserAsync,
@@ -32,6 +35,7 @@ import {
   getCompanyInfoAsync,
   getUserSettingsAsync,
 } from "../../feature/user/userSlice";
+import { getUserOrdersAsync } from "../../feature/order/orderSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -72,9 +76,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!userWallet) {
-          await dispatch(getUserWalletAsync(loggedInUser?._id)).unwrap();
-        }
+        await dispatch(getUserOrdersAsync(loggedInUser?._id)).unwrap();
+
+        // if (!userWallet) {
+        await dispatch(getUserWalletAsync(loggedInUser?._id)).unwrap();
+        await dispatch(getWalletSettingsAsync()).unwrap();
+        // }
         if (!companyInfo || Object.keys(companyInfo).length === 0) {
           await dispatch(getCompanyInfoAsync()).unwrap();
         }
@@ -94,13 +101,13 @@ const Dashboard = () => {
     const fetchTransactions = async () => {
       if (loggedInUser?._id) {
         try {
-          if (transactions.length === 0) {
-            await dispatch(getFundTransactionsByUserAsync()).unwrap();
-            await dispatch(getTransactionsByUserAsync()).unwrap();
-          }
-          if (incomeTransactions.length === 0) {
-            await dispatch(getIncomeTransactionsByUserAsync({})).unwrap();
-          }
+          // if (transactions.length === 0) {
+          await dispatch(getFundTransactionsByUserAsync()).unwrap();
+          await dispatch(getTransactionsByUserAsync()).unwrap();
+          // }
+          // if (incomeTransactions.length === 0) {
+          await dispatch(getIncomeTransactionsByUserAsync({})).unwrap();
+          // }
         } catch (error) {
           toast.error(error || "Fetched User Transaction Failed");
         }
