@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { getUserNewsAndEventsAsync } from "../../feature/user/userSlice";
 import { FaAngleUp } from "react-icons/fa";
 import "./newsAndEvents.css";
-const API_URL = "http://192.168.29.191:5000";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const NewsAndEvents = () => {
   const dispatch = useDispatch();
