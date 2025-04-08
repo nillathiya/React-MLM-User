@@ -27,6 +27,7 @@ export const ROUTES = {
     USER_WALLET: `${API_URL}/api/auth/user/login`,
     CHECK_TOKEN: `${API_URL}/api/auth/check-token`,
     USER_LOGOUT: `${API_URL}/api/auth/user/logout`,
+    CHECK_SPONSOR: `${API_URL}/api/auth/check-sponsor`,
   },
   USER: {
     REGISTER: `${API_URL}/api/user/create`,

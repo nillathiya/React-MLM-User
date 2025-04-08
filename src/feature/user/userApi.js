@@ -162,3 +162,15 @@ export const getCompanyInfo = async () => {
   }
 };
 
+export const checkSponsor = async (sponsor) => {
+  try {
+    const response = await apiClient.post(ROUTES.AUTH.CHECK_SPONSOR, {sponsor});
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
+    throw new Error("Check Sponsor failed. Please try again later.");
+  }
+};
+

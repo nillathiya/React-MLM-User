@@ -12,6 +12,7 @@ import {
   getRankSettings,
   getUserSettings,
   getCompanyInfo,
+  checkSponsor,
 } from "./userApi";
 import CryptoJS from "crypto-js";
 
@@ -180,6 +181,20 @@ export const getCompanyInfoAsync = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await getCompanyInfo();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
+
+export const checkSponsorAsync = createAsyncThunk(
+  "users/checkSponsor",
+  async (sponsor, { rejectWithValue }) => {
+    try {
+      const data = await checkSponsor(sponsor);
       return data;
     } catch (error) {
       return rejectWithValue(
