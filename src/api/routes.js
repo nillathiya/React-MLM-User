@@ -19,7 +19,6 @@ export const ROUTES = {
           query.append('source', source.trim().toString());
         return `${API_URL}/api/transaction/income/user?${query.toString()}`;
       },
-
     }
   },
   AUTH: {

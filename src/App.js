@@ -35,6 +35,7 @@ import ViewProfile from "./pages/Users/ViewProfile";
 import { useEffect } from "react";
 import { setNavigate } from "./store/store";
 import { getCompanyInfoAsync } from "./feature/user/userSlice";
+import DirectIncomes from "./pages/IncomeReports/DirectIncomes";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -92,7 +93,7 @@ function App() {
     };
     fetchData();
   }, []);
-  
+
   return (
     <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <RouteScrollToTop />
@@ -131,7 +132,13 @@ function App() {
           <Route path='' element={<ProtectedDashboardRoute><Withdrawal /></ProtectedDashboardRoute>} />
         </Route>
 
-        <Route path='/income-report' element={<IncomeReports />} />
+
+
+        <Route path="/income">
+          <Route path='report' element={<IncomeReports />} />
+          <Route path='direct' element={<DirectIncomes />} />
+        </Route>
+
 
         <Route path='/upgrade'>
           <Route path='member-topup' element={<ProtectedDashboardRoute><MemberTopup /></ProtectedDashboardRoute>} />

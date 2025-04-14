@@ -81,27 +81,32 @@ const menuItems = [
     submenu: [
       {
         title: "Daily Stake Reward",
-        path: "/income-report?source=roi",
+        path: "/income/report?source=roi",
         icon: "mdi:chart-bar",
       },
       {
         title: "Stake Sponsor Reward",
-        path: "/income-report?source=direct",
+        path: "/income/report?source=direct",
         icon: "mdi:gift-outline",
       },
       {
         title: "Team Performance Reward",
-        path: "/income-report?source=referral",
+        path: "/income/report?source=referral",
         icon: "mdi:account-group-outline",
       },
       {
         title: "Reward",
-        path: "/income-report?source=reward",
+        path: "/income/report?source=reward",
         icon: "mdi:medal-outline",
       },
       {
         title: "Team Development Reward",
-        path: "/income-report?source=royalty",
+        path: "/income/report?source=royalty",
+        icon: "mdi:account-group",
+      },
+      {
+        title: "Direct Income",
+        path: "/income/direct",
         icon: "mdi:account-group",
       },
     ],
