@@ -37,32 +37,32 @@ function InvitationCard() {
 
   return (
     <div className="flex items-center justify-center min-h-[400px] !p-4">
-      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl  transform overflow-hidden hover:scale-105 transition-all duration-300">
         {/* Background Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-blue-600/20" />
 
         {/* Card Content */}
-        <div className="relative z-10 !p-6">
+        <div className="relative z-10 !p-6 overflow-visible ">
+          <div className="hidden sm:block absolute left-0 right-0 mx-auto w-fit !mb-3 opacity-30">
+            <img
+              src="assets/images/users/friends.png"
+              alt="friends"
+              className="max-w-[400px] h-auto object-contain rounded-lg"
+            />
+          </div>
           {/* Header */}
-          <h2 className="text-xl sm:!text-2xl font-bold text-center text-gray-800 !mb-4 animate-pulse">
-            Invite Your Friends! ✨
+          <h2 className="text-xl sm:!text-2xl font-bold text-center text-gray-800 !mb-4 animate-pulse uppercase">
+            Invite Friends
           </h2>
 
           {/* QR Code and Friends Image */}
           <div className="flex gap-2 justify-center !mb-6">
-            <div className="!p-3 bg-white rounded-lg shadow-md">
+            <div className="!p-3 bg-white rounded-lg shadow-md z-50">
               <QRCode
                 value={referralLink}
                 size={140}
                 bgColor="#ffffff"
                 fgColor="#4B0082"
-              />
-            </div>
-            <div className="hidden sm:block">
-              <img
-                src="assets/images/users/friends.png"
-                alt="friends"
-                className="max-w-[200px] h-auto object-contain rounded-lg"
               />
             </div>
           </div>
