@@ -33,7 +33,7 @@ const UserActivityCard = () => {
         if (transaction.source === "direct") {
           acc.totalStackSponserReward += transaction.amount;
         }
-        if (transaction.source === "referral") {
+        if (transaction.source === "roi_level_commission") {
           acc.totalTeamPerformanceReward += transaction.amount;
         }
         if (transaction.source === "reward") {
