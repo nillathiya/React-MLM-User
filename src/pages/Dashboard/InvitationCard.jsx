@@ -38,30 +38,31 @@ function InvitationCard() {
   return (
     <div className="flex items-center justify-center min-h-[400px] !p-4">
       <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
-        {/* Background Image with Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1584982751601-97dcc096659c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')`,
-          }}
-        />
+        {/* Background Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-blue-600/20" />
 
         {/* Card Content */}
         <div className="relative z-10 !p-6">
           {/* Header */}
-          <h2 className="text-2xl font-bold text-center text-gray-800 !mb-4 animate-pulse">
+          <h2 className="text-xl sm:!text-2xl font-bold text-center text-gray-800 !mb-4 animate-pulse">
             Invite Your Friends! ✨
           </h2>
 
-          {/* QR Code */}
-          <div className="flex justify-center !mb-6">
+          {/* QR Code and Friends Image */}
+          <div className="flex gap-2 justify-center !mb-6">
             <div className="!p-3 bg-white rounded-lg shadow-md">
               <QRCode
                 value={referralLink}
                 size={140}
                 bgColor="#ffffff"
                 fgColor="#4B0082"
+              />
+            </div>
+            <div className="hidden sm:block">
+              <img
+                src="assets/images/users/friends.png"
+                alt="friends"
+                className="max-w-[200px] h-auto object-contain rounded-lg"
               />
             </div>
           </div>
@@ -72,7 +73,7 @@ function InvitationCard() {
               Your unique referral link:
             </p>
             <div className="flex items-center gap-2 rounded-md !p-2 shadow-sm">
-              <span className="!text-sm sm:!text-base  text-gray-950 font-semibold truncate flex-1">
+              <span className="!text-sm sm:!text-base text-gray-950 font-semibold truncate flex-1">
                 {referralLink}
               </span>
               <button
