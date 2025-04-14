@@ -15,7 +15,7 @@ const RoyalityAndRewards = () => {
     rankData = {},
     rankSettings = [],
     isLoading,
-  } = useSelector((state) => state.user); // Default rankData to empty object
+  } = useSelector((state) => state.user);
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
 
   const userRank = loggedInUser?.myRank || 0;
@@ -25,20 +25,19 @@ const RoyalityAndRewards = () => {
     dispatch(getUserRankAndTeamMetricsAsync());
   }, [dispatch]);
 
-  // Calculate max levels from rankSettings
   const maxRows = useMemo(
     () => Math.max(...rankSettings.map((d) => d.value.length), 0),
     [rankSettings]
   );
 
-  // Determine user level based on all criteria
   const userLevel = useMemo(() => {
+    if (!rankData || !rankSettings.length) return 0;
+
     for (let level = 0; level < maxRows; level++) {
       const allCriteriaMet = rankSettings.every((setting) => {
-        const userValue = rankData[setting.slug] || 0; // Default to 0 if slug not in rankData
+        const userValue = rankData[setting.slug] ?? 0;
         const requiredValue = parseFloat(setting.value[level]) || 0;
 
-        // Skip if value is not a requirement (outcomes rather than criteria)
         if (
           setting.slug === "rank" ||
           setting.slug === "months" ||
@@ -55,9 +54,7 @@ const RoyalityAndRewards = () => {
     return maxRows;
   }, [rankSettings, rankData, maxRows]);
 
-  // Update user rank if different
   useEffect(() => {
-    console.log("userLevel", userLevel);
     if (userRank !== userLevel + 1) {
       dispatch(updateUserProfileAsync({ rank: userLevel + 1 }))
         .unwrap()
@@ -66,13 +63,13 @@ const RoyalityAndRewards = () => {
     }
   }, [userRank, userLevel, dispatch]);
 
-  // Get user progress for table cells
   const getUserProgress = (slug, levelIndex) => {
-    const userValue = rankData[slug] || 0; // Explicitly default to 0 if not in rankData
-    const requiredValue =
-      rankSettings.find((d) => d.slug === slug)?.value[levelIndex] || 0;
+    if (!rankData) return "0 / 0"; // Guard against null rankData
 
-    // Format differently for different types
+    const userValue = rankData[slug] ?? 0;
+    const requiredValue =
+      rankSettings.find((d) => d.slug === slug)?.value[levelIndex] || "0";
+
     switch (slug) {
       case "rank":
         return userValue === 0
@@ -82,7 +79,9 @@ const RoyalityAndRewards = () => {
       case "self_business":
       case "direct_business":
       case "total_team_business":
-        return `${userValue.toLocaleString()} / ${requiredValue.toLocaleString()}`;
+        return `${userValue.toLocaleString()} / ${parseFloat(
+          requiredValue
+        ).toLocaleString()}`;
       default:
         return `${userValue} / ${requiredValue}`;
     }
@@ -93,7 +92,7 @@ const RoyalityAndRewards = () => {
       <Breadcrumb title="Royalty & Reward" />
       <div className="p-4">
         <div className="dark:bg-darkCard p-3 rounded-lg shadow-md overflow-x-auto">
-          {isLoading ? (
+          {isLoading || !rankData ? (
             <div className="text-center text-gray-600 dark:text-gray-300 py-6">
               Loading...
             </div>
@@ -114,7 +113,6 @@ const RoyalityAndRewards = () => {
                   <th className="border p-3 text-left">Status</th>
                 </tr>
               </thead>
-
               <tbody className="bg-gray-200 dark:!bg-gray-700">
                 {Array.from({ length: maxRows }).map((_, level) => {
                   const isAchieved = level < userLevel;
@@ -135,7 +133,6 @@ const RoyalityAndRewards = () => {
                       <td className="border p-3 font-bold !text-gray-900 dark:!text-white">
                         Level {level + 1}
                       </td>
-
                       {rankSettings.map((setting) => (
                         <td
                           key={setting.slug}
@@ -144,7 +141,6 @@ const RoyalityAndRewards = () => {
                           {getUserProgress(setting.slug, level)}
                         </td>
                       ))}
-
                       <td className="border p-3 !text-gray-900 dark:!text-gray-200 font-bold">
                         {isAchieved
                           ? "Level Achieved ✅"
