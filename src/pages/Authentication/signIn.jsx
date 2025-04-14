@@ -22,6 +22,7 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { parseUnits } from "viem";
 
+
 const SignIn = () => {
   const dispatch = useDispatch();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
@@ -34,7 +35,7 @@ const SignIn = () => {
   const refUsername = searchParams.get("ref");
   const token = searchParams.get("impersonate");
   const userExists = useSelector(selectUserExists);
-
+  const { companyInfo } = useSelector((state) => state.user);
   // Form state
   const [sponsorId, setSponsorId] = useState(refUsername || "");
   const [email, setEmail] = useState("");
@@ -43,9 +44,9 @@ const SignIn = () => {
   const [isSponsorValid, setIsSponsorValid] = useState(refUsername ? true : false); // Prefilled ref is assumed valid
   const [checkingSponsor, setCheckingSponsor] = useState(false);
 
-  const TUSDT_ADDRESS = "0x7B5E2af1a89a1a23D8031077a24A2454D81b3fbd"; // BSC Testnet tUSDT
-  const FEES_CONTRACT_ADDRESS = "0x73f5818342421dc57f37031070515eccda13dd69";
-  const AMOUNT = parseUnits("10", 18); // 10 tUSDT
+  const TUSDT_ADDRESS = companyInfo.TOKEN_CONTRACT; // BSC Testnet tUSDT
+  const FEES_CONTRACT_ADDRESS = companyInfo.BSCADDRESS;
+  const AMOUNT = parseUnits("1", 18); // 1 tUSDT
 
   useEffect(() => {
     if (token) {
@@ -160,7 +161,7 @@ const SignIn = () => {
       toast.success("Payment successful!");
 
       // Step 3: Register user
-      await handleRegister();
+      await handleRegister(depositHash);
     } catch (error) {
       let message = "Transaction failed";
 
@@ -180,7 +181,7 @@ const SignIn = () => {
     }
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (depositHash) => {
     try {
       const registerResponse = await dispatch(
         registerNewUserAsync({
@@ -188,6 +189,7 @@ const SignIn = () => {
           sponsorUsername: sponsorId,
           email,
           phoneNumber,
+          hash: depositHash,
         })
       ).unwrap();
 
@@ -284,7 +286,7 @@ const SignIn = () => {
                         : "bg-gray-400 cursor-not-allowed"
                       }`}
                   >
-                    Register (10 tUSDT)
+                    Register (1 USDT)
                   </button>
                 </div>
               )}

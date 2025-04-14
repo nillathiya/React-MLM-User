@@ -253,7 +253,9 @@ export const selectUserFundConvertHistory = (state) =>
   state.transaction.transactions.filter((tx) => tx.txType === FUND_TX_TYPE.FUND_CONVERT);
 
 export const selectUserFundWithdrwalHistory = (state) =>
-  state.transaction.transactions.filter((tx) => tx.txType === FUND_TX_TYPE.FUND_WITHDRAWAL);
+  (state.transaction.transactions || []).filter(
+    (tx) => tx.txType === FUND_TX_TYPE.FUND_WITHDRAWAL
+  );
 
 export const selectTransactionLoading = (state) => state.transaction.loading
 export default transactionSlice.reducer;

@@ -15,7 +15,7 @@ import AddFundHistory from "./pages/Fund/addFundHistory";
 import TranseferFund from "./pages/Fund/transeferFund";
 import FundConvertHistory from "./pages/Fund/fundConvertHistory";
 import FundConvert from "./pages/Fund/fundConvert";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import Withdrawal from "./pages/Withdrawal/withdrawal";
 import WithdrawalReports from "./pages/Withdrawal/withdrawalReport";
 import MemberTopup from "./pages/Topup/memberTopup";
@@ -24,7 +24,7 @@ import RoyalityAndRewards from "./pages/RoyalityRewards/royalityAndRewards";
 import Report from "./pages/Reports/report";
 import NewsAndEvents from "./pages/News&Event/newsAndEvents";
 import Support from "./pages/Supports/support";
-import { useSelector, shallowEqual } from "react-redux";
+import { useSelector, shallowEqual, useDispatch } from "react-redux";
 import { useAccount } from "wagmi";
 import { selectIsLoggedIn } from "./feature/auth/authSlice";
 import Loader from "./components/common/Loader";
@@ -34,6 +34,7 @@ import IncomeReports from "./pages/IncomeReports";
 import ViewProfile from "./pages/Users/ViewProfile";
 import { useEffect } from "react";
 import { setNavigate } from "./store/store";
+import { getCompanyInfoAsync } from "./feature/user/userSlice";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -80,6 +81,18 @@ const ProtectedHomeRoute = ({ children }) => {
 
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await dispatch(getCompanyInfoAsync()).unwrap();
+      } catch (error) {
+        toast.error(error || "Server Failed...");
+      }
+    };
+    fetchData();
+  }, []);
+  
   return (
     <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <RouteScrollToTop />

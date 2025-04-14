@@ -152,7 +152,7 @@ const Dashboard = () => {
               <BalanceStatistic />
 
               {/* EarningCategories */}
-              <EarningCategories />
+              {/* <EarningCategories /> */}
 
               {/* ExpenseStatistics */}
               <IncomeStatistics />
@@ -193,20 +193,52 @@ const Dashboard = () => {
                         </div>
                       </div>
                     </div>
-                    {/* Total Income  */}
+                    {/* Weekly Pool */}
+                    <div className="col-xxl-4 col-xl-4 col-sm-6">
+                      <div className="px-20 py-16 shadow-none radius-8 h-100 gradient-deep-1 left-line line-bg-warning position-relative overflow-hidden">
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                          <div>
+                            <h6 className="mb-2 fw-medium">Weekly Pool</h6>
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-evenly mt-5">
+                          <h6 className="text-secondary-light">
+                            {companyInfo.CURRENCY}
+                            {getWalletBalance(userWallet, "weekly_pool")}
+                          </h6>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Monthly Pool */}
+                    <div className="col-xxl-4 col-xl-4 col-sm-6">
+                      <div className="px-20 py-16 shadow-none radius-8 h-100 gradient-deep-1 left-line line-bg-warning position-relative overflow-hidden">
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                          <div>
+                            <h6 className="mb-2 fw-medium">Monthly Pool</h6>
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-evenly mt-5">
+                          <h6 className="text-secondary-light">
+                            {companyInfo.CURRENCY}
+                            {getWalletBalance(userWallet, "monthly_pool")}
+                          </h6>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Instant Pool  */}
                     <div className="col-xxl-4 col-xl-4 col-sm-6">
                       <div className="px-20 py-16 shadow-none radius-8 h-100 gradient-deep-2 left-line line-bg-lilac position-relative overflow-hidden">
                         <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
                           <div>
                             <div>
-                              <h6 className="mb-2 fw-medium">Total Income</h6>
+                              <h6 className="mb-2 fw-medium">Instant Pool</h6>
                             </div>
                           </div>
                         </div>
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {totalIncome}
+                            {getWalletBalance(userWallet, "instant_pool")}
                           </h6>
                         </div>
                       </div>

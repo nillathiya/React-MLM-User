@@ -927,8 +927,8 @@ const MasterLayout = ({ children }) => {
                           className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
                           onClick={handleLogout}
                         >
-                          <Icon icon="lucide:power" className="icon text-xl" />{" "}
-                          Log Out
+                          {/* <Icon icon="lucide:power" className="icon text-xl" />{" "} */}
+                          {/* Log Out */}
                         </button>
                       </li>
                       {isConnected && (
@@ -941,7 +941,7 @@ const MasterLayout = ({ children }) => {
                               icon={ICON.LOGOUT_WALLET}
                               className="icon text-xl"
                             />
-                            Disconnect Wallet
+                            Log Out
                           </button>
                         </>
                       )}

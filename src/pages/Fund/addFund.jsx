@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
-import { FaDollarSign } from "react-icons/fa";
+import { contractAbi } from "../../ABI/contractAbi";
 import "./fund.css";
 import {
   useAccount,
@@ -37,10 +37,29 @@ const AddFund = () => {
   const { userWallet, walletSettings } = useSelector((state) => state.wallet);
   const { companyInfo, userSettings } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
+  const [approvalTxHash, setApprovalTxHash] = useState(null);
+  const [depositTxHash, setDepositTxHash] = useState(null);
+  const [hasDeposited, setHasDeposited] = useState(false); // New flag to prevent multiple deposits
 
-  const { writeContractAsync, data: txHash, isLoading } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({ hash: txHash });
+  const { writeContractAsync, isLoading: isWriting } = useWriteContract();
+
+  // Track approval transaction receipt
+  const {
+    isLoading: isApprovalConfirming,
+    isSuccess: isApprovalConfirmed,
+    error: approvalError,
+  } = useWaitForTransactionReceipt({
+    hash: approvalTxHash,
+  });
+
+  // Track deposit transaction receipt
+  const {
+    isLoading: isDepositConfirming,
+    isSuccess: isDepositConfirmed,
+    error: depositError,
+  } = useWaitForTransactionReceipt({
+    hash: depositTxHash,
+  });
 
   const addFundWalletType = userSettings.find(
     (setting) =>
@@ -50,13 +69,12 @@ const AddFund = () => {
     walletSettings,
     addFundWalletType
   );
-  // console.log("addFundWalletType", addFundWalletType);
-  // console.log("addFundWalletName", addFundWalletName);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        await dispatch(getUserWalletAsync());
+        dispatch(getUserWalletAsync());
       } catch (error) {
         console.log(error || "Server Error, Please try again");
       } finally {
@@ -73,7 +91,7 @@ const AddFund = () => {
   // Fetch live balances for each token at the top level
   const usdtBalance = useReadContract({
     abi,
-    address: faltToken.find((token) => token.name === "USDT")?.address,
+    address: companyInfo.TOKEN_CONTRACT,
     functionName: "balanceOf",
     args: [address],
     enabled: !!address,
@@ -146,33 +164,99 @@ const AddFund = () => {
       return;
     }
 
+    const amount = parseUnits(amountInput, token.decimals);
+
     try {
       setIsMetaMaskOpen(true);
-      const tx = await writeContractAsync({
-        abi,
-        address: token.address,
-        functionName: "transfer",
-        args: [companyInfo.BSCADDRESS, parseUnits(amountInput, token.decimals)],
-      });
-      console.log("Transaction Sent:", tx);
+      setHasDeposited(false); // Reset deposit flag
+
+      // 1️⃣ Step 1: Approve token allowance
+      const approvalToastId = toast.loading("Approving token allowance...");
+      try {
+        console.log("Initiating approval transaction...");
+        const approvalTx = await writeContractAsync({
+          abi: abi,
+          address: token.address,
+          functionName: "approve",
+          args: [companyInfo.BSCADDRESS, amount],
+        });
+        console.log("Approval transaction hash:", approvalTx);
+        toast.dismiss(approvalToastId);
+        toast.success("Approval transaction sent! Waiting for confirmation...");
+        setApprovalTxHash(approvalTx);
+      } catch (error) {
+        console.error("Approval Error:", error);
+        toast.dismiss(approvalToastId);
+        toast.error(`Approval failed: ${error.message || "Unknown error"}`);
+        throw error;
+      }
     } catch (error) {
-      console.error("Transaction Failed:", error);
-      toast.error("Transaction failed. Try again.");
-    } finally {
+      console.error("Transaction Flow Failed:", error);
       setIsMetaMaskOpen(false);
     }
   };
 
+  // Handle approval confirmation and initiate deposit (once)
+  useEffect(() => {
+    if (isApprovalConfirmed && approvalTxHash && !hasDeposited) {
+      console.log("Approval transaction confirmed!");
+      toast.success("Token allowance approved!");
+
+      // Proceed to deposit transaction
+      const token = tokenBalances.find((t) => t.name === selectedToken);
+      const amount = parseUnits(amountInput, token.decimals);
+
+      const initiateDeposit = async () => {
+        const depositToastId = toast.loading("Initiating deposit...");
+        try {
+          console.log("Initiating deposit transaction...");
+          const depositTx = await writeContractAsync({
+            abi: contractAbi,
+            address: companyInfo.BSCADDRESS,
+            functionName: "deposit",
+            args: [amount],
+          });
+          console.log("Deposit transaction hash:", depositTx);
+          toast.dismiss(depositToastId);
+          toast.success("Deposit transaction sent!");
+          setDepositTxHash(depositTx);
+          setHasDeposited(true); // Mark deposit as initiated
+        } catch (error) {
+          console.error("Deposit Error:", error);
+          toast.dismiss(depositToastId);
+          toast.error(`Deposit failed: ${error.message || "Unknown error"}`);
+        } finally {
+          setIsMetaMaskOpen(false);
+        }
+      };
+
+      initiateDeposit();
+    } else if (approvalError && approvalTxHash) {
+      console.error("Approval Confirmation Error:", approvalError);
+      toast.error(
+        `Approval confirmation failed: ${approvalError.message || "Unknown error"}`
+      );
+      setIsMetaMaskOpen(false);
+      setHasDeposited(false);
+    }
+  }, [isApprovalConfirmed, approvalError, approvalTxHash, hasDeposited]);
+
+  // Handle deposit confirmation and verification
   useEffect(() => {
     const verifyTransaction = async () => {
-      if (isConfirmed && txHash) {
-        toast.success("Transaction confirmed!");
-        setTransactionVerificationLoading(true);
-        const loadingToastId = toast.loading("Verifying transaction...");
-
+      if (isDepositConfirmed && depositTxHash) {
+        console.log("Deposit transaction confirmed!");
+        const confirmToastId = toast.loading(
+          "Confirming deposit on blockchain..."
+        );
         try {
+          toast.dismiss(confirmToastId);
+          toast.success("Deposit transaction confirmed!");
+          setTransactionVerificationLoading(true);
+          const verifyToastId = toast.loading("Verifying transaction...");
+
           const formData = {
-            txHash,
+            txHash: depositTxHash,
             userAddress: address,
             amount: amountInput,
           };
@@ -181,7 +265,7 @@ const AddFund = () => {
           ).unwrap();
           console.log("Verification Result:", result);
 
-          toast.dismiss(loadingToastId);
+          toast.dismiss(verifyToastId);
           if (result.status === "success" || result.statusCode === 200) {
             await dispatch(
               addAmountToWallet({
@@ -195,16 +279,30 @@ const AddFund = () => {
           }
         } catch (error) {
           console.error("Verification Error:", error);
-          toast.dismiss(loadingToastId);
+          toast.dismiss(confirmToastId);
           toast.error("Verification failed. Please try again.");
         } finally {
           setTransactionVerificationLoading(false);
         }
+      } else if (depositError && depositTxHash) {
+        console.error("Deposit Confirmation Error:", depositError);
+        toast.error(
+          `Deposit confirmation failed: ${depositError.message || "Unknown error"}`
+        );
+        setTransactionVerificationLoading(false);
       }
     };
 
     verifyTransaction();
-  }, [isConfirmed]);
+  }, [
+    isDepositConfirmed,
+    depositError,
+    depositTxHash,
+    dispatch,
+    address,
+    amountInput,
+    addFundWalletType,
+  ]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -243,7 +341,7 @@ const AddFund = () => {
               <div className="grid grid-cols-2 gap-4 !mb-6">
                 <div className="wallet-box wallet-fund">
                   <p className="wallet-title">
-                    {addFundWalletName || "Add Fund Wallet"}{" "}
+                    {addFundWalletName || "Add Fund Wallet"}
                   </p>
                   <span className="wallet-balance flex flex-wrap items-center justify-center">
                     <span className="currency mr-1">
@@ -357,22 +455,25 @@ const AddFund = () => {
                   amountInput ? "btn-primary" : "btn-disabled"
                 }`}
                 disabled={
-                  isLoading ||
+                  isWriting ||
                   !amountInput ||
-                  isConfirming ||
+                  isApprovalConfirming ||
+                  isDepositConfirming ||
                   transactionVerificationLoading ||
                   isMetaMaskOpen
                 }
                 onClick={handleFundTransfer}
               >
                 {isMetaMaskOpen
-                  ? "Waiting for Confirmation..."
-                  : isLoading
-                  ? "Sending..."
-                  : isConfirming
-                  ? "Confirming..."
+                  ? "Waiting for MetaMask..."
+                  : isWriting
+                  ? "Processing..."
+                  : isApprovalConfirming
+                  ? "Confirming Approval..."
+                  : isDepositConfirming
+                  ? "Confirming Deposit..."
                   : transactionVerificationLoading
-                  ? "Verifying..."
+                  ? "Verifying Transaction..."
                   : "Send"}
               </button>
             </>

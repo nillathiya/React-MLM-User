@@ -20,6 +20,7 @@ const encryptData = (data) => CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_
 // Decrypt function
 const decryptData = (encryptedData) => {
     try {
+        console.log("SECRET_KEY:",SECRET_KEY);
         const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
         return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     } catch (error) {

@@ -131,11 +131,11 @@ const menuItems = [
     icon: "mdi:headset",
     path: "/support",
   },
-  {
-    title: "Logout",
-    icon: "mdi:logout",
-    path: "/logout",
-  },
+  // {
+  //   title: "Logout",
+  //   icon: "mdi:logout",
+  //   path: "/logout",
+  // },
 ];
 
 export default menuItems;
