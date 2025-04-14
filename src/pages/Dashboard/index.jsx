@@ -36,6 +36,7 @@ import {
   getUserSettingsAsync,
 } from "../../feature/user/userSlice";
 import { getUserOrdersAsync } from "../../feature/order/orderSlice";
+import InvitationCard from "./InvitationCard";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -267,8 +268,9 @@ const Dashboard = () => {
           {/* Sidebar start */}
           <div className="col-xl-4">
             {/* QuickTransfer */}
+            <InvitationCard/>
 
-            <div className="card radius-16">
+            {/* <div className="card radius-16">
               <div className="card-header">
                 <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
                   <h6 className="mb-2 fw-bold text-lg">Referral link</h6>
@@ -298,7 +300,7 @@ const Dashboard = () => {
                   {copySuccess && <p className="copy-success">Link copied!</p>}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Investment */}
             <Investment />
