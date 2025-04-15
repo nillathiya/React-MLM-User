@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAccount, useDisconnect, useChainId } from "wagmi";
-import { writeContract, waitForTransactionReceipt, readContract } from "@wagmi/core";
+import {
+  writeContract,
+  waitForTransactionReceipt,
+  readContract,
+} from "@wagmi/core";
 import { config } from "../../config/wagmiConfig";
 import ConnectWallet from "../../components/wallet/ConnectWallet";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +16,10 @@ import {
   selectUserExists,
   verifyTokenLoginAsync,
 } from "../../feature/auth/authSlice";
-import { registerNewUserAsync, checkSponsorAsync } from "../../feature/user/userSlice";
+import {
+  registerNewUserAsync,
+  checkSponsorAsync,
+} from "../../feature/user/userSlice";
 import toast from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 import { createUserWalletAsync } from "../../feature/wallet/walletSlice";
@@ -21,7 +28,6 @@ import { abi as usdtAbi } from "../../ABI/usdtAbi";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { parseUnits } from "viem";
-
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -39,9 +45,12 @@ const SignIn = () => {
   // Form state
   const [sponsorId, setSponsorId] = useState(refUsername || "");
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [paymentStage, setPaymentStage] = useState(null); // null, "approving", "depositing"
-  const [isSponsorValid, setIsSponsorValid] = useState(refUsername ? true : false); // Prefilled ref is assumed valid
+  const [isSponsorValid, setIsSponsorValid] = useState(
+    refUsername ? true : false
+  ); // Prefilled ref is assumed valid
   const [checkingSponsor, setCheckingSponsor] = useState(false);
 
   const TUSDT_ADDRESS = companyInfo.TOKEN_CONTRACT; // BSC Testnet tUSDT
@@ -59,7 +68,10 @@ const SignIn = () => {
     try {
       const result = await dispatch(verifyTokenLoginAsync(token)).unwrap();
       if (result.status === "success" || result.statusCode === 200) {
-        localStorage.setItem(`userToken_${result.data.user._id}`, result.data.token);
+        localStorage.setItem(
+          `userToken_${result.data.user._id}`,
+          result.data.token
+        );
       }
       navigate("/dashboard");
     } catch (error) {
@@ -102,9 +114,14 @@ const SignIn = () => {
     if (!address) return;
     setLoading(true);
     try {
-      const result = await dispatch(userLoginAsync({ wallet: address })).unwrap();
+      const result = await dispatch(
+        userLoginAsync({ wallet: address })
+      ).unwrap();
       if (result.status === "success") {
-        localStorage.setItem(`userToken_${result.data.user._id}`, result.data.token);
+        localStorage.setItem(
+          `userToken_${result.data.user._id}`,
+          result.data.token
+        );
         navigate("/dashboard");
       }
     } catch (err) {
@@ -116,8 +133,17 @@ const SignIn = () => {
   };
 
   const handlePaymentAndRegister = async () => {
-    if (!address || !sponsorId || !email || !phoneNumber || !isSponsorValid) {
-      toast.error("Please fill all fields with a valid Sponsor ID and connect wallet");
+    if (
+      !address ||
+      !sponsorId ||
+      !email ||
+      !name ||
+      !phoneNumber ||
+      !isSponsorValid
+    ) {
+      toast.error(
+        "Please fill all fields with a valid Sponsor ID and connect wallet"
+      );
       return;
     }
     if (chainId !== 97) {
@@ -173,6 +199,7 @@ const SignIn = () => {
         message = error.shortMessage;
       }
 
+      console.log("failed transaction", message);
       toast.error(message);
       disconnect();
     } finally {
@@ -187,13 +214,16 @@ const SignIn = () => {
         registerNewUserAsync({
           wallet: address,
           sponsorUsername: sponsorId,
+          name,
           email,
           phoneNumber,
           hash: depositHash,
         })
       ).unwrap();
 
-      const loginResponse = await dispatch(userLoginAsync({ wallet: address })).unwrap();
+      const loginResponse = await dispatch(
+        userLoginAsync({ wallet: address })
+      ).unwrap();
       if (loginResponse.status === "success") {
         const userId = loginResponse.data.user._id;
         localStorage.setItem(`userToken_${userId}`, loginResponse.data.token);
@@ -206,7 +236,8 @@ const SignIn = () => {
     }
   };
 
-  const isFormComplete = sponsorId && email && phoneNumber && isSponsorValid;
+  const isFormComplete =
+    sponsorId && email && name && phoneNumber && isSponsorValid;
 
   return (
     <div className="flex justify-center items-center h-screen px-4">
@@ -219,10 +250,10 @@ const SignIn = () => {
                 {checkingSponsor
                   ? "Checking Sponsor ID..."
                   : paymentStage === "approving"
-                    ? "Approving tUSDT..."
-                    : paymentStage === "depositing"
-                      ? "Processing Payment..."
-                      : "Please Wait for Authentication..."}
+                  ? "Approving tUSDT..."
+                  : paymentStage === "depositing"
+                  ? "Processing Payment..."
+                  : "Please Wait for Authentication..."}
               </span>
             </div>
           ) : (
@@ -242,7 +273,7 @@ const SignIn = () => {
                   Login
                 </button>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-4 p-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Sponsor ID (Referral)
@@ -250,19 +281,36 @@ const SignIn = () => {
                     <input
                       type="text"
                       value={sponsorId}
-                      onChange={(e) => !refUsername && setSponsorId(e.target.value)}
+                      onChange={(e) =>
+                        !refUsername && setSponsorId(e.target.value)
+                      }
                       disabled={refUsername || isSponsorValid} // Disabled if prefilled or valid
-                      className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      className="mt-1 w-full px-3 py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                       placeholder="Enter Sponsor ID"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="mt-1 w-full px-3 py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      placeholder="Enter your name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="mt-1 w-full px-3 py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -275,16 +323,17 @@ const SignIn = () => {
                       defaultCountry="US"
                       value={phoneNumber}
                       onChange={setPhoneNumber}
-                      className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="mt-1 w-full px-3 py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <button
                     onClick={handlePaymentAndRegister}
                     disabled={!isFormComplete}
-                    className={`w-full px-6 py-3 text-white font-medium rounded-lg shadow-md transition focus:outline-none text-center ${isFormComplete
+                    className={`w-full px-6 py-3 text-white font-medium rounded-lg shadow-md transition focus:outline-none text-center ${
+                      isFormComplete
                         ? "bg-blue-600 hover:bg-blue-700"
                         : "bg-gray-400 cursor-not-allowed"
-                      }`}
+                    }`}
                   >
                     Register (1 USDT)
                   </button>
