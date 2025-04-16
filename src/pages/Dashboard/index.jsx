@@ -33,6 +33,7 @@ import Confetti from "react-confetti";
 import { ICON } from "../../constants/icons";
 import {
   getCompanyInfoAsync,
+  getUserRemainingCappingAsync,
   getUserSettingsAsync,
 } from "../../feature/user/userSlice";
 import { getUserOrdersAsync } from "../../feature/order/orderSlice";
@@ -88,6 +89,7 @@ const Dashboard = () => {
         }
 
         await dispatch(getUserSettingsAsync()).unwrap();
+        await dispatch(getUserRemainingCappingAsync()).unwrap();
       } catch (error) {
         toast.error(error || "Server Failed...");
       }
@@ -153,7 +155,7 @@ const Dashboard = () => {
               <BalanceStatistic />
 
               {/* EarningCategories */}
-              {/* <EarningCategories /> */}
+              <EarningCategories />
 
               {/* ExpenseStatistics */}
               <IncomeStatistics />
@@ -268,7 +270,7 @@ const Dashboard = () => {
           {/* Sidebar start */}
           <div className="col-xl-4">
             {/* QuickTransfer */}
-            <InvitationCard/>
+            <InvitationCard />
 
             {/* <div className="card radius-16">
               <div className="card-header">

@@ -164,7 +164,7 @@ export const getCompanyInfo = async () => {
 
 export const checkSponsor = async (sponsor) => {
   try {
-    const response = await apiClient.post(ROUTES.AUTH.CHECK_SPONSOR, {sponsor});
+    const response = await apiClient.post(ROUTES.AUTH.CHECK_SPONSOR, { sponsor });
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -173,4 +173,18 @@ export const checkSponsor = async (sponsor) => {
     throw new Error("Check Sponsor failed. Please try again later.");
   }
 };
+
+export const getUserRemainingCapping = async () => {
+  try {
+    const response = await apiClient.post(ROUTES.USER.GET_REMAINING_CAPPING);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "An error occurred.");
+    }
+    throw new Error("Check Sponsor failed. Please try again later.");
+  }
+};
+
+
 

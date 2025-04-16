@@ -102,6 +102,8 @@ const Withdrawal = () => {
     }
   };
 
+  // console.log("FUND_WITHDRAWAL_WALLETS",FUND_WITHDRAWAL_WALLETS)
+
   return (
     <MasterLayout>
       <Breadcrumb title="Withdrawal" />

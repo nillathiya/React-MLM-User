@@ -39,11 +39,18 @@ const TransferFund = () => {
     fetchData();
   }, []);
 
-  const FUND_TRANSFER_WALLETS =
+  // Ensure array type for wallet settings
+  const FUND_TRANSFER_WALLETS = Array.isArray(
     userSettings.find(
       (setting) =>
         setting.title === "Fund" && setting.slug === "fund_transfer_wallets"
-    )?.value || [];
+    )?.value
+  )
+    ? userSettings.find(
+        (setting) =>
+          setting.title === "Fund" && setting.slug === "fund_transfer_wallets"
+      )?.value
+    : [];
 
   const walletOptions = FUND_TRANSFER_WALLETS.map((wallet) => ({
     key: wallet,
