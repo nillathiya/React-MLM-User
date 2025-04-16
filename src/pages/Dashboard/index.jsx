@@ -38,6 +38,7 @@ import {
 } from "../../feature/user/userSlice";
 import { getUserOrdersAsync } from "../../feature/order/orderSlice";
 import InvitationCard from "./InvitationCard";
+import WalletActions from "./WalletActions";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -160,7 +161,7 @@ const Dashboard = () => {
               {/* ExpenseStatistics */}
               <IncomeStatistics />
             </div>
-            <div className="col-12 mt-5">
+            <div className="col-12 !mt-5">
               <div className="card radius-12">
                 <div className="card-body p-16">
                   <div className="row gy-4">
@@ -272,6 +273,9 @@ const Dashboard = () => {
             {/* QuickTransfer */}
             <InvitationCard />
 
+            {/* WalletActions */}
+            <WalletActions/>
+
             {/* <div className="card radius-16">
               <div className="card-header">
                 <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
@@ -310,7 +314,7 @@ const Dashboard = () => {
             {/* User Rank  */}
             <div
               ref={confettiRef}
-              className="card radius-16 mt-5 relative overflow-hidden"
+              className="card radius-16 mt-3 relative overflow-hidden"
             >
               {/* Confetti only inside this div */}
               {showConfetti && confettiRef.current && (

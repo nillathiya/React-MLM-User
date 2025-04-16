@@ -108,7 +108,7 @@ const Investment = () => {
   }
 
   return (
-    <div className="card radius-16 !rounded-lg bg-white dark:!bg-gray-900 shadow-lg mt-6">
+    <div className="card radius-16 !rounded-lg bg-white dark:!bg-gray-900 shadow-lg !mt-6">
       <div className="card-header flex justify-between items-center mb-4 ">
         <h6 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
           Investment
