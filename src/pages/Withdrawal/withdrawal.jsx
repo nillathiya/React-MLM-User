@@ -15,6 +15,27 @@ const Withdrawal = () => {
   const { userSettings = [], companyInfo } = useSelector((state) => state.user);
   const { userWallet, walletSettings } = useSelector((state) => state.wallet);
 
+  // Normalize FUND_WITHDRAWAL_DAYS to an array
+  const normalizeWithdrawalDays = (value) => {
+    if (Array.isArray(value)) {
+      return value.map((day) => day.trim().toLowerCase()).filter((day) => day);
+    }
+    if (typeof value === "string") {
+      return value
+        .split(",")
+        .map((day) => day.trim().toLowerCase())
+        .filter((day) => day);
+    }
+    return [];
+  };
+
+  // Capitalize the first letter of each day for display
+  const formatDays = (days) => {
+    return days
+      .map((day) => day.charAt(0).toUpperCase() + day.slice(1).toLowerCase())
+      .join(", ");
+  };
+
   const FUND_WITHDRAWAL_WALLETS = Array.isArray(userSettings)
     ? userSettings.find(
         (setting) =>
@@ -23,19 +44,20 @@ const Withdrawal = () => {
       )?.value || []
     : [];
 
-  const FUND_WITHDRAWAL_DAYS = Array.isArray(userSettings)
-    ? userSettings.find(
-        (setting) =>
-          setting?.title === "Withdrawal" && setting?.slug === "withdrawal_days"
-      )?.value || []
-    : [];
-
-  // console.log("FUND_WITHDRAWAL_DAYS", FUND_WITHDRAWAL_DAYS);
+  const FUND_WITHDRAWAL_DAYS = normalizeWithdrawalDays(
+    Array.isArray(userSettings)
+      ? userSettings.find(
+          (setting) =>
+            setting?.title === "Withdrawal" && setting?.slug === "withdrawal_days"
+        )?.value
+      : []
+  );
 
   const withdrawalWalletOptions = FUND_WITHDRAWAL_WALLETS.map((wallet) => ({
     key: wallet,
     label: getNameBySlugFromWalletSetting(walletSettings, wallet),
   }));
+
   const MIN_WITHDRAWAL_LIMIT =
     userSettings.find(
       (setting) =>
@@ -63,8 +85,15 @@ const Withdrawal = () => {
     if (FUND_WITHDRAWAL_DAYS.length === 0) return true;
     const currentDay = new Date()
       .toLocaleString("en-US", { weekday: "long" })
-      .toLowerCase();
-    return FUND_WITHDRAWAL_DAYS.some((day) => day.toLowerCase() === currentDay);
+      .toLowerCase()
+      .trim();
+    console.log("Current Day:", currentDay); // Debug log
+    console.log("FUND_WITHDRAWAL_DAYS:", FUND_WITHDRAWAL_DAYS); // Debug log
+    return FUND_WITHDRAWAL_DAYS.some((day) => {
+      const match = day.toLowerCase().trim() === currentDay;
+      console.log(`Comparing: ${day} === ${currentDay} -> ${match}`); // Debug log
+      return match;
+    });
   };
 
   const handleFormSubmit = async (data) => {
@@ -102,8 +131,6 @@ const Withdrawal = () => {
     }
   };
 
-  // console.log("FUND_WITHDRAWAL_WALLETS",FUND_WITHDRAWAL_WALLETS)
-
   return (
     <MasterLayout>
       <Breadcrumb title="Withdrawal" />
@@ -132,9 +159,7 @@ const Withdrawal = () => {
             <p className="text-responsive-medium ">Withdrawal Conditions</p>
             <p className="text-responsive-bold">
               {FUND_WITHDRAWAL_DAYS.length > 0
-                ? `Available on: ${FUND_WITHDRAWAL_DAYS.map(
-                    (day) => day || ""
-                  ).join(", ")}`
+                ? `Available on: ${formatDays(FUND_WITHDRAWAL_DAYS)}`
                 : "All Withdrawals Available 24x7"}
             </p>
           </div>
@@ -247,7 +272,9 @@ const Withdrawal = () => {
             </h6>
             <p className="error-message mt-2">
               Withdrawals are only allowed on:{" "}
-              {FUND_WITHDRAWAL_DAYS.map((day) => day).join(", ")}
+              {FUND_WITHDRAWAL_DAYS.length > 0
+                ? formatDays(FUND_WITHDRAWAL_DAYS)
+                : "No days specified"}
             </p>
             <p className="text-xs sm:text-sm !text-gray-600 dark:!pointer-events-none dark:!text-darkText mt-1">
               Today is {new Date().toLocaleString("en-US", { weekday: "long" })}

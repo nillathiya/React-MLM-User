@@ -38,8 +38,6 @@ const MemberTopup = () => {
     investmentWalletType
   );
 
-  const FIXED_AMOUNT = 100; // Fixed package amount
-
   const {
     register,
     handleSubmit,
@@ -50,11 +48,12 @@ const MemberTopup = () => {
   } = useForm({
     mode: "onBlur",
     defaultValues: {
-      amount: FIXED_AMOUNT, // Set default amount to 100
+      amount: "", // Initialize as empty to allow user input
     },
   });
 
   const username = watch("username");
+  const amount = watch("amount");
 
   useEffect(() => {
     (async () => {
@@ -108,14 +107,21 @@ const MemberTopup = () => {
     }
 
     const balance = getWalletBalance(userWallet, investmentWalletType) || 0;
-    if (balance < FIXED_AMOUNT) {
+    const enteredAmount = parseFloat(data.amount);
+
+    if (enteredAmount < 10) {
+      toast.error("Amount must be at least 10");
+      return;
+    }
+
+    if (balance < enteredAmount) {
       toast.error("Insufficient funds in Investment Wallet");
       return;
     }
 
     const formData = {
       username: data.username,
-      amount: FIXED_AMOUNT,
+      amount: enteredAmount,
       pinId: pinDetails[0]._id,
       txType: userActiveStatus === 0 ? "purchase" : "repurchase",
     };
@@ -125,7 +131,7 @@ const MemberTopup = () => {
       await dispatch(
         removeAmountFromWallet({
           walletType: investmentWalletType,
-          amount: FIXED_AMOUNT,
+          amount: enteredAmount,
         })
       );
       toast.success("Topup successful!");
@@ -199,24 +205,30 @@ const MemberTopup = () => {
               <div>
                 {/* Package Display (Non-selectable) */}
                 <label>Package</label>
-                <div className="input-field bg-gray-100 cursor-not-allowed text-gray-700 font-medium">
-                  {companyInfo.CURRENCY}100
+                <div className="input-field bg-gray-10 cursor-not-allowed text-gray-700 font-medium">
+                  {companyInfo.CURRENCY}10 ~ ∞
                 </div>
               </div>
 
               <div>
-                {/* Amount Field (Fixed and Disabled) */}
+                {/* Amount Field (Editable) */}
                 <label>Amount</label>
                 <input
                   type="number"
-                  value={FIXED_AMOUNT}
-                  disabled
-                  className="input-field bg-gray-100 cursor-not-allowed"
+                  placeholder="Enter amount (minimum 10)"
+                  className="input-field"
                   {...register("amount", {
                     required: "Amount is required",
-                    value: FIXED_AMOUNT,
+                    min: {
+                      value: 10,
+                      message: "Amount must be at least 10",
+                    },
+                    valueAsNumber: true,
                   })}
                 />
+                {errors.amount && (
+                  <p className="error-message">{errors.amount.message}</p>
+                )}
               </div>
 
               {/* Submit Button */}

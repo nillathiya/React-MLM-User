@@ -152,8 +152,6 @@ const Dashboard = () => {
         <div className="row gy-4">
           <div className="col-xl-8">
             <div className="row gy-4">
-              {/* BalanceStatistic */}
-              <BalanceStatistic />
 
               {/* EarningCategories */}
               <EarningCategories />
@@ -176,7 +174,7 @@ const Dashboard = () => {
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "main_wallet")}
+                            {getWalletBalance(userWallet, "main_wallet").toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -192,7 +190,7 @@ const Dashboard = () => {
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "fund_wallet")}
+                            {getWalletBalance(userWallet, "fund_wallet").toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -208,7 +206,7 @@ const Dashboard = () => {
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "weekly_pool")}
+                            {getWalletBalance(userWallet, "weekly_pool").toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -224,7 +222,7 @@ const Dashboard = () => {
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "monthly_pool")}
+                            {getWalletBalance(userWallet, "monthly_pool").toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -242,7 +240,7 @@ const Dashboard = () => {
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "instant_pool")}
+                            {getWalletBalance(userWallet, "instant_pool").toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -365,7 +363,13 @@ const Dashboard = () => {
           {/* Sidebar end */}
         </div>
       </div>
-
+      <div className="mt-24">
+        <div className="row gy-4">
+          <div className="col-xxl-12 col-xl-12 col-md-12">
+            <BalanceStatistic />
+          </div>
+        </div>
+      </div>
       <NewCustomerList />
     </MasterLayout>
   );

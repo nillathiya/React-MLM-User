@@ -23,6 +23,12 @@ const WalletActions = () => {
           >
             Withdraw
           </Link>
+          <Link
+            to="/upgrade/member-topup"
+            className="flex-1 bg-orange-500 dark:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg text-center hover:bg-orange-600 dark:hover:bg-orange-700 transition-colors duration-300"
+          >
+            Stake
+          </Link>
         </div>
       </div>
     </div>

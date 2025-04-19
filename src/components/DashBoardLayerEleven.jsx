@@ -19,8 +19,7 @@ const DashBoardLayerEleven = () => {
         <div className='row gy-4'>
           <div className='col-xl-8'>
             <div className='row gy-4'>
-              {/* BalanceStatistic */}
-              <BalanceStatistic />
+              
 
               {/* EarningCategories */}
               <EarningCategories />
@@ -46,7 +45,8 @@ const DashBoardLayerEleven = () => {
           {/* Sidebar end */}
         </div>
       </div>
-
+      {/* BalanceStatistic */}
+      <BalanceStatistic />
       {/* PaymentHistoryOne */}
       <PaymentHistoryOne />
     </>
