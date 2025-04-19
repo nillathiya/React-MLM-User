@@ -64,7 +64,7 @@ const AddFund = () => {
   const addFundWalletType = userSettings.find(
     (setting) =>
       setting.title === "Investment" && setting.slug === "add_fund_wallet"
-  ).value;
+  )?.value;
   const addFundWalletName = getNameBySlugFromWalletSetting(
     walletSettings,
     addFundWalletType

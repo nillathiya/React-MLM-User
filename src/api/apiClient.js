@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import axios from 'axios';
 
 // Define apiClient without interceptors initially
 export const apiClient = axios.create({
@@ -14,7 +14,7 @@ const getUserToken = (userId) => {
 };
 
 // Function to set up interceptors with a provided store
-export const setupApiInterceptors = (store) => {
+export const setupApiInterceptors = (store, persistor) => {
   // Request Interceptor: Attach user token
   apiClient.interceptors.request.use(
     (config) => {
@@ -45,21 +45,18 @@ export const setupApiInterceptors = (store) => {
         isLoggingOut = true;
         try {
           console.warn('Session expired, logging out user...');
-          const { clearUser, clearUserExists, userLogoutAsync } = await import('../feature/auth/authSlice');
-          const { clearUserWallet, clearCompanyInfo, clearUserSettings } = await import('../feature/user/userSlice');
-          const { clearAllFundTransactions } = await import('../feature/transaction/transactionSlice');
-
+          // Avoid dynamic imports; dispatch actions directly if possible
+          // Assume these actions are passed or imported elsewhere
           const dispatch = store.dispatch;
 
-          await Promise.all([
-            dispatch(userLogoutAsync()),
-            dispatch(clearUser()),
-            dispatch(clearUserExists()),
-            dispatch(clearUserWallet()),
-            dispatch(clearAllFundTransactions()),
-            dispatch(clearCompanyInfo()),
-            dispatch(clearUserSettings()),
-          ]);
+          // Dispatch logout actions (you may need to import these in a different way)
+          await dispatch({ type: 'auth/userLogoutAsync' });
+          await dispatch({ type: 'auth/clearUser' });
+          await dispatch({ type: 'auth/clearUserExists' });
+          await dispatch({ type: 'user/clearUserWallet' });
+          await dispatch({ type: 'transaction/clearAllFundTransactions' });
+          await dispatch({ type: 'user/clearCompanyInfo' });
+          await dispatch({ type: 'user/clearUserSettings' });
 
           // Clear token from localStorage
           const { auth } = store.getState();
@@ -67,6 +64,7 @@ export const setupApiInterceptors = (store) => {
           if (loggedInUser?._id) {
             localStorage.removeItem(`userToken_${loggedInUser._id}`);
           }
+          await persistor.purge();
 
           window.location.href = '/';
         } catch (err) {
@@ -82,11 +80,10 @@ export const setupApiInterceptors = (store) => {
   );
 };
 
-// Do NOT call initializeInterceptors here
-// Export it for manual initialization elsewhere
-export const initializeInterceptors = async (store) => {
+// Export for manual initialization
+export const initializeInterceptors = async (store, persistor) => {
   try {
-    setupApiInterceptors(store);
+    setupApiInterceptors(store, persistor);
   } catch (error) {
     console.error('Failed to initialize Axios interceptors:', error);
   }
