@@ -88,8 +88,6 @@ const Dashboard = () => {
         if (!companyInfo || Object.keys(companyInfo).length === 0) {
           await dispatch(getCompanyInfoAsync()).unwrap();
         }
-
-        await dispatch(getUserSettingsAsync()).unwrap();
         await dispatch(getUserRemainingCappingAsync()).unwrap();
       } catch (error) {
         toast.error(error || "Server Failed...");
