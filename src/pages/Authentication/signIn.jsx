@@ -10,6 +10,7 @@ import {
   checkWalletAsync,
   userLoginAsync,
   selectUserExists,
+  verifyTokenLoginAsync,
 } from '../../feature/auth/authSlice';
 import { registerNewUserAsync, checkSponsorAsync, getCompanyInfoAsync } from '../../feature/user/userSlice';
 import { createUserWalletAsync } from '../../feature/wallet/walletSlice';
@@ -39,15 +40,38 @@ const SignUp = () => {
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [paymentStage, setPaymentStage] = useState(null);
+  const token = searchParams.get('impersonate');
   const [isSponsorValid, setIsSponsorValid] = useState(searchParams.get('ref') ? true : false);
   const [checkingSponsor, setCheckingSponsor] = useState(false);
   const [error, setError] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [hasCheckedWallet, setHasCheckedWallet] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false); // New state to prevent multiple registrations
 
   const TUSDT_ADDRESS = companyInfo?.TOKEN_CONTRACT;
   const FEES_CONTRACT_ADDRESS = companyInfo?.BSCADDRESS;
   const AMOUNT = parseUnits('1', 18);
+
+  useEffect(() => {
+    if (token) {
+      verifyTokenLogin(token);
+    }
+  }, [token]);
+
+  const verifyTokenLogin = async (token) => {
+    setLoading(true);
+    try {
+      const result = await dispatch(verifyTokenLoginAsync(token)).unwrap();
+      if (result.status === 'success' || result.statusCode === 200) {
+        localStorage.setItem(`userToken_${result.data.user._id}`, result.data.token);
+      }
+      navigate('/dashboard');
+    } catch (error) {
+      toast.error(error || 'Token validation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch company info on mount
   useEffect(() => {
@@ -116,14 +140,11 @@ const SignUp = () => {
     setLoading(true);
     try {
       const result = await dispatch(userLoginAsync({ wallet: address })).unwrap();
-      console.log('userLoginAsync Response:', result);
       if (result.status === 'success') {
         localStorage.setItem(`userToken_${result.data.user._id}`, result.data.token);
         navigate('/dashboard');
       }
     } catch (err) {
-      console.error('userLoginAsync Error:', err);
-      setError(err.message || 'Login failed');
       toast.error(err.message || 'Login failed');
       disconnect();
     } finally {
@@ -153,7 +174,12 @@ const SignUp = () => {
       console.error('Invalid contract addresses:', { TUSDT_ADDRESS, FEES_CONTRACT_ADDRESS });
       return;
     }
+    if (isRegistering) {
+      toast.error('Registration already in progress');
+      return; // Prevent multiple clicks
+    }
 
+    setIsRegistering(true); // Set flag to prevent re-entry
     setLoading(true);
     try {
       // Check USDT balance
@@ -215,33 +241,42 @@ const SignUp = () => {
     } finally {
       setLoading(false);
       setPaymentStage(null);
+      setIsRegistering(false); // Reset flag
     }
   };
 
   const handleRegister = async (depositHash) => {
-    const payload = {
-      wallet: address,
-      sponsorUsername: sponsorId,
-      email,
-      phoneNumber,
-      hash: depositHash,
-    };
-    console.log('Register Payload:', payload);
     try {
-      const registerResponse = await dispatch(registerNewUserAsync(payload)).unwrap();
-      console.log('Register Response:', registerResponse);
+      const registerResponse = await dispatch(
+        registerNewUserAsync({
+          wallet: address,
+          sponsorUsername: sponsorId,
+          email,
+          phoneNumber,
+          hash: depositHash,
+        })
+      ).unwrap();
 
-      const loginResponse = await dispatch(userLoginAsync({ wallet: address })).unwrap();
-      console.log('Login Response:', loginResponse);
-      if (loginResponse.status === 'success') {
-        const userId = loginResponse.data.user._id;
-        localStorage.setItem(`userToken_${userId}`, loginResponse.data.token);
-        await dispatch(createUserWalletAsync(userId)).unwrap();
-        navigate('/dashboard');
+      if (registerResponse.status === 'success') {
+        const loginResponse = await dispatch(userLoginAsync({ wallet: address })).unwrap();
+        if (loginResponse.status === 'success') {
+          const userId = loginResponse.data.user._id;
+          localStorage.setItem(`userToken_${userId}`, loginResponse.data.token);
+          // try {
+          //   await dispatch(createUserWalletAsync(userId)).unwrap();
+          // } catch (walletError) {
+          //   console.error('createUserWalletAsync Error:', walletError);
+          //   toast.warn('Failed to create user wallet, proceeding to dashboard');
+          // }
+          navigate('/dashboard');
+        } else {
+          throw new Error('Login failed after registration');
+        }
+      } else {
+        throw new Error('Registration failed');
       }
     } catch (err) {
       console.error('Registration Error:', err);
-      setError(err.message || 'Registration failed');
       toast.error(err.message || 'Registration failed');
       disconnect();
     }
@@ -275,10 +310,10 @@ const SignUp = () => {
                 {checkingSponsor
                   ? 'Checking Sponsor ID...'
                   : paymentStage === 'approving'
-                  ? 'Approving tUSDT...'
-                  : paymentStage === 'depositing'
-                  ? 'Processing Payment...'
-                  : 'Please Wait for Authentication...'}
+                    ? 'Approving tUSDT...'
+                    : paymentStage === 'depositing'
+                      ? 'Processing Payment...'
+                      : 'Please Wait for Authentication...'}
               </span>
             </div>
           ) : (
@@ -371,9 +406,9 @@ const SignUp = () => {
                   </div>
                   <button
                     onClick={handlePaymentAndRegister}
-                    disabled={!isFormComplete}
+                    disabled={!isFormComplete || isRegistering}
                     className={`btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32 ${
-                      !isFormComplete ? 'opacity-50 cursor-not-allowed' : ''
+                      !isFormComplete || isRegistering ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
                     Register (1 USDT)
