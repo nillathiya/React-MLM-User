@@ -262,12 +262,6 @@ const SignUp = () => {
         if (loginResponse.status === 'success') {
           const userId = loginResponse.data.user._id;
           localStorage.setItem(`userToken_${userId}`, loginResponse.data.token);
-          // try {
-          //   await dispatch(createUserWalletAsync(userId)).unwrap();
-          // } catch (walletError) {
-          //   console.error('createUserWalletAsync Error:', walletError);
-          //   toast.warn('Failed to create user wallet, proceeding to dashboard');
-          // }
           navigate('/dashboard');
         } else {
           throw new Error('Login failed after registration');
