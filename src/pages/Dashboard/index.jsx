@@ -231,14 +231,14 @@ const Dashboard = () => {
                         <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
                           <div>
                             <div>
-                              <h6 className="mb-2 fw-medium">Instant Pool</h6>
+                              <h6 className="mb-2 fw-medium">Direct Received</h6>
                             </div>
                           </div>
                         </div>
                         <div className="d-flex justify-content-evenly mt-5">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "instant_pool").toFixed(2)}
+                            {getWalletBalance(userWallet, "direct").toFixed(2)}
                           </h6>
                         </div>
                       </div>
