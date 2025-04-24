@@ -21,6 +21,7 @@ import 'react-phone-number-input/style.css';
 import { parseUnits } from 'viem';
 import { contractAbi } from '../../ABI/contractAbi';
 import { abi as usdtAbi } from '../../ABI/usdtAbi';
+import Confetti from 'react-confetti';
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -46,7 +47,9 @@ const SignUp = () => {
   const [error, setError] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [hasCheckedWallet, setHasCheckedWallet] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false); // New state to prevent multiple registrations
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   const TUSDT_ADDRESS = companyInfo?.TOKEN_CONTRACT;
   const FEES_CONTRACT_ADDRESS = companyInfo?.BSCADDRESS;
@@ -73,7 +76,6 @@ const SignUp = () => {
     }
   };
 
-  // Fetch company info on mount
   useEffect(() => {
     dispatch(getCompanyInfoAsync())
       .unwrap()
@@ -86,12 +88,10 @@ const SignUp = () => {
       });
   }, [dispatch]);
 
-  // Log companyInfo to verify contract addresses
   useEffect(() => {
     console.log('Company Info:', companyInfo);
   }, [companyInfo]);
 
-  // Check wallet on connection (only once)
   useEffect(() => {
     if (isConnected && address && !hasCheckedWallet && !loading) {
       setLoading(true);
@@ -111,7 +111,6 @@ const SignUp = () => {
     }
   }, [isConnected, address, dispatch, hasCheckedWallet]);
 
-  // Validate sponsor ID
   useEffect(() => {
     if (!searchParams.get('ref') && sponsorId) {
       setCheckingSponsor(true);
@@ -176,13 +175,12 @@ const SignUp = () => {
     }
     if (isRegistering) {
       toast.error('Registration already in progress');
-      return; // Prevent multiple clicks
+      return;
     }
 
-    setIsRegistering(true); // Set flag to prevent re-entry
+    setIsRegistering(true);
     setLoading(true);
     try {
-      // Check USDT balance
       console.log('Checking balance for:', { TUSDT_ADDRESS, address });
       const usdtBalance = await readContract(config, {
         address: TUSDT_ADDRESS,
@@ -197,7 +195,6 @@ const SignUp = () => {
         return;
       }
 
-      // Approve tUSDT
       setPaymentStage('approving');
       const approveHash = await writeContract(config, {
         address: TUSDT_ADDRESS,
@@ -209,7 +206,6 @@ const SignUp = () => {
       await waitForTransactionReceipt(config, { hash: approveHash });
       toast.success('Allowance approved!');
 
-      // Deposit to fees contract
       setPaymentStage('depositing');
       const depositHash = await writeContract(config, {
         address: FEES_CONTRACT_ADDRESS,
@@ -221,7 +217,10 @@ const SignUp = () => {
       await waitForTransactionReceipt(config, { hash: depositHash });
       toast.success('Payment successful!');
 
-      // Register user
+      // Reset loading and paymentStage before proceeding
+      setLoading(false);
+      setPaymentStage(null);
+
       await handleRegister(depositHash);
     } catch (error) {
       let message = 'Transaction failed';
@@ -241,7 +240,7 @@ const SignUp = () => {
     } finally {
       setLoading(false);
       setPaymentStage(null);
-      setIsRegistering(false); // Reset flag
+      setIsRegistering(false);
     }
   };
 
@@ -258,6 +257,15 @@ const SignUp = () => {
       ).unwrap();
 
       if (registerResponse.status === 'success') {
+        console.log('Registration successful, showing welcome animation');
+        // Ensure welcome animation is triggered
+        setShowWelcome(true);
+        await new Promise((resolve) => setTimeout(resolve, 30000));
+
+        console.log('Welcome animation complete, proceeding to login');
+        setShowWelcome(false);
+        setRedirecting(true);
+
         const loginResponse = await dispatch(userLoginAsync({ wallet: address })).unwrap();
         if (loginResponse.status === 'success') {
           const userId = loginResponse.data.user._id;
@@ -279,7 +287,34 @@ const SignUp = () => {
   const isFormComplete = sponsorId && name && email && phoneNumber && isSponsorValid && termsAccepted;
 
   return (
-    <section className='auth bg-base d-flex flex-wrap'>
+    <section className='auth bg-base d-flex flex-wrap relative'>
+      <style>
+        {`
+          .confetti-fallback {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+          }
+          .confetti-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #f00;
+            animation: fall 5s linear infinite;
+          }
+          @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+          }
+          .welcome-container {
+            z-index: 10000 !important;
+          }
+        `}
+      </style>
       <div className='auth-left d-lg-block d-none'>
         <div className='d-flex align-items-center flex-column h-100 justify-content-center'>
           <img src='assets/images/auth/auth-img.png' alt='' />
@@ -297,7 +332,55 @@ const SignUp = () => {
             </p>
           </div>
           {error && <p className='text-danger mb-16'>{error}</p>}
-          {loading || checkingSponsor ? (
+          {showWelcome ? (
+            <div className='fixed inset-0 bg-white flex flex-col items-center justify-center z-50 welcome-container'>
+              <Confetti
+                width={window.innerWidth}
+                height={window.innerHeight}
+                numberOfPieces={200}
+                recycle={true}
+                gravity={0.1}
+                onConfettiComplete={() => console.log('Confetti animation completed')}
+              />
+              <div className='confetti-fallback'>
+                {[...Array(50)].map((_, i) => (
+                  <div
+                    key={i}
+                    className='confetti-particle'
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      background: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                      animationDelay: `${Math.random() * 5}s`,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className='bg-[#F5F5DC] p-6 rounded-lg shadow-lg max-w-md w-full text-center'>
+                <img
+                  src='assets/images/logo.png'
+                  alt='BitX Logo'
+                  className='mx-auto mb-4 max-w-150-px'
+                />
+                <h2 className='text-2xl sm:text-3xl font-bold animate-pulse'>
+                  <span className='text-blue-600'>Thank you for Signing Up for BitX, </span>
+                  <span className='text-purple-600'>{name || 'User'}!</span>
+                </h2>
+                <p className='text-lg sm:text-xl text-green-600 mt-4 animate-bounce'>
+                  We welcome you to the DeFi world of BitX!
+                </p>
+                <p className='text-sm sm:text-base text-yellow-600 font-semibold mt-2 break-all'>
+                  Wallet: {address}
+                </p>
+              </div>
+            </div>
+          ) : redirecting ? (
+            <div className='flex flex-col items-center justify-center gap-2 py-8'>
+              <Loader loader='ClipLoader' color='blue' size={40} />
+              <p className='text-lg text-blue-600 font-semibold animate-pulse'>
+                Redirecting to your BitX Dashboard...
+              </p>
+            </div>
+          ) : loading || checkingSponsor ? (
             <div className='flex flex-col items-center justify-center gap-2 my-2 w-full'>
               <Loader loader='ClipLoader' color='blue' size={40} />
               <span className='text-blue-600 font-semibold text-lg text-center animate-pulse'>

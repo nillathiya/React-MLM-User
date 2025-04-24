@@ -82,7 +82,7 @@ const UserActivityCard = () => {
                     <h6 className="fw-semibold mt-2">
                       {" "}
                       {companyInfo.CURRENCY}
-                      {totalPackageAmount}
+                      {totalPackageAmount.toFixed(2)}
                     </h6>
                   )}
                 </div>
@@ -115,7 +115,7 @@ const UserActivityCard = () => {
                   ) : (
                     <h6 className="fw-semibold mt-2">
                       {companyInfo.CURRENCY}
-                      {totalDailyStackReward}
+                      {totalDailyStackReward.toFixed(2)}
                     </h6>
                   )}
                 </div>
@@ -148,7 +148,7 @@ const UserActivityCard = () => {
                   ) : (
                     <h6 className="fw-semibold mt-2">
                       {companyInfo.CURRENCY}
-                      {totalStackSponserReward}
+                      {totalStackSponserReward.toFixed(2)}
                     </h6>
                   )}
                 </div>
@@ -181,7 +181,7 @@ const UserActivityCard = () => {
                   ) : (
                     <h6 className="fw-semibold mt-2">
                       {companyInfo.CURRENCY}
-                      {totalTeamPerformanceReward}
+                      {totalTeamPerformanceReward.toFixed(2)}
                     </h6>
                   )}
                 </div>
@@ -215,7 +215,7 @@ const UserActivityCard = () => {
                     <h6 className="fw-semibold mt-2">
                       {" "}
                       {companyInfo.CURRENCY}
-                      {totalReward}
+                      {totalReward.toFixed(2)}
                     </h6>
                   )}
                 </div>

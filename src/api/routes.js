@@ -51,6 +51,9 @@ export const ROUTES = {
   TOPUP: {
     CREATE: `${API_URL}/api/top-up/create`
   },
+  TEAM: {
+    USER_TEAM_DETAILS: `${API_URL}/api/team/user-team-details`
+  },
   ORDERS: {
     GET_BY_USER: `${API_URL}/api/orders/user`
   },

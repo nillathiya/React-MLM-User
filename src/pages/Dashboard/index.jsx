@@ -10,7 +10,8 @@ import "./dashboard.css";
 import UserActivityCard from "./userActivityCard";
 import BalanceStatistic from "./balanceStatistic";
 import EarningCategories from "./EarningCategories";
-import IncomeStatistics from "./IncomeStatistics";
+// import IncomeStatistics from "./IncomeStatistics";
+import TeamStatistics from "./TeamStatistics";
 import Investment from "./investment";
 import NewCustomerList from "./newCustomerList";
 import { useDispatch } from "react-redux";
@@ -18,6 +19,7 @@ import {
   getUserWalletAsync,
   getWalletSettingsAsync,
 } from "../../feature/wallet/walletSlice";
+import { getUserTeamDetailsAsync } from "../../feature/team/teamSlice";
 import { useSelector } from "react-redux";
 import {
   getFundTransactionsByUserAsync,
@@ -83,6 +85,7 @@ const Dashboard = () => {
 
         // if (!userWallet) {
         await dispatch(getUserWalletAsync(loggedInUser?._id)).unwrap();
+        await dispatch(getUserTeamDetailsAsync(loggedInUser?._id)).unwrap();
         await dispatch(getWalletSettingsAsync()).unwrap();
         // }
         if (!companyInfo || Object.keys(companyInfo).length === 0) {
@@ -155,7 +158,7 @@ const Dashboard = () => {
               <EarningCategories />
 
               {/* ExpenseStatistics */}
-              <IncomeStatistics />
+              <TeamStatistics />
             </div>
             <div className="col-12 !mt-5">
               <div className="card radius-12">
@@ -169,7 +172,7 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Main Wallet</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex justify-content-evenly">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {getWalletBalance(userWallet, "main_wallet").toFixed(2)}
@@ -185,7 +188,7 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Fund Wallet</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex justify-content-evenly">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {getWalletBalance(userWallet, "fund_wallet").toFixed(2)}
@@ -201,7 +204,7 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Weekly Pool</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex justify-content-evenly">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {getWalletBalance(userWallet, "weekly_pool").toFixed(2)}
@@ -217,7 +220,7 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Monthly Pool</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex justify-content-evenly">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {getWalletBalance(userWallet, "monthly_pool").toFixed(2)}
@@ -235,7 +238,7 @@ const Dashboard = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex justify-content-evenly">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {getWalletBalance(userWallet, "direct").toFixed(2)}
@@ -251,7 +254,7 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Total Withdrawal</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex justify-content-evenly">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {formattedUserTotalWithdrawal}
@@ -263,50 +266,6 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-          </div>
-          {/* Sidebar start */}
-          <div className="col-xl-4">
-            {/* QuickTransfer */}
-            <InvitationCard />
-
-            {/* WalletActions */}
-            <WalletActions/>
-
-            {/* <div className="card radius-16">
-              <div className="card-header">
-                <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                  <h6 className="mb-2 fw-bold text-lg">Referral link</h6>
-                </div>
-              </div>
-              <div className="card-body p-0">
-                <div className="p-20">
-                  <div className="position-relative z-1 py-32 text-center px-3">
-                    <img
-                      src="assets/images/home-eleven/bg/bg-orange-gradient.png"
-                      alt=""
-                      className="position-absolute top-0 start-0 w-100 h-100 z-n1"
-                    />
-                    <input
-                      type="text"
-                      value={referralLink}
-                      readOnly
-                      className="copy-input !text-gray-900"
-                    />
-                    <button
-                      className="copy-btn !text-green-900"
-                      onClick={handleCopy}
-                    >
-                      Copy Link
-                    </button>
-                  </div>
-                  {copySuccess && <p className="copy-success">Link copied!</p>}
-                </div>
-              </div>
-            </div> */}
-
-            {/* Investment */}
-            <Investment />
-
             {/* User Rank  */}
             <div
               ref={confettiRef}
@@ -357,6 +316,51 @@ const Dashboard = () => {
               </div>
             </div>
             {/* User Rank End */}
+          </div>
+          {/* Sidebar start */}
+          <div className="col-xl-4">
+            {/* QuickTransfer */}
+            <InvitationCard />
+
+            {/* WalletActions */}
+            <WalletActions/>
+
+            {/* <div className="card radius-16">
+              <div className="card-header">
+                <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
+                  <h6 className="mb-2 fw-bold text-lg">Referral link</h6>
+                </div>
+              </div>
+              <div className="card-body p-0">
+                <div className="p-20">
+                  <div className="position-relative z-1 py-32 text-center px-3">
+                    <img
+                      src="assets/images/home-eleven/bg/bg-orange-gradient.png"
+                      alt=""
+                      className="position-absolute top-0 start-0 w-100 h-100 z-n1"
+                    />
+                    <input
+                      type="text"
+                      value={referralLink}
+                      readOnly
+                      className="copy-input !text-gray-900"
+                    />
+                    <button
+                      className="copy-btn !text-green-900"
+                      onClick={handleCopy}
+                    >
+                      Copy Link
+                    </button>
+                  </div>
+                  {copySuccess && <p className="copy-success">Link copied!</p>}
+                </div>
+              </div>
+            </div> */}
+
+            {/* Investment */}
+            <Investment />
+
+            
           </div>
           {/* Sidebar end */}
         </div>
