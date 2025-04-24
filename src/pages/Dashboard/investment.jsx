@@ -214,7 +214,7 @@ const Investment = () => {
                 Net Income
               </span>
             </div>
-            <h6 className="text-blue-500 font-semibold text-lg">{netIncome}</h6>
+            <h6 className="text-blue-500 font-semibold text-lg">{netIncome.toFixed(2)}</h6>
           </div>
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-2">
