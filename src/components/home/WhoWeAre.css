@@ -1,0 +1,75 @@
+.who_are_bg {
+  background: linear-gradient(to right, #f7f6ef, #f8f6fc);
+  box-shadow: 0 4px 20px rgba(247, 246, 239, 0.5),
+    0 -4px 20px rgba(247, 246, 239, 0.5);
+  padding: 60px 0;
+}
+
+.who_are_you_bitx {
+  font-size: 20px;
+  font-weight: 500;
+  color: #212529;
+  line-height: 1.6;
+}
+
+.question_mark {
+  color: rgb(219, 6, 6);
+  font-weight: bold;
+}
+
+.display-4 {
+  font-size: 3.5rem;
+  color: #2c3e50;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 2px;
+}
+
+.text-primary {
+  color: #1abc9c !important;
+}
+
+.text-secondary {
+  color: #34495e;
+}
+
+.focus-list {
+  font-size: 20px;
+  color: #4f4f4f;
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.focus-list li {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.focus-list li::before {
+  content: "✔";
+  position: absolute;
+  left: -30px;
+  color: #1abc9c;
+}
+
+img {
+  transition: transform 0.3s ease;
+}
+
+img:hover {
+  transform: scale(1.05);
+}
+
+/* Add spacing for mobile */
+@media (max-width: 768px) {
+  .who_are_bg {
+    padding: 40px 0;
+  }
+
+  .display-4 {
+    font-size: 2.5rem;
+  }
+
+  .who_are_you_bitx {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,70 @@
+/* Default Styles */
+.opportunity_heading {
+    font-size: 25px;
+    font-weight: 600;
+    text-align: left;
+  }
+  
+  .who_are_you_bitx {
+    font-size: 20px;
+    font-weight: 500;
+    color: #212529;
+    line-height: 1.6;
+    text-align: left;
+  }
+  
+  /* For devices 1024px and below */
+  @media (max-width: 1024px) {
+    .opportunity_heading {
+      font-size: 22px; 
+    }
+  
+    .who_are_you_bitx {
+      font-size: 18px;
+    }
+  }
+  
+  /* For devices 768px and below */
+  @media (max-width: 768px) {
+    .opportunity_heading {
+      font-size: 20px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 16px;
+    }
+  }
+  
+  /* For devices 480px and below */
+  @media (max-width: 480px) {
+    .opportunity_heading {
+      font-size: 18px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 14px;
+    }
+  }
+  
+  /* For devices 375px and below */
+  @media (max-width: 375px) {
+    .opportunity_heading {
+      font-size: 16px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 13px;
+    }
+  }
+  
+  /* For devices 320px and below */
+  @media (max-width: 320px) {
+    .opportunity_heading {
+      font-size: 14px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 12px;
+    }
+  }
+  

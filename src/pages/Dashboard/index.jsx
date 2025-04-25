@@ -41,6 +41,8 @@ import {
 import { getUserOrdersAsync } from "../../feature/order/orderSlice";
 import InvitationCard from "./InvitationCard";
 import WalletActions from "./WalletActions";
+import WelcomeCard from "./WelcomeCard";
+import AccountAndWalletActions from "./AccountAndWalletActions";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -147,13 +149,16 @@ const Dashboard = () => {
     <MasterLayout>
       <Breadcrumb title="dashboard"></Breadcrumb>
 
+      <AccountAndWalletActions />
+
+      <WelcomeCard />
+
       <UserActivityCard />
 
       <div className="mt-24">
         <div className="row gy-4">
           <div className="col-xl-8">
             <div className="row gy-4">
-
               {/* EarningCategories */}
               <EarningCategories />
 
@@ -172,10 +177,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Main Wallet</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly">
+                        <div className="d-flexy">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "main_wallet").toFixed(2)}
+                            {getWalletBalance(
+                              userWallet,
+                              "main_wallet"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -188,10 +196,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Fund Wallet</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "fund_wallet").toFixed(2)}
+                            {getWalletBalance(
+                              userWallet,
+                              "fund_wallet"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -204,10 +215,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Weekly Pool</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "weekly_pool").toFixed(2)}
+                            {getWalletBalance(
+                              userWallet,
+                              "weekly_pool"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -220,10 +234,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Monthly Pool</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "monthly_pool").toFixed(2)}
+                            {getWalletBalance(
+                              userWallet,
+                              "monthly_pool"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -234,11 +251,13 @@ const Dashboard = () => {
                         <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
                           <div>
                             <div>
-                              <h6 className="mb-2 fw-medium">Direct Received</h6>
+                              <h6 className="mb-2 fw-medium">
+                                Direct Referral Income
+                              </h6>
                             </div>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {getWalletBalance(userWallet, "direct").toFixed(2)}
@@ -254,7 +273,7 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Total Withdrawal</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {formattedUserTotalWithdrawal}
@@ -323,7 +342,7 @@ const Dashboard = () => {
             <InvitationCard />
 
             {/* WalletActions */}
-            <WalletActions/>
+            {/* <WalletActions /> */}
 
             {/* <div className="card radius-16">
               <div className="card-header">
@@ -359,8 +378,6 @@ const Dashboard = () => {
 
             {/* Investment */}
             <Investment />
-
-            
           </div>
           {/* Sidebar end */}
         </div>

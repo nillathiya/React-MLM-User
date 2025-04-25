@@ -38,6 +38,7 @@ import { getCompanyInfoAsync, getUserSettingsAsync } from "./feature/user/userSl
 import DirectIncomes from "./pages/IncomeReports/DirectIncomes";
 import { store, persistor } from './store/store';
 import { initializeInterceptors } from './api/apiClient';
+import Home from "./pages/Home";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -57,7 +58,7 @@ const ProtectedDashboardRoute = ({ children }) => {
   }
 
   // ✅ Protect the route
-  return isLoggedIn && isConnected ? children : <Navigate to="/" />;
+  return isLoggedIn && isConnected ? children : <Navigate to="/connect-wallet" />;
 };
 
 const ProtectedHomeRoute = ({ children }) => {
@@ -121,7 +122,8 @@ function App() {
       <RouteScrollToTop />
       <Routes>
         {/* Public Routes */}
-        <Route path='/' element={<ProtectedHomeRoute><SignIn /></ProtectedHomeRoute>} />
+        <Route path="/" element={<Home />} />
+        <Route path='/connect-wallet' element={<ProtectedHomeRoute><SignIn /></ProtectedHomeRoute>} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
         <Route path='*' element={<ErrorPage />} />

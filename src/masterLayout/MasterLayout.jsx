@@ -135,7 +135,7 @@ const MasterLayout = ({ children }) => {
     await dispatch(clearAllFundTransactions());
     await dispatch(clearCompanyInfo());
     await dispatch(clearUserSettings());
-    navigate("/");
+    navigate("/connect-wallet");
     window.location.reload();
   };
 
@@ -148,7 +148,7 @@ const MasterLayout = ({ children }) => {
     await dispatch(clearAllFundTransactions());
     await dispatch(clearCompanyInfo());
     await dispatch(clearUserSettings());
-    await navigate("/");
+    await navigate("/connect-wallet");
     window.location.reload();
   };
   const handleChild = (status) => {
@@ -862,11 +862,13 @@ const MasterLayout = ({ children }) => {
                           {/* {isWalletConnected && (
                             <p>Your wallet is connected!</p>
                           )} */}
-                          {loggedInUser.username ? loggedInUser.username : ""}
+                          {loggedInUser && loggedInUser.username
+                            ? loggedInUser.username
+                            : ""}
                           <button
                             onClick={() =>
                               handleCopy(
-                                loggedInUser.username
+                                loggedInUser && loggedInUser.username
                                   ? loggedInUser.username
                                   : ""
                               )

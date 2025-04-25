@@ -56,7 +56,7 @@ const UserActivityCard = () => {
   );
 
   return (
-    <div className="row gy-4">
+    <div className="row gy-4 mt-2">
       <div className="col-xxl-3 col-sm-6">
         <div className="card p-3 shadow-2 radius-8 h-100 gradient-deep-two-1 border border-white">
           <div className="card-body p-0">

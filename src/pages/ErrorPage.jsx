@@ -3,21 +3,19 @@ import MasterLayout from "../masterLayout/MasterLayout";
 import Breadcrumb from "../components/Breadcrumb";
 import ErrorLayer from "../components/ErrorLayer";
 
-
 const ErrorPage = () => {
   return (
     <>
       {/* MasterLayout */}
-      <MasterLayout>
+      {/* <MasterLayout> */}
 
-        {/* Breadcrumb */}
-        <Breadcrumb title="404" />
+      {/* Breadcrumb */}
+      {/* <Breadcrumb title="404" /> */}
 
-        {/* ErrorLayer */}
-        <ErrorLayer />
+      {/* ErrorLayer */}
+      <ErrorLayer />
 
-
-      </MasterLayout>
+      {/* </MasterLayout> */}
     </>
   );
 };
