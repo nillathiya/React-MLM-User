@@ -25,6 +25,7 @@ const MemberTopup = () => {
   const { userWallet, walletSettings } = useSelector((state) => state.wallet);
   const { pinDetails } = useSelector((state) => state.topUp);
   const [loading, setLoading] = useState(false);
+
   const { userSettings = [], companyInfo } = useSelector((state) => state.user);
 
   const investmentWalletType =
@@ -37,8 +38,6 @@ const MemberTopup = () => {
     investmentWalletType
   );
 
-  console.log("investmentWalletType", investmentWalletType);
-  console.log("investmentWalletName", investmentWalletName);
   const {
     register,
     handleSubmit,
@@ -46,9 +45,15 @@ const MemberTopup = () => {
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
-  } = useForm({ mode: "onBlur" });
+  } = useForm({
+    mode: "onBlur",
+    defaultValues: {
+      amount: "", // Initialize as empty to allow user input
+    },
+  });
 
   const username = watch("username");
+  const amount = watch("amount");
 
   useEffect(() => {
     (async () => {
@@ -57,23 +62,20 @@ const MemberTopup = () => {
         dispatch(getPinDetailsAsync());
         dispatch(getUserWalletAsync());
       } catch (error) {
-        toast.error(error || "An Unexpected error");
+        toast.error(error || "An unexpected error occurred");
       } finally {
         setLoading(false);
       }
     })();
   }, [dispatch]);
 
-  // Function to check username validity
+  // Check username validity
   useEffect(() => {
     const checkUsername = async () => {
       if (!username) return;
       try {
-        const formData = {
-          username,
-        };
+        const formData = { username };
         const response = await dispatch(checkUsernameAsync(formData)).unwrap();
-        console.log(response);
         if (response.data.valid) {
           setUsernameValid(true);
           setUserActiveStatus(response.data.activeStatus);
@@ -93,7 +95,7 @@ const MemberTopup = () => {
 
     const delayDebounce = setTimeout(() => {
       checkUsername();
-    }, 500); // Debounce API call
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
   }, [username, setError, clearErrors]);
@@ -104,21 +106,37 @@ const MemberTopup = () => {
       return;
     }
 
+    const balance = getWalletBalance(userWallet, investmentWalletType) || 0;
+    const enteredAmount = parseFloat(data.amount);
+
+    if (enteredAmount < 10) {
+      toast.error("Amount must be at least 10");
+      return;
+    }
+
+    if (balance < enteredAmount) {
+      toast.error("Insufficient funds in Investment Wallet");
+      return;
+    }
+
     const formData = {
-      ...data,
-      txType: userActiveStatus == 0 ? "purchase" : "repurchase",
+      username: data.username,
+      amount: enteredAmount,
+      pinId: pinDetails[0]._id,
+      txType: userActiveStatus === 0 ? "purchase" : "repurchase",
     };
+
     try {
       await dispatch(createTopUpAsync(formData)).unwrap();
       await dispatch(
         removeAmountFromWallet({
           walletType: investmentWalletType,
-          amount: data.amount,
+          amount: enteredAmount,
         })
       );
       toast.success("Topup successful!");
     } catch (error) {
-      toast.error(error || "An Unexpected error");
+      toast.error(error.message || "An unexpected error occurred");
     }
   };
 
@@ -132,7 +150,6 @@ const MemberTopup = () => {
       <div className="space-y-4">
         <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
         <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
         <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
       </div>
     </div>
@@ -140,12 +157,10 @@ const MemberTopup = () => {
 
   return (
     <MasterLayout>
-      <Breadcrumb title="member Topup"></Breadcrumb>
+      <Breadcrumb title="Member Topup" />
       <div className="flex justify-center items-center">
         {loading ? (
-          <>
-            <SkeletonLoader />{" "}
-          </>
+          <SkeletonLoader />
         ) : (
           <div className="w-full max-w-lg !px-4 py-3 !bg-white dark:!bg-darkCard shadow-lg rounded-lg">
             <h6 className="heading">TopUp Form</h6>
@@ -188,43 +203,34 @@ const MemberTopup = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700  dark:text-darkText font-medium">
-                  Select Package
-                </label>
-                <select
-                  {...register("pinId", {
-                    required: "Please select a package",
-                  })}
-                  className="input-field"
-                >
-                  <option value="">Select Package</option>
-                  {pinDetails.length > 0 &&
-                    pinDetails?.map((pinDetail) => (
-                      <option key={pinDetail._id} value={pinDetail._id}>
-                        {`${pinDetail.pinType} (${companyInfo.CURRENCY}${pinDetail.pinRate})`}
-                      </option>
-                    ))}
-                </select>
-                {errors.pinId && (
-                  <p className="error-message">{errors.pinId.message}</p>
-                )}
+                {/* Package Display (Non-selectable) */}
+                <label>Package</label>
+                <div className="input-field bg-gray-10 cursor-not-allowed text-gray-700 font-medium">
+                  {companyInfo.CURRENCY}10 ~ ∞
+                </div>
               </div>
 
               <div>
-                {/* Username Field */}
+                {/* Amount Field (Editable) */}
                 <label>Amount</label>
                 <input
                   type="number"
-                  placeholder="Enter Amount"
+                  placeholder="Enter amount (minimum 10)"
                   className="input-field"
                   {...register("amount", {
                     required: "Amount is required",
+                    min: {
+                      value: 10,
+                      message: "Amount must be at least 10",
+                    },
+                    valueAsNumber: true,
                   })}
                 />
                 {errors.amount && (
-                  <p className="error-message mt-1">{errors.amount.message}</p>
+                  <p className="error-message">{errors.amount.message}</p>
                 )}
               </div>
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -233,7 +239,7 @@ const MemberTopup = () => {
               >
                 {isSubmitting
                   ? "Processing..."
-                  : userActiveStatus == 0
+                  : userActiveStatus === 0
                   ? "TOPUP"
                   : "UPGRADE"}
               </button>

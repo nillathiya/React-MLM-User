@@ -14,6 +14,7 @@ import { getWalletBalance } from "../../utils/walletUtils";
 import { FUND_TX_TYPE } from "../../utils/constant";
 import { useNavigate } from "react-router-dom";
 import { getNameBySlugFromWalletSetting } from "../../utils/common";
+import Loader from "../../components/common/Loader";
 
 const FundConvert = () => {
   const navigate = useNavigate();
@@ -22,39 +23,55 @@ const FundConvert = () => {
     userWallet,
     loading: walletLoading,
     walletSettings,
-  } = useSelector((state) => state.wallet); // Add loading from wallet slice
-  const { userSettings, companyInfo } = useSelector((state) => state.user);
+  } = useSelector((state) => state.wallet);
+  const { userSettings = [], companyInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(getUserWalletAsync());
+        await dispatch(getUserWalletAsync()).unwrap();
+        // Optionally fetch userSettings if not already loaded
+        // await dispatch(fetchUserSettingsAsync()).unwrap();
       } catch (error) {
-        console.log(error || "Server Error, Please try again");
+        toast.error(error.message || "Failed to load data");
       }
     };
     fetchData();
   }, [dispatch]);
 
-  const FUND_CONVERT_FROM_WALLETS =
+  // Ensure array type for wallet settings
+  const FUND_CONVERT_FROM_WALLETS = Array.isArray(
     userSettings.find(
       (setting) =>
         setting.title === "Fund" && setting.slug === "fund_convert_from_wallets"
-    )?.value || [];
-  const FUND_CONVERT_TO_WALLETS =
+    )?.value
+  )
+    ? userSettings.find(
+        (setting) =>
+          setting.title === "Fund" && setting.slug === "fund_convert_from_wallets"
+      )?.value
+    : [];
+  const FUND_CONVERT_TO_WALLETS = Array.isArray(
     userSettings.find(
       (setting) =>
         setting.title === "Fund" && setting.slug === "fund_convert_to_wallets"
-    )?.value || [];
+    )?.value
+  )
+    ? userSettings.find(
+        (setting) =>
+          setting.title === "Fund" && setting.slug === "fund_convert_to_wallets"
+      )?.value
+    : [];
 
   const walletFromOptions = FUND_CONVERT_FROM_WALLETS.map((wallet) => ({
     key: wallet,
-    label: getNameBySlugFromWalletSetting(walletSettings, wallet),
+    label: getNameBySlugFromWalletSetting(walletSettings, wallet) || wallet,
   }));
   const walletToOptions = FUND_CONVERT_TO_WALLETS.map((wallet) => ({
     key: wallet,
-    label: getNameBySlugFromWalletSetting(walletSettings, wallet),
+    label: getNameBySlugFromWalletSetting(walletSettings, wallet) || wallet,
   }));
+
   const {
     register,
     handleSubmit,
@@ -109,16 +126,17 @@ const FundConvert = () => {
 
   // Skeleton Loader Component
   const SkeletonLoader = () => (
-    <div className="animate-pulse">
+    <div className="animate-pulse w-full max-w-lg px-4 py-3 bg-white dark:bg-darkCard shadow-lg rounded-lg">
+      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-6"></div>
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="wallet-box bg-gray-200 dark:bg-darkBorder h-20 rounded-lg"></div>
-        <div className="wallet-box bg-gray-200 dark:bg-darkBorder h-20 rounded-lg"></div>
+        <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
       </div>
-      <div className="space-y-6">
-        <div className="h-10 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
-        <div className="h-10 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
-        <div className="h-10 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
-        <div className="h-12 bg-gray-200 dark:bg-darkBorder rounded-lg"></div>
+      <div className="space-y-4">
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
       </div>
     </div>
   );
@@ -128,7 +146,7 @@ const FundConvert = () => {
       <Breadcrumb title="Fund Convert" />
       <div className="flex justify-center items-center mt-10">
         <div className="w-full max-w-lg !px-4 !py-3 bg-white dark:!bg-darkCard shadow-lg rounded-lg">
-          <h6 className="heading">Fund Convert</h6>
+          <h6 className="heading">Fund Convert Form</h6>
 
           {walletLoading ? (
             <SkeletonLoader />
@@ -165,8 +183,7 @@ const FundConvert = () => {
                     {...register("fromWalletType", {
                       required: "Please select a source wallet",
                     })}
-                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
-                      bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
+                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
                   >
                     <option value="">Select Wallet</option>
                     {walletFromOptions.map((wallet) => (
@@ -193,8 +210,7 @@ const FundConvert = () => {
                         value !== fromWalletType ||
                         "Cannot select the same wallet",
                     })}
-                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
-                      bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
+                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
                   >
                     <option value="">Select Wallet</option>
                     {walletToOptions.map((wallet) => (
@@ -233,15 +249,13 @@ const FundConvert = () => {
                         );
                       },
                     })}
-                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg 
-                      bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
+                    className="w-full mt-1 p-3 border border-gray-300 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-darkCard text-gray-800 dark:text-darkText focus:ring-2 focus:ring-darkPrimary"
                   />
                   {fromWalletType && amount && (
                     <p className="text-sm text-gray-600 dark:text-darkText mt-1">
                       Available: {companyInfo.CURRENCY}
-                      {getWalletBalance(userWallet, fromWalletType)?.toFixed(
-                        2
-                      ) || "0.00"}
+                      {getWalletBalance(userWallet, fromWalletType)?.toFixed(2) ||
+                        "0.00"}
                     </p>
                   )}
                   {errors.amount && (
@@ -253,8 +267,7 @@ const FundConvert = () => {
 
                 <button
                   type="submit"
-                  className="w-full p-3 bg-darkPrimary text-white rounded-lg hover:bg-opacity-90 
-                    disabled:bg-gray-400 disabled:cursor-not-allowed text-center"
+                  className="w-full p-3 bg-darkPrimary text-white rounded-lg hover:bg-opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed text-center"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Processing..." : "Convert"}

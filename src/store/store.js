@@ -8,6 +8,7 @@ import transactionReducer from "../feature/transaction/transactionSlice";
 import topUpReducer from "../feature/topup/topUpSlice";
 import ordersReducer from "../feature/order/orderSlice";
 import withdrawalReducer from "../feature/withdrawal/withdrawalSlice";
+import teamReducer from "../feature/team/teamSlice"; // Import the team reducer
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer, createTransform } from 'redux-persist';
 import CryptoJS from "crypto-js";
@@ -20,7 +21,7 @@ const encryptData = (data) => CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_
 // Decrypt function
 const decryptData = (encryptedData) => {
     try {
-        console.log("SECRET_KEY:",SECRET_KEY);
+        console.log("SECRET_KEY:", SECRET_KEY);
         const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
         return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     } catch (error) {
@@ -39,15 +40,15 @@ const encryptTransform = createTransform(
 const transactionPersistConfig = {
     key: "transaction",
     storage,
-    transforms: [encryptTransform], // Apply encryption
-    whitelist: ["transactions"], // Ensure only transactions are persisted
+    transforms: [encryptTransform],
+    whitelist: ["transactions"],
 };
 
 const walletPersistConfig = {
     key: "wallet",
     storage,
     transforms: [encryptTransform],
-    whitelist: ["userWallet","walletSettings"],
+    whitelist: ["userWallet", "walletSettings"],
 };
 
 const authPersistConfig = {
@@ -61,14 +62,22 @@ const userPersistConfig = {
     key: "user",
     storage,
     transforms: [encryptTransform],
-    whitelist: ['userSettings', 'companyInfo']
-}
+    whitelist: ['companyInfo'],
+};
 
-// Apply persistence
+// Optionally persist the team reducer (if needed)
+const teamPersistConfig = {
+    key: "team",
+    storage,
+    transforms: [encryptTransform],
+    whitelist: ['activeDirects', 'inactiveDirects', 'directBusiness', 'totalTeam', 'totalBusiness', 'inactiveTeam'],
+};
+
 const persistedWalletReducer = persistReducer(walletPersistConfig, walletReducer);
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 const persistedTransactionReducer = persistReducer(transactionPersistConfig, transactionReducer);
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
+const persistedTeamReducer = persistReducer(teamPersistConfig, teamReducer); // Persist team reducer
 
 // Create Redux Store
 export const store = configureStore({
@@ -78,10 +87,11 @@ export const store = configureStore({
         theme: themeReducer,
         auth: persistedAuthReducer,
         user: persistedUserReducer,
-        transaction: persistedTransactionReducer, // 🔒 Use encrypted persisted reducer
+        transaction: persistedTransactionReducer,
         topUp: topUpReducer,
         orders: ordersReducer,
         withdrawal: withdrawalReducer,
+        team: persistedTeamReducer, // Add team reducer
     },
 });
 

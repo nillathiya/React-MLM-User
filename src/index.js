@@ -9,21 +9,25 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { store, persistor } from "./store/store";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { config } from "./config/wagmiConfig"
 import { WagmiConfig } from "wagmi"
 import { Toaster } from "react-hot-toast";
-import { setupApiInterceptors } from './api/apiClient';
+import { initializeInterceptors, setupApiInterceptors } from "./api/apiClient";
+import { PersistGate } from "redux-persist/integration/react";
+
+initializeInterceptors(store, persistor);
 const queryClient = new QueryClient();
-setupApiInterceptors(store)
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <WagmiConfig config={config}>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <App />
+          <PersistGate loading={null} persistor={persistor}>
+            <App />
+          </PersistGate>
         </Provider>
       </QueryClientProvider>
     </WagmiConfig>

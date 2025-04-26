@@ -32,10 +32,13 @@ import ChatProfileLayer from "./pages/Supports/ChatProfileLayer";
 import FundTransferHistory from "./pages/Fund/FundTransferHistory";
 import IncomeReports from "./pages/IncomeReports";
 import ViewProfile from "./pages/Users/ViewProfile";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setNavigate } from "./store/store";
-import { getCompanyInfoAsync } from "./feature/user/userSlice";
+import { getCompanyInfoAsync, getUserSettingsAsync } from "./feature/user/userSlice";
 import DirectIncomes from "./pages/IncomeReports/DirectIncomes";
+import { store, persistor } from './store/store';
+import { initializeInterceptors } from './api/apiClient';
+import Home from "./pages/Home";
 
 // console.log(process.env.REACT_APP_API_URL)
 
@@ -55,7 +58,7 @@ const ProtectedDashboardRoute = ({ children }) => {
   }
 
   // ✅ Protect the route
-  return isLoggedIn && isConnected ? children : <Navigate to="/" />;
+  return isLoggedIn && isConnected ? children : <Navigate to="/connect-wallet" />;
 };
 
 const ProtectedHomeRoute = ({ children }) => {
@@ -83,23 +86,44 @@ const ProtectedHomeRoute = ({ children }) => {
 
 function App() {
   const dispatch = useDispatch();
+  const { companyInfo, userSettings } = useSelector((state) => state.user);
+  const { currentUser: loggedInUser } = useSelector((state) => state.auth);
+  const [loading, setLoading] = useState(false);
+
+  // console.log("loggedInUser", loggedInUser);
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        await dispatch(getCompanyInfoAsync()).unwrap();
+        // console.log("Fetch Data called...");
+        if (companyInfo.length === 0) {
+          // console.log("CompanyInfo Api Called...");
+          await dispatch(getCompanyInfoAsync()).unwrap();
+        }
+        if (loggedInUser && userSettings.length === 0) {
+          // console.log("UserSetting Api Called...");
+          await dispatch(getUserSettingsAsync()).unwrap();
+        }
       } catch (error) {
         toast.error(error || "Server Failed...");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [dispatch, companyInfo, userSettings, loggedInUser]);
+
+  if (loading) {
+    return <Loader loader="ClipLoader" color="blue" size={50} fullPage />;
+  }
 
   return (
     <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <RouteScrollToTop />
       <Routes>
         {/* Public Routes */}
-        <Route path='/' element={<ProtectedHomeRoute><SignIn /></ProtectedHomeRoute>} />
+        <Route path="/" element={<Home />} />
+        <Route path='/connect-wallet' element={<ProtectedHomeRoute><SignIn /></ProtectedHomeRoute>} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
         <Route path='*' element={<ErrorPage />} />

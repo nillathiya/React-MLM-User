@@ -10,7 +10,8 @@ import "./dashboard.css";
 import UserActivityCard from "./userActivityCard";
 import BalanceStatistic from "./balanceStatistic";
 import EarningCategories from "./EarningCategories";
-import IncomeStatistics from "./IncomeStatistics";
+// import IncomeStatistics from "./IncomeStatistics";
+import TeamStatistics from "./TeamStatistics";
 import Investment from "./investment";
 import NewCustomerList from "./newCustomerList";
 import { useDispatch } from "react-redux";
@@ -18,6 +19,7 @@ import {
   getUserWalletAsync,
   getWalletSettingsAsync,
 } from "../../feature/wallet/walletSlice";
+import { getUserTeamDetailsAsync } from "../../feature/team/teamSlice";
 import { useSelector } from "react-redux";
 import {
   getFundTransactionsByUserAsync,
@@ -33,10 +35,14 @@ import Confetti from "react-confetti";
 import { ICON } from "../../constants/icons";
 import {
   getCompanyInfoAsync,
+  getUserRemainingCappingAsync,
   getUserSettingsAsync,
 } from "../../feature/user/userSlice";
 import { getUserOrdersAsync } from "../../feature/order/orderSlice";
 import InvitationCard from "./InvitationCard";
+import WalletActions from "./WalletActions";
+import WelcomeCard from "./WelcomeCard";
+import AccountAndWalletActions from "./AccountAndWalletActions";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -81,13 +87,13 @@ const Dashboard = () => {
 
         // if (!userWallet) {
         await dispatch(getUserWalletAsync(loggedInUser?._id)).unwrap();
+        await dispatch(getUserTeamDetailsAsync(loggedInUser?._id)).unwrap();
         await dispatch(getWalletSettingsAsync()).unwrap();
         // }
         if (!companyInfo || Object.keys(companyInfo).length === 0) {
           await dispatch(getCompanyInfoAsync()).unwrap();
         }
-
-        await dispatch(getUserSettingsAsync()).unwrap();
+        await dispatch(getUserRemainingCappingAsync()).unwrap();
       } catch (error) {
         toast.error(error || "Server Failed...");
       }
@@ -143,22 +149,23 @@ const Dashboard = () => {
     <MasterLayout>
       <Breadcrumb title="dashboard"></Breadcrumb>
 
+      <AccountAndWalletActions />
+
+      <WelcomeCard />
+
       <UserActivityCard />
 
       <div className="mt-24">
         <div className="row gy-4">
           <div className="col-xl-8">
             <div className="row gy-4">
-              {/* BalanceStatistic */}
-              <BalanceStatistic />
-
               {/* EarningCategories */}
-              {/* <EarningCategories /> */}
+              <EarningCategories />
 
               {/* ExpenseStatistics */}
-              <IncomeStatistics />
+              <TeamStatistics />
             </div>
-            <div className="col-12 mt-5">
+            <div className="col-12 !mt-5">
               <div className="card radius-12">
                 <div className="card-body p-16">
                   <div className="row gy-4">
@@ -170,10 +177,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Main Wallet</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flexy">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "main_wallet")}
+                            {getWalletBalance(
+                              userWallet,
+                              "main_wallet"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -186,10 +196,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Fund Wallet</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "fund_wallet")}
+                            {getWalletBalance(
+                              userWallet,
+                              "fund_wallet"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -202,10 +215,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Weekly Pool</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "weekly_pool")}
+                            {getWalletBalance(
+                              userWallet,
+                              "weekly_pool"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -218,10 +234,13 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Monthly Pool</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "monthly_pool")}
+                            {getWalletBalance(
+                              userWallet,
+                              "monthly_pool"
+                            ).toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -232,14 +251,16 @@ const Dashboard = () => {
                         <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
                           <div>
                             <div>
-                              <h6 className="mb-2 fw-medium">Instant Pool</h6>
+                              <h6 className="mb-2 fw-medium">
+                                Direct Referral Income
+                              </h6>
                             </div>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
-                            {getWalletBalance(userWallet, "instant_pool")}
+                            {getWalletBalance(userWallet, "direct").toFixed(2)}
                           </h6>
                         </div>
                       </div>
@@ -252,7 +273,7 @@ const Dashboard = () => {
                             <h6 className="mb-2 fw-medium">Total Withdrawal</h6>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-evenly mt-5">
+                        <div className="d-flex">
                           <h6 className="text-secondary-light">
                             {companyInfo.CURRENCY}
                             {formattedUserTotalWithdrawal}
@@ -264,51 +285,10 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-          </div>
-          {/* Sidebar start */}
-          <div className="col-xl-4">
-            {/* QuickTransfer */}
-            <InvitationCard/>
-
-            {/* <div className="card radius-16">
-              <div className="card-header">
-                <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                  <h6 className="mb-2 fw-bold text-lg">Referral link</h6>
-                </div>
-              </div>
-              <div className="card-body p-0">
-                <div className="p-20">
-                  <div className="position-relative z-1 py-32 text-center px-3">
-                    <img
-                      src="assets/images/home-eleven/bg/bg-orange-gradient.png"
-                      alt=""
-                      className="position-absolute top-0 start-0 w-100 h-100 z-n1"
-                    />
-                    <input
-                      type="text"
-                      value={referralLink}
-                      readOnly
-                      className="copy-input !text-gray-900"
-                    />
-                    <button
-                      className="copy-btn !text-green-900"
-                      onClick={handleCopy}
-                    >
-                      Copy Link
-                    </button>
-                  </div>
-                  {copySuccess && <p className="copy-success">Link copied!</p>}
-                </div>
-              </div>
-            </div> */}
-
-            {/* Investment */}
-            <Investment />
-
             {/* User Rank  */}
             <div
               ref={confettiRef}
-              className="card radius-16 mt-5 relative overflow-hidden"
+              className="card radius-16 mt-3 relative overflow-hidden"
             >
               {/* Confetti only inside this div */}
               {showConfetti && confettiRef.current && (
@@ -356,10 +336,59 @@ const Dashboard = () => {
             </div>
             {/* User Rank End */}
           </div>
+          {/* Sidebar start */}
+          <div className="col-xl-4">
+            {/* QuickTransfer */}
+            <InvitationCard />
+
+            {/* WalletActions */}
+            {/* <WalletActions /> */}
+
+            {/* <div className="card radius-16">
+              <div className="card-header">
+                <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between">
+                  <h6 className="mb-2 fw-bold text-lg">Referral link</h6>
+                </div>
+              </div>
+              <div className="card-body p-0">
+                <div className="p-20">
+                  <div className="position-relative z-1 py-32 text-center px-3">
+                    <img
+                      src="assets/images/home-eleven/bg/bg-orange-gradient.png"
+                      alt=""
+                      className="position-absolute top-0 start-0 w-100 h-100 z-n1"
+                    />
+                    <input
+                      type="text"
+                      value={referralLink}
+                      readOnly
+                      className="copy-input !text-gray-900"
+                    />
+                    <button
+                      className="copy-btn !text-green-900"
+                      onClick={handleCopy}
+                    >
+                      Copy Link
+                    </button>
+                  </div>
+                  {copySuccess && <p className="copy-success">Link copied!</p>}
+                </div>
+              </div>
+            </div> */}
+
+            {/* Investment */}
+            <Investment />
+          </div>
           {/* Sidebar end */}
         </div>
       </div>
-
+      <div className="mt-24">
+        <div className="row gy-4">
+          <div className="col-xxl-12 col-xl-12 col-md-12">
+            <BalanceStatistic />
+          </div>
+        </div>
+      </div>
       <NewCustomerList />
     </MasterLayout>
   );

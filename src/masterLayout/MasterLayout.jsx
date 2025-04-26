@@ -17,6 +17,7 @@ import { clearAllFundTransactions } from "../feature/transaction/transactionSlic
 import { useSelector } from "react-redux";
 import { API_URL } from "../api/routes";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { persistor } from "../store/store";
 
 const MasterLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ const MasterLayout = ({ children }) => {
   const { currentUser: loggedInUser } = useSelector((state) => state.auth);
   const { companyInfo } = useSelector((state) => state.user);
   const [isCopied, setIsCopied] = useState(false);
-
   const navigate = useNavigate();
 
   const companyLogo = companyInfo.LOGO;
@@ -126,24 +126,29 @@ const MasterLayout = ({ children }) => {
   };
 
   const handleDisconnectWallet = async () => {
-    await disconnect();
-    await dispatch(clearUser());
-    await dispatch(clearUserExists());
-    await dispatch(clearUserWallet());
-    await dispatch(clearAllFundTransactions());
-    navigate("/");
-    window.location.reload();
-  };
-
-  const handleLogout = async () => {
     localStorage.removeItem(`userToken_${loggedInUser._id}`);
+    await persistor.purge();
+    await disconnect(); // extra
     await dispatch(clearUser());
     await dispatch(clearUserExists());
     await dispatch(clearUserWallet());
     await dispatch(clearAllFundTransactions());
     await dispatch(clearCompanyInfo());
     await dispatch(clearUserSettings());
-    await navigate("/");
+    navigate("/connect-wallet");
+    window.location.reload();
+  };
+
+  const handleLogout = async () => {
+    localStorage.removeItem(`userToken_${loggedInUser._id}`);
+    await persistor.purge(); // Clears persisted state
+    await dispatch(clearUser());
+    await dispatch(clearUserExists());
+    await dispatch(clearUserWallet());
+    await dispatch(clearAllFundTransactions());
+    await dispatch(clearCompanyInfo());
+    await dispatch(clearUserSettings());
+    await navigate("/connect-wallet");
     window.location.reload();
   };
   const handleChild = (status) => {
@@ -857,11 +862,17 @@ const MasterLayout = ({ children }) => {
                           {/* {isWalletConnected && (
                             <p>Your wallet is connected!</p>
                           )} */}
-                          {loggedInUser.username ? loggedInUser.username : ""}
+                          {loggedInUser && loggedInUser.username
+                            ? loggedInUser.username
+                            : ""}
                           <button
-                            onClick={()=>handleCopy(
-                              loggedInUser.username ? loggedInUser.username : ""
-                            )}
+                            onClick={() =>
+                              handleCopy(
+                                loggedInUser && loggedInUser.username
+                                  ? loggedInUser.username
+                                  : ""
+                              )
+                            }
                           >
                             <Icon
                               icon={ICON.COPY}

@@ -108,7 +108,7 @@ const Investment = () => {
   }
 
   return (
-    <div className="card radius-16 !rounded-lg bg-white dark:!bg-gray-900 shadow-lg mt-6">
+    <div className="card radius-16 !rounded-lg bg-white dark:!bg-gray-900 shadow-lg !mt-6">
       <div className="card-header flex justify-between items-center mb-4 ">
         <h6 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
           Investment
@@ -214,7 +214,7 @@ const Investment = () => {
                 Net Income
               </span>
             </div>
-            <h6 className="text-blue-500 font-semibold text-lg">{netIncome}</h6>
+            <h6 className="text-blue-500 font-semibold text-lg">{netIncome.toFixed(2)}</h6>
           </div>
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-2">

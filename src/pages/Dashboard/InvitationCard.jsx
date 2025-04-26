@@ -39,7 +39,7 @@ function InvitationCard() {
     <div className="flex items-center justify-center min-h-[400px] !p-4">
       <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl  transform overflow-hidden hover:scale-105 transition-all duration-300">
         {/* Background Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-blue-600/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/80 to-blue-600/10" />
 
         {/* Card Content */}
         <div className="relative z-10 !p-6 overflow-visible ">

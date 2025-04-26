@@ -13,6 +13,7 @@ import {
   getUserSettings,
   getCompanyInfo,
   checkSponsor,
+  getUserRemainingCapping,
 } from "./userApi";
 import CryptoJS from "crypto-js";
 
@@ -30,6 +31,8 @@ const initialState = {
   isLoading: false,
   pagination: null,
   companyInfo: {},
+  userRemainingCapping: null,
+  isUserRemainigCappingLoading: false,
 };
 
 export const registerNewUserAsync = createAsyncThunk(
@@ -195,6 +198,21 @@ export const checkSponsorAsync = createAsyncThunk(
   async (sponsor, { rejectWithValue }) => {
     try {
       const data = await checkSponsor(sponsor);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
+
+
+export const getUserRemainingCappingAsync = createAsyncThunk(
+  "users/getUserRemainingCapping",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getUserRemainingCapping();
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -408,6 +426,18 @@ const userSlice = createSlice({
 
       .addCase(getCompanyInfoAsync.rejected, (state) => {
         state.isLoading = false;
+      })
+      // getUserRemainingCappingAsync
+      .addCase(getUserRemainingCappingAsync.pending, (state) => {
+        state.isUserRemainigCappingLoading = true;
+      })
+      .addCase(getUserRemainingCappingAsync.fulfilled, (state, action) => {
+        state.isUserRemainigCappingLoading = false;
+        state.userRemainingCapping = action.payload.data;
+      })
+
+      .addCase(getUserRemainingCappingAsync.rejected, (state) => {
+        state.isUserRemainigCappingLoading = false;
       });
   },
 });

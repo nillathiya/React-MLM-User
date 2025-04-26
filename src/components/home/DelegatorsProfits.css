@@ -1,0 +1,109 @@
+/* Background Gradient */
+.deligator_bg {
+    background: linear-gradient(to right, #ece4fa, #fcfae1);
+  }
+  
+  /* Heading Styles */
+  .deligate_heading {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: left; 
+    line-height: 1.2; 
+    word-wrap: break-word;
+  }
+  
+  .who_are_you_bitx {
+    font-size: 20px;
+    font-weight: 500;
+    color: #212529;
+    line-height: 1.6;
+    text-align: left; 
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 1024px) {
+    .deligate_heading {
+      font-size: 35px; 
+    }
+  
+    .who_are_you_bitx {
+      font-size: 18px; 
+    }
+  
+    .col-md-6 {
+      text-align: left; 
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .deligate_heading {
+      font-size: 30px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 16px;
+    }
+  
+    .col-md-6 {
+      text-align: left; 
+    }
+  
+    .img-fluid {
+      max-height: 500px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .deligate_heading {
+      font-size: 26px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 14px;
+    }
+  
+    .col-md-6 {
+      text-align: left;
+    }
+  
+    .img-fluid {
+      max-height: 400px;
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .deligate_heading {
+      font-size: 22px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 13px;
+    }
+  
+    .col-md-6 {
+      text-align: left;
+    }
+  
+    .img-fluid {
+      max-height: 350px;
+    }
+  }
+  
+  @media (max-width: 320px) {
+    .deligate_heading {
+      font-size: 18px;
+    }
+  
+    .who_are_you_bitx {
+      font-size: 12px;
+    }
+  
+    .col-md-6 {
+      text-align: left;
+    }
+  
+    .img-fluid {
+      max-height: 300px;
+    }
+  }
+  

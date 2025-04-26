@@ -38,6 +38,7 @@ export const ROUTES = {
     GET_DETAILS_WITH_INVEST_INFO: `${API_URL}/api/user/details-with-investment`,
     UPDATE_PROFILE: `${API_URL}/api/user/update/profile`,
     GET_SETTINGS: `${API_URL}/api/user-settings/get`,
+    GET_REMAINING_CAPPING: `${API_URL}/api/user/get-remaining-capping`
   },
   WALLET: {
     CREATE: `${API_URL}/api/wallet/create`,
@@ -49,6 +50,9 @@ export const ROUTES = {
   },
   TOPUP: {
     CREATE: `${API_URL}/api/top-up/create`
+  },
+  TEAM: {
+    USER_TEAM_DETAILS: `${API_URL}/api/team/user-team-details`
   },
   ORDERS: {
     GET_BY_USER: `${API_URL}/api/orders/user`
