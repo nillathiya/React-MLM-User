@@ -5,105 +5,124 @@ import cardImg1 from "../../assets/lock-crypto.png";
 import cardImg2 from "../../assets/earning-trading.png";
 import cardImg3 from "../../assets/wallet-crypto-icon.png";
 import { CiStar } from "react-icons/ci";
-import "./DelegatorsProfits.css";
+import "./Home.css";
 
 const DelegatorsProfits = () => {
+  const textVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  const imageVariants = {
+    animate: {
+      y: [-15, 15],
+      transition: {
+        duration: 3,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: i * 0.2 },
+    }),
+    hover: {
+      scale: 1.05,
+      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+      transition: { duration: 0.3 },
+    },
+  };
+
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      backgroundColor: "#333333",
+      transition: { duration: 0.3 },
+    },
+  };
+
   return (
-    <section id="delegator" className="py-5 deligator_bg">
+    <section id="delegator" className="delegators-profits py-5">
       <div className="container">
         <div className="row align-items-center">
-          {/* Left Content */}
-          <div className="col-md-6 mb-4 mb-md-0">
+          <motion.div
+            className="col-md-6 mb-4 mb-md-0 delegators-content"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={textVariants}
+          >
             <div>
-              <h1
-                className="deligate_heading fw-bold d-flex flex-column flex-md-row align-items-center gap-2"
-                style={{ fontFamily: "Sans-serif" }}
-              >
-                <span>Testimonials Millions of users around the world</span>
+              <h1 className="delegators-heading fw-bold d-flex flex-column flex-md-row align-items-center gap-2">
+                Testimonials Millions of users around the world
               </h1>
-              <p>Items an exciting time to become a trader.</p>
-              <button
-                style={{
-                  background: "#000000",
-                  color: "white",
-                  padding: "10px",
-                  borderRadius: "25px",
-                  fontWeight: "bold",
-                }}
+              <p className="delegators-text">
+                Items an exciting time to become a trader.
+              </p>
+              <motion.button
+                className="delegators-button"
+                whileHover="hover"
+                variants={buttonVariants}
               >
                 Learn more
-              </button>
+              </motion.button>
             </div>
 
             <div className="steps-container">
-              <div className="step-card">
-                <div className="step-icon">
-                  {/* Placeholder for the lock icon */}
-                  <img src={cardImg1} alt="Lock Icon" />
-                </div>
-                <h3>
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                </h3>
-                <p>
-                  Great! This is one of the best apps I have ever used before.
-                </p>
-              </div>
-
-              <div className="step-card">
-                <div className="step-icon">
-                  {/* Placeholder for the wallet icon */}
-                  <img src={cardImg2} alt="Wallet Icon" />
-                </div>
-                <h3>
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                </h3>
-                <p>
-                  Great! Compared to everything else i have ever used, this is
-                  the best app
-                </p>
-              </div>
-
-              <div className="step-card">
-                <div className="step-icon">
-                  {/* Placeholder for the trading icon */}
-                  <img src={cardImg3} alt="Trading Icon" />
-                </div>
-                <h3>
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                  <CiStar />
-                </h3>
-                <p>
-                  Great! This is one of the best apps I have ever used before.
-                </p>
-              </div>
+              {[
+                {
+                  icon: cardImg1,
+                  stars: Array(5).fill(<CiStar />),
+                  text: "Great! This is one of the best apps I have ever used before.",
+                },
+                {
+                  icon: cardImg2,
+                  stars: Array(5).fill(<CiStar />),
+                  text: "Great! Compared to everything else I have ever used, this is the best app.",
+                },
+                {
+                  icon: cardImg3,
+                  stars: Array(5).fill(<CiStar />),
+                  text: "Great! This is one of the best apps I have ever used before.",
+                },
+              ].map((card, index) => (
+                <motion.div
+                  key={index}
+                  className="step-card"
+                  custom={index}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={cardVariants}
+                  whileHover="hover"
+                >
+                  <div className="step-icon">
+                    <img src={card.icon} alt="Testimonial Icon" />
+                  </div>
+                  <h3 className="star-rating">{card.stars}</h3>
+                  <p>{card.text}</p>
+                </motion.div>
+              ))}
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Image with Repeating Top-Bottom Animation */}
           <div className="col-md-6 text-center">
             <motion.img
               src={Delegator}
               alt="BitX Visual"
-              className="img-fluid rounded"
-              style={{ height: "700px", objectFit: "contain" }}
-              animate={{ y: [0, -20, 0] }}
-              transition={{
-                duration: 2,
-                ease: "easeInOut",
-                repeat: Infinity,
-                repeatType: "loop",
-              }}
+              className="img-fluid rounded delegators-img"
+              variants={imageVariants}
+              animate="animate"
             />
           </div>
         </div>

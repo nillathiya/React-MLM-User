@@ -39,12 +39,12 @@ const AccountAndWalletActions = () => {
               <div className="p-1 sm:!p-3 rounded-full mb-3 transition-colors border border-gray-300 dark:group-hover:bg-gray-800 bg-blue-500 dark:bg-transparent">
                 <img
                   src="assets/images/home-eleven/icons/home-eleven-icon1.svg"
-                  alt="Add Fund"
+                  alt="Deposit"
                   className="w-5 h-5 sm:w-7 sm:h-7 object-contain"
                 />
               </div>
               <span className="!text-xs sm:!text-sm md:!text-base !font-medium !text-gray-900 dark:!text-gray-200 group-hover:text-indigo-600 transition-colors">
-                Add Fund
+                Deposit
               </span>
             </div>
           </Link>
@@ -63,7 +63,7 @@ const AccountAndWalletActions = () => {
                 />
               </div>
               <span className="!text-xs sm:!text-sm md:!text-base !font-medium !text-gray-900 dark:!text-gray-200 group-hover:text-indigo-600 transition-colors">
-                Fund Convert
+                Convert
               </span>
             </div>
           </Link>
@@ -82,7 +82,7 @@ const AccountAndWalletActions = () => {
                 />
               </div>
               <span className="!text-xs sm:!text-sm md:!text-base !font-medium !text-gray-900 dark:!text-gray-200 group-hover:text-indigo-600 transition-colors">
-                Fund Transfer
+                Transfer
               </span>
             </div>
           </Link>
@@ -101,7 +101,7 @@ const AccountAndWalletActions = () => {
                 />
               </div>
               <span className="!text-xs sm:!text-sm md:!text-base !font-medium !text-gray-900 dark:!text-gray-200 group-hover:text-indigo-600 transition-colors">
-                Fund Withdraw
+                Withdraw
               </span>
             </div>
           </Link>

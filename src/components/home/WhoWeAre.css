@@ -1,75 +1,135 @@
 .who_are_bg {
-  background: linear-gradient(to right, #f7f6ef, #f8f6fc);
-  box-shadow: 0 4px 20px rgba(247, 246, 239, 0.5),
-    0 -4px 20px rgba(247, 246, 239, 0.5);
-  padding: 60px 0;
+  padding: 40px 0;
+  background: linear-gradient(180deg, #ffffff, #e9ecef);
 }
 
-.who_are_you_bitx {
-  font-size: 20px;
-  font-weight: 500;
-  color: #212529;
+.who_are_bg .how_are_heading {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.who_are_bg .who_are_you_bitx {
+  font-size: 1.1rem;
   line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
-.question_mark {
-  color: rgb(219, 6, 6);
-  font-weight: bold;
-}
-
-.display-4 {
-  font-size: 3.5rem;
-  color: #2c3e50;
-  font-family: "Roboto", sans-serif;
-  letter-spacing: 2px;
-}
-
-.text-primary {
-  color: #1abc9c !important;
-}
-
-.text-secondary {
-  color: #34495e;
-}
-
-.focus-list {
-  font-size: 20px;
-  color: #4f4f4f;
-  list-style-type: none;
+.who_are_bg .feature-list {
+  list-style: none;
   padding-left: 0;
+  margin-top: 0.5rem;
 }
 
-.focus-list li {
-  margin-bottom: 10px;
-  position: relative;
+.who_are_bg .feature-list li {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.focus-list li::before {
-  content: "✔";
-  position: absolute;
-  left: -30px;
-  color: #1abc9c;
+.who_are_bg .who-are-img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
-img {
-  transition: transform 0.3s ease;
-}
-
-img:hover {
-  transform: scale(1.05);
-}
-
-/* Add spacing for mobile */
-@media (max-width: 768px) {
+/* Mobile Styles */
+@media (max-width: 576px) {
   .who_are_bg {
-    padding: 40px 0;
+    padding: 20px 0;
   }
 
-  .display-4 {
-    font-size: 2.5rem;
+  .who_are_bg .how_are_heading {
+    font-size: 1.8rem;
+    text-align: center;
   }
 
-  .who_are_you_bitx {
-    font-size: 16px;
+  .who_are_bg .who_are_you_bitx {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .who_are_bg .feature-list li {
+    font-size: 0.9rem;
+    justify-content: center;
+  }
+
+  .who_are_bg .who-are-img {
+    max-height: 300px;
+  }
+
+  .who_are_bg .text-center {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 320px) {
+  .who_are_bg .how_are_heading {
+    font-size: 1.5rem;
+  }
+
+  .who_are_bg .who_are_you_bitx {
+    font-size: 0.85rem;
+  }
+
+  .who_are_bg .feature-list li {
+    font-size: 0.8rem;
+  }
+
+  .who_are_bg .who-are-img {
+    max-height: 250px;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 577px) and (max-width: 991px) {
+  .who_are_bg {
+    padding: 30px 0;
+  }
+
+  .who_are_bg .how_are_heading {
+    font-size: 2.2rem;
+  }
+
+  .who_are_bg .who_are_you_bitx {
+    font-size: 1rem;
+  }
+
+  .who_are_bg .feature-list li {
+    font-size: 0.95rem;
+  }
+
+  .who_are_bg .who-are-img {
+    max-height: 400px;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 992px) {
+  .who_are_bg {
+    padding: 60px 0;
+  }
+
+  .who_are_bg .how_are_heading {
+    font-size: 3rem;
+  }
+
+  .who_are_bg .who_are_you_bitx {
+    font-size: 1.25rem;
+  }
+
+  .who_are_bg .feature-list li {
+    font-size: 1.1rem;
+  }
+
+  .who_are_bg .who-are-img {
+    max-height: 600px;
+  }
+
+  .who_are_bg .col-md-6 {
+    display: flex;
+    align-items: center;
   }
 }

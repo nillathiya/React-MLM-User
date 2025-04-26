@@ -1,0 +1,746 @@
+/* MainSection Styles */
+.main-section {
+    padding: 40px 0;
+    background: linear-gradient(180deg, #f8f9fa, #ffffff);
+}
+
+.main-section .main-content {
+    max-width: 50%;
+}
+
+.main-section .display-4 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.main-section .lead {
+    font-size: 1.2rem;
+    color: #333;
+    line-height: 1.6;
+}
+
+.main-section .main-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+}
+
+.main-section .bitx-main-logo {
+    height: 70px;
+    width: auto;
+    margin-left: 10px;
+}
+
+.main-section .referral-text {
+    color: green;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.main-section .icon-wrapper {
+    color: yellow;
+    font-size: 1.5rem;
+}
+
+.main-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+/* WhoWeAre Styles */
+.who-we-are {
+    padding: 40px 0;
+    background: linear-gradient(180deg, #ffffff, #e9ecef);
+}
+
+.who-we-are .who-are-heading {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.who-we-are .who-are-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.who-we-are .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.who-we-are .feature-list li {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.who-we-are .who-are-img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.who-we-are h6 {
+    font-size: 1rem;
+}
+
+/* HowItWorks Styles */
+.how-it-works {
+    padding: 40px 0;
+    background: linear-gradient(180deg, #f8f9fa, #ffffff);
+}
+
+.how-it-works .features-title {
+    color: green;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.how-it-works .how-it-works-heading {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.how-it-works .how-it-works-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.how-it-works .steps-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 20px;
+    padding: 20px 10px;
+    background: linear-gradient(90deg, #f7e7ff 0%, #fff7e6 100%);
+    scroll-behavior: smooth;
+}
+
+.how-it-works .steps-container::-webkit-scrollbar {
+    display: none;
+}
+
+.how-it-works .step-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    width: 250px;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.how-it-works .step-card:hover {
+    transform: translateY(-5px);
+}
+
+.how-it-works .step-icon {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.how-it-works .step-icon img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.how-it-works .step-card h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.how-it-works .step-card p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.how-it-works .how-it-works-img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* DelegatorsProfits Styles */
+.delegators-profits {
+    padding: 40px 0;
+    background: linear-gradient(180deg, #ffffff, #e9ecef);
+}
+
+.delegators-profits .delegators-heading {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.delegators-profits .delegators-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.delegators-profits .delegators-button {
+    background: #000000;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.delegators-profits .steps-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 20px;
+    padding: 20px 10px;
+    scroll-behavior: smooth;
+}
+
+.delegators-profits .steps-container::-webkit-scrollbar {
+    display: none;
+}
+
+.delegators-profits .step-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    width: 250px;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.delegators-profits .step-card:hover {
+    transform: translateY(-5px);
+}
+
+.delegators-profits .step-icon {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delegators-profits .step-icon img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.delegators-profits .star-rating {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #ffd700;
+    /* Gold for stars */
+}
+
+.delegators-profits .step-card p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.delegators-profits .delegators-img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Card Styles */
+.card-section {
+    padding: 20px 0;
+    background: linear-gradient(90deg, #f7e7ff 0%, #fff7e6 100%);
+}
+
+.card-section .steps-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 20px;
+    padding: 20px 10px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+    scrollbar-width: none;
+    /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none;
+    /* Hide scrollbar for IE/Edge */
+}
+
+.card-section .steps-container::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for WebKit browsers */
+}
+
+.card-section .step-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    width: 250px;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card-section .step-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-section .step-icon {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-section .step-icon img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.card-section .step-card h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card-section .step-card p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Mobile Styles (320px and below) */
+@media (max-width: 320px) {
+    .main-section {
+        padding: 20px 0;
+    }
+
+    .main-section .main-content {
+        max-width: 100%;
+        padding: 0 10px;
+        text-align: center;
+    }
+
+    .main-section .display-4 {
+        font-size: 1.3rem;
+    }
+
+    .main-section .lead {
+        font-size: 0.8rem;
+    }
+
+    .main-section .bitx-main-logo {
+        height: 35px;
+        margin-left: 5px;
+    }
+
+    .main-section .main-image img {
+        max-width: 100%;
+    }
+
+    .main-section h2 {
+        font-size: 1.2rem;
+    }
+
+    .who-we-are {
+        padding: 20px 0;
+    }
+
+    .who-we-are .who-are-heading {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .who-we-are .who-are-text {
+        font-size: 0.85rem;
+        text-align: center;
+    }
+
+    .who-we-are .feature-list li {
+        font-size: 0.8rem;
+        justify-content: center;
+    }
+
+    .who-we-are .who-are-img {
+        max-height: 250px;
+    }
+
+    .how-it-works {
+        padding: 20px 0;
+    }
+
+    .how-it-works .features-title {
+        font-size: 1.2rem;
+    }
+
+    .how-it-works .how-it-works-heading {
+        font-size: 1.5rem;
+    }
+
+    .how-it-works .how-it-works-text {
+        font-size: 0.85rem;
+    }
+
+    .how-it-works .step-card {
+        width: 200px;
+    }
+
+    .how-it-works .how-it-works-img {
+        max-height: 250px;
+    }
+
+    .delegators-profits {
+        padding: 20px 0;
+    }
+
+    .delegators-profits .delegators-heading {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .delegators-profits .delegators-text {
+        font-size: 0.85rem;
+        text-align: center;
+    }
+
+    .delegators-profits .step-card {
+        width: 200px;
+    }
+
+    .delegators-profits .delegators-img {
+        max-height: 250px;
+    }
+
+    .card-section .step-card {
+        width: 200px;
+    }
+}
+
+/* Mobile Styles (576px and below) */
+@media (max-width: 576px) {
+    .main-section {
+        padding: 20px 0;
+    }
+
+    .main-section .main-content {
+        max-width: 100%;
+        padding: 0 15px;
+        text-align: center;
+    }
+
+    .main-section .display-4 {
+        font-size: 1.7rem;
+    }
+
+    .main-section .lead {
+        font-size: 0.9rem;
+    }
+
+    .main-section .bitx-main-logo {
+        height: 45px;
+        margin-left: 5px;
+    }
+
+    .main-section .main-image img {
+        max-width: 90%;
+    }
+
+    .main-section h2 {
+        font-size: 1.4rem;
+    }
+
+    .who-we-are {
+        padding: 20px 0;
+    }
+
+    .who-we-are .who-are-heading {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .who-we-are .who-are-text {
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .who-we-are .feature-list li {
+        font-size: 0.9rem;
+        justify-content: center;
+    }
+
+    .who-we-are .who-are-img {
+        max-height: 300px;
+    }
+
+    .how-it-works {
+        padding: 20px 0;
+    }
+
+    .how-it-works .features-title {
+        font-size: 1.3rem;
+    }
+
+    .how-it-works .how-it-works-heading {
+        font-size: 1.8rem;
+    }
+
+    .how-it-works .how-it-works-text {
+        font-size: 0.95rem;
+    }
+
+    .how-it-works .step-card {
+        width: 220px;
+    }
+
+    .how-it-works .how-it-works-img {
+        max-height: 300px;
+    }
+
+    .delegators-profits {
+        padding: 20px 0;
+    }
+
+    .delegators-profits .delegators-heading {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .delegators-profits .delegators-text {
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .delegators-profits .step-card {
+        width: 220px;
+    }
+
+    .delegators-profits .delegators-img {
+        max-height: 300px;
+    }
+
+    .card-section .step-card {
+        width: 220px;
+    }
+}
+
+/* Tablet Styles (577px–991px) */
+@media (min-width: 577px) and (max-width: 991px) {
+    .main-section {
+        padding: 30px 0;
+    }
+
+    .main-section .main-content {
+        max-width: 100%;
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    .main-section .display-4 {
+        font-size: 2.2rem;
+    }
+
+    .main-section .lead {
+        font-size: 1rem;
+    }
+
+    .main-section .bitx-main-logo {
+        height: 50px;
+    }
+
+    .main-section .main-image img {
+        max-width: 80%;
+    }
+
+    .main-section h2 {
+        font-size: 1.6rem;
+    }
+
+    .who-we-are {
+        padding: 30px 0;
+    }
+
+    .who-we-are .who-are-heading {
+        font-size: 2.2rem;
+    }
+
+    .who-we-are .who-are-text {
+        font-size: 1rem;
+    }
+
+    .who-we-are .feature-list li {
+        font-size: 0.95rem;
+    }
+
+    .who-we-are .who-are-img {
+        max-height: 400px;
+    }
+
+    .how-it-works {
+        padding: 30px 0;
+    }
+
+    .how-it-works .features-title {
+        font-size: 1.4rem;
+    }
+
+    .how-it-works .how-it-works-heading {
+        font-size: 2.2rem;
+    }
+
+    .how-it-works .how-it-works-text {
+        font-size: 1rem;
+    }
+
+    .how-it-works .step-card {
+        width: 200px;
+    }
+
+    .how-it-works .how-it-works-img {
+        max-height: 400px;
+    }
+
+    .delegators-profits {
+        padding: 30px 0;
+    }
+
+    .delegators-profits .delegators-heading {
+        font-size: 2.2rem;
+    }
+
+    .delegators-profits .delegators-text {
+        font-size: 1rem;
+    }
+
+    .delegators-profits .step-card {
+        width: 200px;
+    }
+
+    .delegators-profits .delegators-img {
+        max-height: 400px;
+    }
+
+    .card-section .step-card {
+        width: 200px;
+    }
+}
+
+/* Desktop Styles (992px and above) */
+@media (min-width: 992px) {
+    .main-section {
+        padding: 60px 0;
+    }
+
+    .main-section .main-content {
+        max-width: 50%;
+    }
+
+    .main-section .display-4 {
+        font-size: 3.5rem;
+    }
+
+    .main-section .lead {
+        font-size: 1.25rem;
+    }
+
+    .main-section .bitx-main-logo {
+        height: 70px;
+    }
+
+    .main-section .main-image img {
+        max-width: 400px;
+    }
+
+    .main-section h2 {
+        font-size: 2rem;
+    }
+
+    .who-we-are {
+        padding: 60px 0;
+    }
+
+    .who-we-are .who-are-heading {
+        font-size: 3rem;
+    }
+
+    .who-we-are .who-are-text {
+        font-size: 1.25rem;
+    }
+
+    .who-we-are .feature-list li {
+        font-size: 1.1rem;
+    }
+
+    .who-we-are .who-are-img {
+        max-height: 600px;
+    }
+
+    .how-it-works {
+        padding: 60px 0;
+    }
+
+    .how-it-works .features-title {
+        font-size: 1.5rem;
+    }
+
+    .how-it-works .how-it-works-heading {
+        font-size: 3rem;
+    }
+
+    .how-it-works .how-it-works-text {
+        font-size: 1.25rem;
+    }
+
+    .how-it-works .step-card {
+        width: 250px;
+    }
+
+    .how-it-works .how-it-works-img {
+        max-height: 600px;
+    }
+
+    .delegators-profits {
+        padding: 60px 0;
+    }
+
+    .delegators-profits .delegators-heading {
+        font-size: 3rem;
+    }
+
+    .delegators-profits .delegators-text {
+        font-size: 1.25rem;
+    }
+
+    .delegators-profits .step-card {
+        width: 250px;
+    }
+
+    .delegators-profits .delegators-img {
+        max-height: 600px;
+    }
+
+    .card-section .step-card {
+        width: 250px;
+    }
+}

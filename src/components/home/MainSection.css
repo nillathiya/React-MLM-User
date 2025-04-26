@@ -4,6 +4,7 @@
   align-items: center;
   margin-top: 60px;
   padding: 0 20px;
+  background: linear-gradient(180deg, #f8f9fa, #ffffff);
 }
 
 .hero-content {
@@ -25,10 +26,25 @@
   max-width: 400px;
   border-radius: 12px;
 }
+
 .bitx_main_logo {
   height: 70px;
   width: auto;
   margin-left: 10px;
+}
+
+.referral-text {
+  color: green;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-wrapper {
+  color: yellow;
+  font-size: 1.5rem;
 }
 
 .steps-container {
@@ -73,9 +89,7 @@
 .step-card p {
   font-size: 0.9rem;
   color: #666;
-}     
-
-
+}
 
 /* For devices 1024px and below */
 @media (max-width: 1024px) {
@@ -100,13 +114,6 @@
 
   .hero-image img {
     max-width: 80%;
-  }
-  .display-4 {
-
-    font-size: 2.5rem !important;
-  }
-  .col-md-6 {
-    text-align: center;
   }
 
   .bitx_main_logo {
@@ -141,9 +148,6 @@
   .hero-image img {
     max-width: 90%;
   }
-  .col-md-6 {
-    text-align: center;
-  }
 
   .bitx_main_logo {
     height: 50px;
@@ -151,7 +155,7 @@
   }
 
   .display-4 {
-    font-size: 1.5rem !important;
+    font-size: 1.5rem;
   }
 
   .lead {
@@ -177,6 +181,7 @@
   .hero-image img {
     max-width: 100%;
   }
+
   .col-md-6 {
     text-align: center;
     padding: 0 15px;
@@ -214,6 +219,7 @@
   .hero-image img {
     max-width: 100%;
   }
+
   .col-md-6 {
     text-align: center;
     padding: 0 10px;
@@ -251,6 +257,7 @@
   .hero-image img {
     max-width: 100%;
   }
+
   .col-md-6 {
     text-align: center;
     padding: 0 10px;

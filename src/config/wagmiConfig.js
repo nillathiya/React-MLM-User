@@ -1,5 +1,8 @@
 import { createConfig, http } from 'wagmi';
-import { bsc, bscTestnet } from 'wagmi/chains';
+import { 
+  bsc,
+  bscTestnet
+ } from 'wagmi/chains';
 import { metaMask, walletConnect } from 'wagmi/connectors'
 
 // Custom storage
@@ -11,7 +14,10 @@ const customStorage = {
 
 // Set up wagmi config
 export const config = createConfig({
-  chains: [bsc, bscTestnet],
+  chains: [
+    bsc, 
+    bscTestnet
+  ],
   connectors: [metaMask(), walletConnect({
     isNewChainsStale: true,
     projectId: '571f5e3e8ec5570d84fb07c48fc4fdb3',

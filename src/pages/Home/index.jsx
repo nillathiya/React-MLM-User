@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../../components/home/Navbar";
 import MainSection from "../../components/home/MainSection";
+import Card from "../../components/home/card";
 import WhoWeAre from "../../components/home/WhoWeAre";
 import HowItWorks from "../../components/home/HowItWorks";
 import MarketOpportunity from "../../components/home/MarketOpportunity";
@@ -10,6 +11,7 @@ function Home() {
     <div>
       <Navbar />
       <MainSection />
+      <Card />
       <WhoWeAre />
       <HowItWorks />
       <MarketOpportunity />
